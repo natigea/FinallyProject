@@ -34,3 +34,12 @@ Thumbs.db
 
 ## secrets
 appsettings.Development.json
+
+## Claude Code
+.claude/
+
+## User uploads (keep folder structure via .gitkeep)
+EcommersProject/wwwroot/uploads/listings/*.jpg
+EcommersProject/wwwroot/uploads/listings/*.jpeg
+EcommersProject/wwwroot/uploads/listings/*.png
+EcommersProject/wwwroot/uploads/listings/*.webp

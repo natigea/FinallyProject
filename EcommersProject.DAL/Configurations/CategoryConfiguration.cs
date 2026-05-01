@@ -10,12 +10,14 @@ public class CategoryConfiguration : BaseEntityConfiguration<Category>
     {
         base.Configure(builder);
 
-        builder.Property(category => category.Name).HasMaxLength(200).IsRequired();
-        builder.Property(category => category.Description).HasMaxLength(1000);
+        builder.Property(c => c.Name).HasMaxLength(150).IsRequired();
+        builder.Property(c => c.Description).HasMaxLength(500);
+        builder.Property(c => c.Icon).HasMaxLength(50).HasDefaultValue("bi-tag");
+        builder.Property(c => c.Slug).HasMaxLength(60).HasDefaultValue(string.Empty);
 
-        builder.HasMany(category => category.Products)
-            .WithOne(product => product.Category)
-            .HasForeignKey(product => product.CategoryId)
+        builder.HasMany(c => c.Listings)
+            .WithOne(l => l.Category)
+            .HasForeignKey(l => l.CategoryId)
             .OnDelete(DeleteBehavior.Restrict);
     }
 }

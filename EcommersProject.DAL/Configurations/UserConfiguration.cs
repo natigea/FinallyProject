@@ -10,40 +10,38 @@ public class UserConfiguration : BaseEntityConfiguration<User>
     {
         base.Configure(builder);
 
-        builder.Property(user => user.Email).HasMaxLength(320).IsRequired();
-        builder.HasIndex(user => user.Email).IsUnique();
-        builder.Property(user => user.FirstName).HasMaxLength(100).IsRequired();
-        builder.Property(user => user.LastName).HasMaxLength(100).IsRequired();
-        builder.Property(user => user.PhoneNumber).HasMaxLength(30);
-        builder.Property(user => user.IsActive).HasDefaultValue(true);
-        builder.Property(user => user.PasswordHash).HasMaxLength(500).IsRequired();
-        builder.Property(user => user.Role).HasDefaultValue(UserRole.Customer);
-        builder.Property(user => user.ShopName).HasMaxLength(200);
-        builder.Property(user => user.ShopDescription).HasMaxLength(1000);
+        builder.Property(u => u.Email).HasMaxLength(320).IsRequired();
+        builder.HasIndex(u => u.Email).IsUnique();
+        builder.Property(u => u.FirstName).HasMaxLength(100).IsRequired();
+        builder.Property(u => u.LastName).HasMaxLength(100).IsRequired();
+        builder.Property(u => u.PhoneNumber).HasMaxLength(30);
+        builder.Property(u => u.IsActive).HasDefaultValue(true);
+        builder.Property(u => u.PasswordHash).HasMaxLength(500).IsRequired();
+        builder.Property(u => u.Role).HasDefaultValue(UserRole.Customer);
 
-        builder.HasMany(user => user.Addresses)
-            .WithOne(address => address.User)
-            .HasForeignKey(address => address.UserId)
+        builder.HasMany(u => u.Listings)
+            .WithOne(l => l.User)
+            .HasForeignKey(l => l.UserId)
             .OnDelete(DeleteBehavior.Cascade);
 
-        builder.HasMany(user => user.Orders)
-            .WithOne(order => order.User)
-            .HasForeignKey(order => order.UserId)
+        builder.HasMany(u => u.Favorites)
+            .WithOne(f => f.User)
+            .HasForeignKey(f => f.UserId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        builder.HasMany(u => u.BuyerConversations)
+            .WithOne(c => c.Buyer)
+            .HasForeignKey(c => c.BuyerId)
             .OnDelete(DeleteBehavior.Restrict);
 
-        builder.HasMany(user => user.Carts)
-            .WithOne(cart => cart.User)
-            .HasForeignKey(cart => cart.UserId)
-            .OnDelete(DeleteBehavior.Cascade);
+        builder.HasMany(u => u.SellerConversations)
+            .WithOne(c => c.Seller)
+            .HasForeignKey(c => c.SellerId)
+            .OnDelete(DeleteBehavior.Restrict);
 
-        builder.HasMany(user => user.Reviews)
-            .WithOne(review => review.User)
-            .HasForeignKey(review => review.UserId)
-            .OnDelete(DeleteBehavior.Cascade);
-
-        builder.HasMany(user => user.Wishlists)
-            .WithOne(wishlist => wishlist.User)
-            .HasForeignKey(wishlist => wishlist.UserId)
-            .OnDelete(DeleteBehavior.Cascade);
+        builder.HasMany(u => u.SentMessages)
+            .WithOne(m => m.Sender)
+            .HasForeignKey(m => m.SenderId)
+            .OnDelete(DeleteBehavior.Restrict);
     }
 }

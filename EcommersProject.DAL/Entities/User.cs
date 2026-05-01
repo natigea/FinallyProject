@@ -9,13 +9,10 @@ public class User : BaseEntity
     public bool IsActive { get; set; } = true;
     public string PasswordHash { get; set; } = string.Empty;
     public UserRole Role { get; set; } = UserRole.Customer;
-    public string? ShopName { get; set; }
-    public string? ShopDescription { get; set; }
 
-    public ICollection<Address> Addresses { get; set; } = new List<Address>();
-    public ICollection<Order> Orders { get; set; } = new List<Order>();
-    public ICollection<Cart> Carts { get; set; } = new List<Cart>();
-    public ICollection<Review> Reviews { get; set; } = new List<Review>();
-    public ICollection<Wishlist> Wishlists { get; set; } = new List<Wishlist>();
-    public ICollection<Product> Products { get; set; } = new List<Product>();
+    public ICollection<Listing> Listings { get; set; } = new List<Listing>();
+    public ICollection<Favorite> Favorites { get; set; } = new List<Favorite>();
+    public ICollection<Conversation> BuyerConversations { get; set; } = new List<Conversation>();
+    public ICollection<Conversation> SellerConversations { get; set; } = new List<Conversation>();
+    public ICollection<Message> SentMessages { get; set; } = new List<Message>();
 }
