@@ -11,15 +11,11 @@ public class AuthService(IUnitOfWork unitOfWork) : IAuthService
     {
         var normalized = dto.Email.Trim().ToLowerInvariant();
         var users = await unitOfWork.Users.FindAsync(
-            u => u.Email == normalized && u.IsActive,
-            cancellationToken);
+            u => u.Email == normalized && u.IsActive, cancellationToken);
 
         var user = users.FirstOrDefault();
-        if (user is null)
-            return null;
-
-        if (!BCrypt.Net.BCrypt.Verify(dto.Password, user.PasswordHash))
-            return null;
+        if (user is null) return null;
+        if (!BCrypt.Net.BCrypt.Verify(dto.Password, user.PasswordHash)) return null;
 
         return MapToResponse(user);
     }
@@ -38,10 +34,8 @@ public class AuthService(IUnitOfWork unitOfWork) : IAuthService
             LastName = dto.LastName,
             PhoneNumber = dto.PhoneNumber,
             PasswordHash = BCrypt.Net.BCrypt.HashPassword(dto.Password),
-            Role = dto.IsSeller ? UserRole.Seller : UserRole.Customer,
-            ShopName = dto.ShopName,
-            ShopDescription = dto.ShopDescription,
-            IsActive = !dto.IsSeller
+            Role = UserRole.Customer,
+            IsActive = true
         };
 
         await unitOfWork.Users.AddAsync(user, cancellationToken);
@@ -49,12 +43,13 @@ public class AuthService(IUnitOfWork unitOfWork) : IAuthService
         return MapToResponse(user);
     }
 
-    public async Task<bool> CreateAdminAsync(string email, string password, string firstName, string lastName, CancellationToken cancellationToken = default)
+    public async Task<bool> CreateAdminAsync(
+        string email, string password, string firstName, string lastName,
+        CancellationToken cancellationToken = default)
     {
         var normalized = email.Trim().ToLowerInvariant();
         var existing = await unitOfWork.Users.FindAsync(u => u.Email == normalized, cancellationToken);
-        if (existing.Any())
-            return false;
+        if (existing.Any()) return false;
 
         var admin = new User
         {
@@ -73,5 +68,5 @@ public class AuthService(IUnitOfWork unitOfWork) : IAuthService
     }
 
     private static AuthResponseDto MapToResponse(User user) =>
-        new(user.Id, user.Email, user.FirstName, user.LastName, user.Role.ToString(), user.ShopName);
+        new(user.Id, user.Email, user.FirstName, user.LastName, user.Role.ToString());
 }

@@ -7,15 +7,11 @@ public record RegisterDto(
     string FirstName,
     string LastName,
     string PhoneNumber,
-    string Password,
-    bool IsSeller = false,
-    string? ShopName = null,
-    string? ShopDescription = null);
+    string Password);
 
 public record AuthResponseDto(
     Guid Id,
     string Email,
     string FirstName,
     string LastName,
-    string Role,
-    string? ShopName);
+    string Role);

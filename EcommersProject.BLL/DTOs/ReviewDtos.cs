@@ -2,18 +2,16 @@ namespace EcommersProject.BLL.DTOs;
 
 public record ReviewGetDto(
     Guid Id,
-    Guid ProductId,
-    Guid UserId,
+    Guid ListingId,
+    Guid ReviewerId,
+    string ReviewerName,
     int Rating,
     string Comment,
     DateTimeOffset CreatedDate);
 
 public record ReviewCreateDto(
-    Guid ProductId,
-    Guid UserId,
-    int Rating,
-    string Comment);
-
-public record ReviewUpdateDto(
+    Guid ListingId,
+    Guid ReviewerId,
+    Guid SellerId,
     int Rating,
     string Comment);

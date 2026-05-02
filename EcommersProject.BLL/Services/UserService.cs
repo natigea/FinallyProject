@@ -40,4 +40,20 @@ public class UserService
         await UnitOfWork.SaveChangesAsync(cancellationToken);
         return Mapper.Map<UserGetDto>(user);
     }
+
+    public async Task<UserGetDto> SetRoleAsync(Guid id, string role, CancellationToken cancellationToken = default)
+    {
+        var user = await Repository.GetByIdAsync(id, cancellationToken)
+            ?? throw new NotFoundException(nameof(User), id);
+
+        user.Role = role.ToLower() switch
+        {
+            "admin" => UserRole.Admin,
+            _       => UserRole.Customer
+        };
+
+        await Repository.UpdateAsync(user, cancellationToken);
+        await UnitOfWork.SaveChangesAsync(cancellationToken);
+        return Mapper.Map<UserGetDto>(user);
+    }
 }

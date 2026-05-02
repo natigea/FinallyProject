@@ -7,4 +7,5 @@ public interface IUserService : IGenericService<UserGetDto, UserCreateDto, UserU
     Task<UserGetDto?> GetByEmailAsync(string email, CancellationToken cancellationToken = default);
     Task<UserGetDto> ActivateAsync(Guid id, CancellationToken cancellationToken = default);
     Task<UserGetDto> DeactivateAsync(Guid id, CancellationToken cancellationToken = default);
+    Task<UserGetDto> SetRoleAsync(Guid id, string role, CancellationToken cancellationToken = default);
 }
