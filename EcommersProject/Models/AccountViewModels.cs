@@ -5,10 +5,11 @@ namespace EcommersProject.Models;
 
 public class LoginViewModel
 {
-    [Required, EmailAddress]
+    [Required(ErrorMessage = "Введите email")]
+    [EmailAddress(ErrorMessage = "Некорректный email")]
     public string Email { get; set; } = "";
 
-    [Required]
+    [Required(ErrorMessage = "Введите пароль")]
     public string Password { get; set; } = "";
 
     public string? ReturnUrl { get; set; }
@@ -16,37 +17,35 @@ public class LoginViewModel
 
 public class RegisterViewModel
 {
-    [Required, EmailAddress]
+    [Required(ErrorMessage = "Введите email")]
+    [EmailAddress(ErrorMessage = "Некорректный email")]
     public string Email { get; set; } = "";
 
-    [Required, MinLength(2)]
+    [Required(ErrorMessage = "Введите имя")]
+    [MinLength(2, ErrorMessage = "Минимум 2 символа")]
     public string FirstName { get; set; } = "";
 
-    [Required, MinLength(2)]
+    [Required(ErrorMessage = "Введите фамилию")]
+    [MinLength(2, ErrorMessage = "Минимум 2 символа")]
     public string LastName { get; set; } = "";
 
-    [Required, Phone]
+    [Required(ErrorMessage = "Введите номер телефона")]
+    [Phone(ErrorMessage = "Некорректный номер телефона")]
     public string PhoneNumber { get; set; } = "";
 
-    [Required, MinLength(6)]
+    [Required(ErrorMessage = "Введите пароль")]
+    [MinLength(6, ErrorMessage = "Минимум 6 символов")]
     public string Password { get; set; } = "";
 
-    [Required, Compare(nameof(Password))]
+    [Required(ErrorMessage = "Подтвердите пароль")]
+    [Compare(nameof(Password), ErrorMessage = "Пароли не совпадают")]
     public string ConfirmPassword { get; set; } = "";
-
-    public bool IsSeller { get; set; }
-    public string? ShopName { get; set; }
-    public string? ShopDescription { get; set; }
 }
 
 public class ProfileViewModel
 {
     public UserGetDto User { get; set; } = null!;
-    public IReadOnlyList<OrderGetDto> Orders { get; set; } = [];
-    public IReadOnlyList<AddressGetDto> Addresses { get; set; } = [];
-}
-
-public class FavoritesViewModel
-{
-    public IReadOnlyList<WishlistGetDto> Items { get; set; } = [];
+    public IReadOnlyList<ListingGetDto> MyListings { get; set; } = [];
+    public IReadOnlyList<FavoriteGetDto> Favorites { get; set; } = [];
+    public int UnreadMessages { get; set; }
 }

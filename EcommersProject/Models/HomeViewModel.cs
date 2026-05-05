@@ -4,7 +4,6 @@ namespace EcommersProject.Models;
 
 public class HomeViewModel
 {
-    public IReadOnlyList<ProductGetDto> FeaturedProducts { get; set; } = [];
+    public IReadOnlyList<ListingGetDto> RecentListings { get; set; } = [];
     public IReadOnlyList<CategoryGetDto> Categories { get; set; } = [];
-    public IReadOnlyList<ProductGetDto> NewArrivals { get; set; } = [];
 }

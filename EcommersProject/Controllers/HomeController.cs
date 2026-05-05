@@ -1,3 +1,4 @@
+using EcommersProject.BLL.DTOs;
 using EcommersProject.BLL.Interfaces;
 using EcommersProject.Models;
 using Microsoft.AspNetCore.Mvc;
@@ -5,31 +6,19 @@ using Microsoft.AspNetCore.Mvc;
 namespace EcommersProject.Controllers;
 
 [ApiExplorerSettings(IgnoreApi = true)]
-public class HomeController : Controller
+public class HomeController(IListingService listings, ICategoryService categories) : Controller
 {
-    private readonly IProductService _products;
-    private readonly ICategoryService _categories;
-
-    public HomeController(IProductService products, ICategoryService categories)
-    {
-        _products = products;
-        _categories = categories;
-    }
-
     public async Task<IActionResult> Index()
     {
-        var all = await _products.GetAllAsync();
-        var active = all.Where(p => p.IsActive).OrderByDescending(p => p.CreatedDate).ToList();
-        var categories = await _categories.GetAllAsync();
+        var (items, _) = await listings.SearchAsync(new ListingSearchDto(
+            null, null, null, null, null, "newest", 1, 12));
+        var cats = await categories.GetAllAsync();
 
-        var vm = new HomeViewModel
+        return View(new HomeViewModel
         {
-            FeaturedProducts = active.Take(4).ToList(),
-            NewArrivals = active.Skip(4).Take(4).ToList(),
-            Categories = categories
-        };
-
-        return View(vm);
+            RecentListings = items,
+            Categories = cats
+        });
     }
 
     public IActionResult About() => View();
