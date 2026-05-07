@@ -1,0 +1,228 @@
+@model BrowseViewModel
+@{
+    ViewData["Title"] = L["Browse_Title"].Value;
+}
+
+<!-- ─── Search bar ────────────────────────────── -->
+<div class="browse-bar">
+    <div class="container">
+        <form method="get" action="/Listing">
+            <div class="browse-form">
+                <div class="browse-input-box">
+                    <i class="bi bi-search" style="color:var(--muted);padding:0 8px 0 12px;font-size:.95rem;flex-shrink:0;"></i>
+                    <input type="text" name="q" value="@Model.Query" placeholder="@L["Browse_Search"]" class="browse-input" />
+                </div>
+                <div class="browse-form-sep"></div>
+                <select name="city" class="browse-city-sel">
+                    <option value="">@L["Home_AllCities"]</option>
+                    @{ var cities = new[]{"Bakı","Sumqayıt","Gəncə","Mingəçevir","Naxçıvan","Lənkəran","Şəki","Quba","Şirvan","Masallı"}; }
+                    @foreach (var c in cities)
+                    {
+                        if (c == Model.City) { <option selected="selected">@c</option> }
+                        else { <option>@c</option> }
+                    }
+                </select>
+                <button type="submit" class="browse-find-btn">@L["Browse_Find"]</button>
+                @if (!string.IsNullOrEmpty(Model.Query) || Model.CategoryId.HasValue || !string.IsNullOrEmpty(Model.City) || Model.PriceMin.HasValue || Model.PriceMax.HasValue)
+                {
+                    <a href="/Listing" class="browse-clear" title="@L["Browse_Clear"]"><i class="bi bi-x-lg"></i></a>
+                }
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- ─── Category chips ────────────────────────── -->
+<div class="browse-cats-bar">
+    <div class="container">
+        <div class="cats-scroll">
+            <a href="/Listing@(Model.SortBy != null || !string.IsNullOrEmpty(Model.Query) ? "?q=" + (Model.Query ?? "") + "&sortBy=" + (Model.SortBy ?? "") : "")"
+               class="cat-chip @(Model.CategoryId == null ? "active" : "")">
+                <i class="bi bi-grid"></i> @L["Browse_All"]
+            </a>
+            @foreach (var cat in Model.Categories)
+            {
+                <a href="/Listing?categoryId=@cat.Id@(!string.IsNullOrEmpty(Model.Query) ? "&q=" + Model.Query : "")@(!string.IsNullOrEmpty(Model.City) ? "&city=" + Model.City : "")"
+                   class="cat-chip @(Model.CategoryId == cat.Id ? "active" : "")">
+                    <i class="bi @cat.Icon"></i>
+                    @(L["Cat_" + cat.Slug] is { ResourceNotFound: false } cp ? cp.Value : cat.Name)
+                </a>
+            }
+        </div>
+    </div>
+</div>
+
+<!-- ─── Main layout ───────────────────────────── -->
+<div class="container py-3">
+    <div class="browse-layout">
+
+        <!-- Sidebar -->
+        <aside class="browse-sidebar d-none d-lg-block">
+            <div class="surface p-3">
+                <h6 class="filter-head">Фильтры</h6>
+                <form method="get" action="/Listing">
+                    <input type="hidden" name="q" value="@Model.Query" />
+                    <input type="hidden" name="categoryId" value="@Model.CategoryId" />
+                    <input type="hidden" name="city" value="@Model.City" />
+
+                    <div class="mb-3">
+                        <label class="filter-lbl">Цена, ₼</label>
+                        <div class="d-flex gap-2">
+                            <input type="number" name="priceMin" value="@Model.PriceMin"
+                                   class="form-control form-control-sm" placeholder="от" min="0" />
+                            <input type="number" name="priceMax" value="@Model.PriceMax"
+                                   class="form-control form-control-sm" placeholder="до" min="0" />
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="filter-lbl">Сортировка</label>
+                        <select name="sortBy" class="form-select form-select-sm">
+                            <option value="newest" selected="@(Model.SortBy == "newest" || Model.SortBy == null)">@L["Browse_SortNewest"]</option>
+                            <option value="price_asc" selected="@(Model.SortBy == "price_asc")">@L["Browse_SortCheapest"]</option>
+                            <option value="price_desc" selected="@(Model.SortBy == "price_desc")">@L["Browse_SortExpensive"]</option>
+                        </select>
+                    </div>
+
+                    <button type="submit" class="btn-dark-custom w-100 py-2">Применить</button>
+                    <a href="/Listing" class="btn btn-outline-secondary w-100 mt-2 py-2" style="font-size:.85rem;">Сбросить</a>
+                </form>
+            </div>
+        </aside>
+
+        <!-- Listings -->
+        <div class="browse-main">
+            <div class="browse-toolbar">
+                <span style="color:var(--muted);font-size:.85rem;">
+                    @L["Browse_Found"] <strong style="color:var(--text);">@Model.Total</strong> @L["Browse_FoundListings"]
+                    @if (!string.IsNullOrEmpty(Model.Query)) { <span>@L["Browse_ForQuery"] «@Model.Query»</span> }
+                </span>
+                <div class="d-flex align-items-center gap-2">
+                    <form method="get" action="/Listing" class="d-lg-none">
+                        <input type="hidden" name="q" value="@Model.Query" />
+                        <input type="hidden" name="categoryId" value="@Model.CategoryId" />
+                        <input type="hidden" name="city" value="@Model.City" />
+                        <input type="hidden" name="priceMin" value="@Model.PriceMin" />
+                        <input type="hidden" name="priceMax" value="@Model.PriceMax" />
+                        <select name="sortBy" class="form-select form-select-sm" onchange="this.form.submit()" style="max-width:155px;">
+                            <option value="newest" selected="@(Model.SortBy == "newest" || Model.SortBy == null)">@L["Browse_SortNewest"]</option>
+                            <option value="price_asc" selected="@(Model.SortBy == "price_asc")">@L["Browse_SortCheapest"]</option>
+                            <option value="price_desc" selected="@(Model.SortBy == "price_desc")">@L["Browse_SortExpensive"]</option>
+                        </select>
+                    </form>
+                    <a href="/Listing/Create" class="btn-dark-custom px-3 py-2" style="font-size:.82rem;white-space:nowrap;">
+                        <i class="bi bi-plus-lg me-1"></i>@L["Browse_AddListing"]
+                    </a>
+                </div>
+            </div>
+
+            @if (Model.Listings.Any())
+            {
+                <div class="browse-grid">
+                    @foreach (var listing in Model.Listings)
+                    {
+                        @await Html.PartialAsync("_ListingCard", listing)
+                    }
+                </div>
+
+                @if (Model.TotalPages > 1)
+                {
+                    <nav class="mt-4 d-flex justify-content-center">
+                        <ul class="pagination">
+                            @if (Model.Page > 1)
+                            {
+                                <li class="page-item">
+                                    <a class="page-link" href="?q=@Model.Query&categoryId=@Model.CategoryId&city=@Model.City&priceMin=@Model.PriceMin&priceMax=@Model.PriceMax&sortBy=@Model.SortBy&page=@(Model.Page-1)">
+                                        <i class="bi bi-chevron-left"></i>
+                                    </a>
+                                </li>
+                            }
+                            @for (int p = Math.Max(1, Model.Page - 2); p <= Math.Min(Model.TotalPages, Model.Page + 2); p++)
+                            {
+                                <li class="page-item @(p == Model.Page ? "active" : "")">
+                                    <a class="page-link" href="?q=@Model.Query&categoryId=@Model.CategoryId&city=@Model.City&priceMin=@Model.PriceMin&priceMax=@Model.PriceMax&sortBy=@Model.SortBy&page=@p">@p</a>
+                                </li>
+                            }
+                            @if (Model.Page < Model.TotalPages)
+                            {
+                                <li class="page-item">
+                                    <a class="page-link" href="?q=@Model.Query&categoryId=@Model.CategoryId&city=@Model.City&priceMin=@Model.PriceMin&priceMax=@Model.PriceMax&sortBy=@Model.SortBy&page=@(Model.Page+1)">
+                                        <i class="bi bi-chevron-right"></i>
+                                    </a>
+                                </li>
+                            }
+                        </ul>
+                    </nav>
+                }
+            }
+            else
+            {
+                <div class="empty-state">
+                    <i class="bi bi-search"></i>
+                    <h5 style="font-size:1rem;color:var(--text);">@L["Browse_NothingFound"]</h5>
+                    <p>@L["Browse_TryChange"]</p>
+                    <a href="/Listing" class="btn-dark-custom d-inline-block px-4 py-2 mt-2">@L["Browse_ShowAll"]</a>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+@section Styles {
+<style>
+    /* Search bar */
+    .browse-bar { background: #fff; border-bottom: 1px solid var(--border); padding: 12px 0; }
+    .browse-form {
+        display: flex; align-items: center;
+        border: 1.5px solid var(--border); border-radius: var(--radius);
+        overflow: hidden; background: var(--bg);
+    }
+    .browse-form:focus-within { border-color: #aaa; }
+    .browse-input-box { flex: 1; display: flex; align-items: center; min-width: 0; }
+    .browse-input {
+        flex: 1; border: none; outline: none; background: transparent;
+        padding: 10px 8px; font-size: .875rem; font-family: inherit; color: var(--text); min-width: 0;
+    }
+    .browse-form-sep { width: 1px; height: 20px; background: var(--border); flex-shrink: 0; }
+    .browse-city-sel {
+        border: none; outline: none; background: transparent;
+        padding: 10px 10px; font-size: .85rem; font-family: inherit;
+        color: var(--sub); cursor: pointer; max-width: 130px; flex-shrink: 0;
+    }
+    .browse-find-btn {
+        background: var(--text); color: #fff;
+        border: none; padding: 10px 18px;
+        font-size: .875rem; font-weight: 600; font-family: inherit;
+        cursor: pointer; white-space: nowrap; flex-shrink: 0; transition: opacity .15s;
+    }
+    .browse-find-btn:hover { opacity: .85; }
+    .browse-clear {
+        width: 38px; height: 38px; display: flex; align-items: center; justify-content: center;
+        color: var(--muted); flex-shrink: 0; border-left: 1px solid var(--border); transition: all .15s;
+    }
+    .browse-clear:hover { color: #dc2626; background: #fff5f5; }
+
+    /* Cats bar */
+    .browse-cats-bar { background: #fff; border-bottom: 1px solid var(--border); padding: 10px 0; }
+    .cats-scroll { display: flex; gap: 6px; overflow-x: auto; scrollbar-width: none; padding-bottom: 2px; }
+    .cats-scroll::-webkit-scrollbar { display: none; }
+
+    /* Layout */
+    .browse-layout { display: grid; grid-template-columns: 220px 1fr; gap: 16px; align-items: start; }
+    @@media (max-width: 991px) { .browse-layout { grid-template-columns: 1fr; } }
+
+    /* Sidebar */
+    .browse-sidebar { position: sticky; top: 72px; }
+    .filter-head { font-size: .75rem; font-weight: 700; text-transform: uppercase; letter-spacing: .6px; color: var(--muted); margin-bottom: .75rem; }
+    .filter-lbl { display: block; font-size: .78rem; font-weight: 600; color: var(--sub); margin-bottom: 5px; }
+    .form-control-sm, .form-select-sm { border-color: var(--border); border-radius: 6px; font-size: .85rem; }
+    .form-control-sm:focus, .form-select-sm:focus { border-color: #aaa; box-shadow: none; }
+
+    /* Toolbar */
+    .browse-toolbar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; flex-wrap: wrap; gap: 8px; }
+
+    /* Grid */
+    .browse-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: 10px; }
+    @@media (max-width: 576px) { .browse-grid { grid-template-columns: repeat(2, 1fr); gap: 8px; } }
+</style>
+}

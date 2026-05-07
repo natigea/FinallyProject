@@ -1,0 +1,28 @@
+@model EcommersProject.BLL.DTOs.ListingGetDto
+@{
+    var img = Model.Images.FirstOrDefault()?.Url;
+    var diff = DateTimeOffset.UtcNow - Model.CreatedDate;
+    var ago = diff.TotalMinutes < 60
+        ? string.Format(L["Time_MinAgo"].Value, (int)diff.TotalMinutes)
+        : diff.TotalHours < 24
+            ? string.Format(L["Time_HourAgo"].Value, (int)diff.TotalHours)
+            : diff.TotalDays < 30
+                ? string.Format(L["Time_DayAgo"].Value, (int)diff.TotalDays)
+                : Model.CreatedDate.ToString("dd.MM.yyyy");
+}
+<a href="/Listing/Detail/@Model.Id" class="listing-card d-block text-decoration-none">
+    <div class="card-img-wrap">
+        @if (img != null)
+        { <img src="@img" alt="@Model.Title" loading="lazy" /> }
+        else
+        { <div class="card-img-placeholder"><i class="bi bi-image"></i></div> }
+    </div>
+    <div class="card-body-custom">
+        <div class="card-price">@Model.Price.ToString("N0") ₼</div>
+        <div class="card-title-text">@Model.Title</div>
+        <div class="card-meta">
+            <span><i class="bi bi-geo-alt me-1"></i>@Model.City</span>
+            <span>@ago</span>
+        </div>
+    </div>
+</a>

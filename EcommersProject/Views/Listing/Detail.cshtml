@@ -1,0 +1,603 @@
+@using EcommersProject.BLL.DTOs
+@model EcommersProject.BLL.DTOs.ListingGetDto
+@{
+    ViewData["Title"] = Model.Title;
+    bool isFav = (bool)(ViewBag.IsFavorite ?? false);
+    bool hasReviewed = (bool)(ViewBag.HasReviewed ?? false);
+    var reviewList = (IReadOnlyList<ReviewGetDto>)(ViewBag.Reviews ?? new List<ReviewGetDto>());
+    double? avgRating = ViewBag.AvgRating as double?;
+    bool isOwner = User.Identity?.IsAuthenticated == true &&
+        User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value == Model.UserId.ToString();
+    var diff = DateTimeOffset.UtcNow - Model.CreatedDate;
+    var ago = diff.TotalMinutes < 60
+        ? string.Format(L["Time_MinAgo"].Value, (int)diff.TotalMinutes)
+        : diff.TotalHours < 24
+            ? string.Format(L["Time_HourAgo"].Value, (int)diff.TotalHours)
+            : diff.TotalDays < 30
+                ? string.Format(L["Time_DayAgo"].Value, (int)diff.TotalDays)
+                : Model.CreatedDate.ToString("dd.MM.yyyy");
+}
+
+@if (User.IsInRole("Admin"))
+{
+    <div class="admin-review-bar">
+        <div class="container d-flex align-items-center gap-2 flex-wrap">
+            <a href="/Admin/Products" class="arb-back">
+                <i class="bi bi-arrow-left me-1"></i>@L["Admin_BackToPanel"]
+            </a>
+            <span class="arb-sep">|</span>
+            <span class="arb-label"><i class="bi bi-shield-check me-1"></i>@L["Admin_View"]</span>
+            @if (Model.Status == "Pending")
+            {
+                <form method="post" asp-controller="Listing" asp-action="AdminApprove" class="mb-0">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="id" value="@Model.Id" />
+                    <button class="btn btn-sm btn-success">
+                        <i class="bi bi-check-lg me-1"></i>@L["Admin_Approve"]
+                    </button>
+                </form>
+                <form method="post" asp-controller="Listing" asp-action="AdminReject" class="mb-0"
+                      onsubmit="return confirm('@L["Admin_RejectConfirm"]')">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="id" value="@Model.Id" />
+                    <button class="btn btn-sm btn-outline-danger">
+                        <i class="bi bi-x-lg me-1"></i>@L["Admin_Reject"]
+                    </button>
+                </form>
+            }
+            @if (Model.Status == "Active")
+            {
+                <form method="post" asp-controller="Listing" asp-action="Close" class="mb-0">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="id" value="@Model.Id" />
+                    <button class="btn btn-sm btn-outline-warning">
+                        <i class="bi bi-x-circle me-1"></i>@L["Admin_Close"]
+                    </button>
+                </form>
+            }
+            <a href="/Listing/Edit/@Model.Id" class="btn btn-sm btn-outline-secondary ms-auto">
+                <i class="bi bi-pencil me-1"></i>@L["Common_Edit"]
+            </a>
+        </div>
+    </div>
+}
+
+<div class="container py-3">
+
+    <!-- Breadcrumb -->
+    <nav class="mb-3">
+        <ol class="breadcrumb" style="font-size:.78rem;margin:0;">
+            <li class="breadcrumb-item"><a href="/" style="color:var(--accent);">@L["Common_Home"]</a></li>
+            <li class="breadcrumb-item"><a href="/Listing" style="color:var(--accent);">@L["Common_Listings"]</a></li>
+            @if (Model.CategoryName != null)
+            {
+                <li class="breadcrumb-item"><a href="/Listing?categoryId=@Model.CategoryId" style="color:var(--accent);">@Model.CategoryName</a></li>
+            }
+            <li class="breadcrumb-item active" style="color:var(--muted);max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">@Model.Title</li>
+        </ol>
+    </nav>
+
+    <div class="det-layout">
+
+        <!-- ── Left ── -->
+        <div class="det-left">
+
+            <!-- Gallery -->
+            <div class="surface overflow-hidden mb-3">
+                @if (Model.Images.Any())
+                {
+                    <div id="gCarousel" class="carousel slide" data-bs-ride="false">
+                        <div class="carousel-inner">
+                            @for (int i = 0; i < Model.Images.Count; i++)
+                            {
+                                <div class="carousel-item @(i == 0 ? "active" : "")">
+                                    <img src="@Model.Images[i].Url" class="det-main-img" alt="@Model.Title @(i+1)" />
+                                </div>
+                            }
+                        </div>
+                        @if (Model.Images.Count > 1)
+                        {
+                            <button class="carousel-control-prev" type="button" data-bs-target="#gCarousel" data-bs-slide="prev">
+                                <span class="carousel-control-prev-icon"></span>
+                            </button>
+                            <button class="carousel-control-next" type="button" data-bs-target="#gCarousel" data-bs-slide="next">
+                                <span class="carousel-control-next-icon"></span>
+                            </button>
+                        }
+                        <div class="det-count">@Model.Images.Count фото</div>
+                    </div>
+                    @if (Model.Images.Count > 1)
+                    {
+                        <div class="det-thumbs">
+                            @for (int i = 0; i < Model.Images.Count; i++)
+                            {
+                                <img src="@Model.Images[i].Url"
+                                     class="det-thumb @(i == 0 ? "act" : "")"
+                                     data-bs-target="#gCarousel"
+                                     data-bs-slide-to="@i"
+                                     alt="@(i+1)" />
+                            }
+                        </div>
+                    }
+                }
+                else
+                {
+                    <div class="det-no-img"><i class="bi bi-image"></i></div>
+                }
+            </div>
+
+            <!-- Description -->
+            <div class="surface p-4 mb-3">
+                <h5 class="fw-semibold mb-3" style="font-size:.95rem;">@L["Detail_Description"]</h5>
+                <div style="font-size:.875rem;line-height:1.8;color:var(--sub);white-space:pre-line;">@Model.Description</div>
+            </div>
+
+            <!-- Info table -->
+            <div class="surface p-4 mb-3">
+                <h5 class="fw-semibold mb-3" style="font-size:.95rem;">Характеристики</h5>
+                <table class="det-table">
+                    <tr><td>Категория</td><td>@(Model.CategoryName ?? "—")</td></tr>
+                    <tr><td>Город</td><td>@Model.City</td></tr>
+                    <tr>
+                        <td>Статус</td>
+                        <td>
+                            @if (Model.Status == "Active")
+                            { <span class="det-badge det-active">Активно</span> }
+                            else if (Model.Status == "Pending")
+                            { <span class="det-badge det-pending">На проверке</span> }
+                            else
+                            { <span class="det-badge det-closed">Завершено</span> }
+                        </td>
+                    </tr>
+                    <tr><td>Дата</td><td>@Model.CreatedDate.ToString("dd MMMM yyyy")</td></tr>
+                </table>
+            </div>
+            <!-- ── Reviews ── -->
+            <div class="surface p-4 mb-3">
+                <div class="d-flex align-items-center justify-content-between mb-3">
+                    <h5 class="fw-semibold mb-0" style="font-size:.95rem;">
+                        @L["Review_Title"]
+                        @if (reviewList.Any())
+                        {
+                            <span class="text-muted ms-1" style="font-size:.8rem;font-weight:400;">(@reviewList.Count)</span>
+                        }
+                    </h5>
+                    @if (avgRating.HasValue)
+                    {
+                        <div class="d-flex align-items-center gap-1" style="font-size:.85rem;">
+                            <i class="bi bi-star-fill" style="color:#f59e0b;font-size:.9rem;"></i>
+                            <strong>@avgRating.Value.ToString("0.0")</strong>
+                        </div>
+                    }
+                </div>
+
+                @if (reviewList.Any())
+                {
+                    <div class="d-flex flex-column gap-3 mb-4">
+                        @foreach (var rv in reviewList)
+                        {
+                            <div class="review-item">
+                                <div class="review-header">
+                                    <div class="review-avatar">@rv.ReviewerName.FirstOrDefault()</div>
+                                    <div>
+                                        <div class="review-author">@rv.ReviewerName</div>
+                                        <div class="review-meta">@rv.CreatedDate.ToString("dd.MM.yyyy")</div>
+                                    </div>
+                                    <div class="review-stars ms-auto">
+                                        @for (int s = 1; s <= 5; s++)
+                                        {
+                                            <i class="bi @(s <= rv.Rating ? "bi-star-fill" : "bi-star")"></i>
+                                        }
+                                    </div>
+                                </div>
+                                @if (!string.IsNullOrWhiteSpace(rv.Comment))
+                                {
+                                    <p class="review-text">@rv.Comment</p>
+                                }
+                            </div>
+                        }
+                    </div>
+                }
+                else
+                {
+                    <p class="text-muted" style="font-size:.85rem;">@L["Review_NoReviews"]</p>
+                }
+
+                <!-- Leave review -->
+                @if (!isOwner && Model.Status != "Pending")
+                {
+                    @if (User.Identity?.IsAuthenticated == true)
+                    {
+                        @if (hasReviewed)
+                        {
+                            <div class="review-done">
+                                <i class="bi bi-check-circle-fill me-2"></i>@L["Review_Already"]
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="review-form-wrap">
+                                <h6 class="fw-semibold mb-3" style="font-size:.875rem;">@L["Review_Leave"]</h6>
+                                <form asp-controller="Review" asp-action="Create" method="post">
+                                    @Html.AntiForgeryToken()
+                                    <input type="hidden" name="listingId" value="@Model.Id" />
+                                    <div class="star-picker mb-3" id="starPicker">
+                                        <input type="hidden" name="rating" id="ratingInput" value="5" />
+                                        @for (int s = 1; s <= 5; s++)
+                                        {
+                                            <i class="bi bi-star-fill star-icon @(s <= 5 ? "lit" : "")" data-val="@s"></i>
+                                        }
+                                    </div>
+                                    <textarea name="comment" class="review-textarea" rows="3"
+                                              placeholder="@L["Review_Placeholder"]"></textarea>
+                                    <button type="submit" class="review-submit">
+                                        <i class="bi bi-send me-1"></i>@L["Review_Submit"]
+                                    </button>
+                                </form>
+                            </div>
+                        }
+                    }
+                    else
+                    {
+                        <a href="/Account/Login?returnUrl=/Listing/Detail/@Model.Id" class="review-login-link">
+                            <i class="bi bi-person me-1"></i>@L["Review_LoginToReview"]
+                        </a>
+                    }
+                }
+            </div>
+
+        </div>
+
+        <!-- ── Right ── -->
+        <div class="det-right">
+            <div class="surface p-4 det-sticky">
+
+                <!-- Price + title -->
+                <div class="det-price">@Model.Price.ToString("N0") ₼</div>
+                <h1 class="det-title">@Model.Title</h1>
+                <div class="det-meta">
+                    <span><i class="bi bi-geo-alt me-1" style="color:var(--muted);"></i>@Model.City</span>
+                    <span style="color:var(--muted);">@ago</span>
+                </div>
+
+                <hr style="border-color:var(--border);margin:1rem 0;" />
+
+                @if (!isOwner && Model.Status == "Active")
+                {
+                    @if (User.Identity?.IsAuthenticated == true)
+                    {
+                        if (!string.IsNullOrEmpty(Model.ContactPhone))
+                        {
+                            <a href="tel:@Model.ContactPhone" class="det-btn-phone">
+                                <i class="bi bi-telephone-fill me-2"></i>@Model.ContactPhone
+                            </a>
+                        }
+                        <form asp-controller="Messages" asp-action="Start" method="post" class="mt-2">
+                            @Html.AntiForgeryToken()
+                            <input type="hidden" name="listingId" value="@Model.Id" />
+                            <div class="det-msg-row">
+                                <input type="text" name="text" placeholder="@L["Detail_WritePlaceholder"]" class="det-msg-input" required />
+                                <button type="submit" class="det-msg-send"><i class="bi bi-send-fill"></i></button>
+                            </div>
+                        </form>
+                        <button id="favBtn" onclick="toggleFav('@Model.Id')"
+                                class="det-fav-btn mt-2 @(isFav ? "is-fav" : "")">
+                            <i class="bi @(isFav ? "bi-heart-fill" : "bi-heart") me-2"></i>
+                            @(isFav ? L["Detail_InFavorites"] : L["Detail_AddFavorites"])
+                        </button>
+                    }
+                    else
+                    {
+                        <a href="/Account/Login?returnUrl=/Listing/Detail/@Model.Id" class="det-btn-phone">
+                            <i class="bi bi-person-fill me-2"></i>@L["Detail_LoginToWrite"]
+                        </a>
+                    }
+                }
+                else if (isOwner)
+                {
+                    @if (Model.Status == "Pending")
+                    {
+                        <div class="det-pending-note mb-3">
+                            <i class="bi bi-hourglass-split me-2 flex-shrink-0"></i>@L["MyListings_PendingHint"]
+                        </div>
+                    }
+                    <a href="/Listing/Edit/@Model.Id" class="det-btn-edit mb-2">
+                        <i class="bi bi-pencil me-2"></i>@L["Detail_Edit"]
+                    </a>
+                    @if (Model.Status == "Active")
+                    {
+                        <form asp-controller="Listing" asp-action="Close" method="post" class="mb-2">
+                            @Html.AntiForgeryToken()
+                            <input type="hidden" name="id" value="@Model.Id" />
+                            <button class="det-btn-secondary w-100">
+                                <i class="bi bi-check-circle me-2"></i>@L["Detail_Close"]
+                            </button>
+                        </form>
+                    }
+                    <form asp-controller="Listing" asp-action="Delete" method="post"
+                          onsubmit="return confirm('@L["Detail_DeleteConfirm"]')">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" name="id" value="@Model.Id" />
+                        <button class="det-btn-danger w-100">
+                            <i class="bi bi-trash me-2"></i>@L["Detail_Delete"]
+                        </button>
+                    </form>
+                }
+            </div>
+
+            <!-- Seller -->
+            <div class="surface p-3 mt-3">
+                <p class="filter-head mb-2" style="font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:var(--muted);">Продавец</p>
+                <div class="d-flex align-items-center gap-3">
+                    <div class="det-avatar">@(Model.UserName?.FirstOrDefault().ToString().ToUpper() ?? "?")</div>
+                    <div>
+                        <div class="fw-semibold" style="font-size:.9rem;">@Model.UserName</div>
+                        <div style="font-size:.76rem;color:var(--muted);">@L["Detail_PrivatePerson"]</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Safety -->
+            <div class="det-safety mt-3">
+                <i class="bi bi-shield-check me-2 flex-shrink-0" style="color:var(--accent);"></i>
+                <span>Встречайтесь с продавцом лично. Не переводите предоплату.</span>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+@section Styles {
+<style>
+    /* Admin review bar */
+    .admin-review-bar {
+        background: #1a1a2e;
+        color: #fff;
+        padding: 9px 0;
+        font-size: .82rem;
+        position: sticky;
+        top: 60px;
+        z-index: 500;
+        border-bottom: 2px solid #e94560;
+    }
+    .arb-back {
+        color: rgba(255,255,255,.85);
+        text-decoration: none;
+        font-weight: 600;
+        transition: color .15s;
+    }
+    .arb-back:hover { color: #fff; }
+    .arb-sep { color: rgba(255,255,255,.3); }
+    .arb-label { color: rgba(255,255,255,.6); font-size: .78rem; }
+
+    .det-layout { display: grid; grid-template-columns: 1fr 310px; gap: 16px; align-items: start; }
+    @@media (max-width: 991px) { .det-layout { grid-template-columns: 1fr; } }
+
+    /* Gallery */
+    .det-main-img { width: 100%; max-height: 440px; object-fit: contain; display: block; background: #111; }
+    .det-no-img { height: 260px; display: flex; align-items: center; justify-content: center; font-size: 3.5rem; color: #ccc; background: #f4f5f7; }
+    .det-count {
+        position: absolute; bottom: 8px; right: 10px;
+        background: rgba(0,0,0,.5); color: #fff;
+        font-size: .72rem; padding: 2px 8px; border-radius: 20px;
+    }
+    .carousel { position: relative; }
+    .det-thumbs { display: flex; gap: 5px; padding: 8px; background: #fff; overflow-x: auto; scrollbar-width: none; }
+    .det-thumbs::-webkit-scrollbar { display: none; }
+    .det-thumb {
+        width: 62px; height: 50px; object-fit: cover; border-radius: 5px;
+        cursor: pointer; opacity: .5; border: 2px solid transparent; flex-shrink: 0; transition: all .15s;
+    }
+    .det-thumb.act, .det-thumb:hover { opacity: 1; border-color: var(--text); }
+
+    /* Info table */
+    .det-table { width: 100%; border-collapse: collapse; font-size: .875rem; }
+    .det-table tr { border-bottom: 1px solid var(--border); }
+    .det-table tr:last-child { border-bottom: none; }
+    .det-table td { padding: 8px 4px; }
+    .det-table td:first-child { color: var(--muted); width: 110px; }
+    .det-table td:last-child { font-weight: 500; }
+    .det-badge { display: inline-flex; align-items: center; font-size: .75rem; padding: 2px 9px; border-radius: 20px; font-weight: 500; }
+    .det-active  { background: #dcfce7; color: #15803d; }
+    .det-pending { background: #fef9c3; color: #854d0e; }
+    .det-closed  { background: #f1f5f9; color: #64748b; }
+
+    /* Panel */
+    .det-sticky { position: sticky; top: 72px; }
+    .det-price { font-size: 1.75rem; font-weight: 800; color: var(--text); line-height: 1; margin-bottom: 8px; }
+    .det-title { font-size: 1rem; font-weight: 600; color: var(--text); margin-bottom: 6px; line-height: 1.4; }
+    .det-meta { display: flex; gap: 12px; font-size: .8rem; color: var(--sub); flex-wrap: wrap; }
+
+    /* Buttons */
+    .det-btn-phone {
+        display: flex; align-items: center; justify-content: center;
+        width: 100%; padding: 12px;
+        background: var(--text); color: #fff;
+        border-radius: var(--radius); font-weight: 600; font-size: .9rem;
+        border: none; cursor: pointer; transition: opacity .15s; text-align: center;
+    }
+    .det-btn-phone:hover { opacity: .85; color: #fff; }
+
+    .det-msg-row { display: flex; gap: 6px; }
+    .det-msg-input {
+        flex: 1; border: 1.5px solid var(--border); border-radius: var(--radius);
+        padding: 9px 12px; font-size: .875rem; font-family: inherit;
+        outline: none; transition: border-color .15s;
+    }
+    .det-msg-input:focus { border-color: #aaa; }
+    .det-msg-send {
+        width: 40px; flex-shrink: 0;
+        background: var(--text); color: #fff;
+        border: none; border-radius: var(--radius); cursor: pointer;
+        font-size: .95rem; transition: opacity .15s;
+        display: flex; align-items: center; justify-content: center;
+    }
+    .det-msg-send:hover { opacity: .85; }
+
+    .det-fav-btn {
+        width: 100%; padding: 9px;
+        border: 1.5px solid var(--border); background: transparent;
+        border-radius: var(--radius); font-size: .85rem; font-weight: 500;
+        color: var(--muted); cursor: pointer; transition: all .15s;
+        display: flex; align-items: center; justify-content: center;
+    }
+    .det-fav-btn:hover, .det-fav-btn.is-fav { border-color: #ef4444; color: #ef4444; background: #fff5f5; }
+
+    .det-btn-edit {
+        display: flex; align-items: center; justify-content: center;
+        width: 100%; padding: 10px;
+        background: var(--bg); color: var(--text);
+        border: 1.5px solid var(--border); border-radius: var(--radius);
+        font-weight: 600; font-size: .875rem; transition: all .15s;
+    }
+    .det-btn-edit:hover { border-color: #aaa; color: var(--text); }
+    .det-btn-secondary {
+        width: 100%; padding: 9px; border-radius: var(--radius);
+        border: 1.5px solid var(--border); background: transparent;
+        color: var(--sub); font-size: .85rem; font-weight: 500; cursor: pointer; transition: all .15s;
+        display: flex; align-items: center; justify-content: center;
+    }
+    .det-btn-secondary:hover { border-color: #aaa; color: var(--text); }
+    .det-btn-danger {
+        width: 100%; padding: 9px; border-radius: var(--radius);
+        border: 1.5px solid #fecaca; background: #fff5f5;
+        color: #dc2626; font-size: .85rem; font-weight: 500; cursor: pointer; transition: all .15s;
+        display: flex; align-items: center; justify-content: center;
+    }
+    .det-btn-danger:hover { background: #dc2626; color: #fff; border-color: #dc2626; }
+
+    .det-pending-note {
+        background: #fefce8; border: 1px solid #fde68a;
+        border-radius: var(--radius); padding: 10px 12px;
+        font-size: .8rem; color: #78350f;
+        display: flex; align-items: flex-start;
+    }
+
+    /* Seller */
+    .det-avatar {
+        width: 44px; height: 44px;
+        background: var(--text); color: #fff;
+        border-radius: 50%;
+        display: flex; align-items: center; justify-content: center;
+        font-weight: 700; font-size: 1.05rem;
+        flex-shrink: 0;
+    }
+
+    /* Safety */
+    .det-safety {
+        background: #eff6ff; border: 1px solid #bfdbfe;
+        border-radius: var(--radius); padding: 10px 12px;
+        font-size: .78rem; color: #1e40af;
+        display: flex; align-items: flex-start;
+    }
+
+    /* ── Reviews ── */
+    .review-item {
+        padding: 14px 0;
+        border-bottom: 1px solid var(--border);
+    }
+    .review-item:last-child { border-bottom: none; }
+    .review-header { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+    .review-avatar {
+        width: 34px; height: 34px; border-radius: 50%;
+        background: var(--text); color: #fff;
+        display: flex; align-items: center; justify-content: center;
+        font-size: .85rem; font-weight: 700; flex-shrink: 0;
+        text-transform: uppercase;
+    }
+    .review-author { font-size: .85rem; font-weight: 600; color: var(--text); line-height: 1; }
+    .review-meta   { font-size: .72rem; color: var(--muted); margin-top: 2px; }
+    .review-stars  { display: flex; gap: 2px; font-size: .8rem; color: #f59e0b; }
+    .review-stars .bi-star { color: #d1d5db; }
+    .review-text   { font-size: .855rem; color: var(--sub); line-height: 1.65; margin: 0; }
+    .review-done   {
+        background: #f0fdf4; border: 1px solid #bbf7d0;
+        border-radius: var(--radius); padding: 10px 14px;
+        font-size: .82rem; color: #166534;
+        display: flex; align-items: center;
+    }
+
+    /* Review form */
+    .review-form-wrap {
+        background: var(--bg);
+        border-radius: var(--radius);
+        padding: 16px;
+        margin-top: 4px;
+    }
+    .star-picker { display: flex; gap: 6px; cursor: pointer; }
+    .star-icon { font-size: 1.4rem; color: #d1d5db; transition: color .1s; }
+    .star-icon.lit { color: #f59e0b; }
+    .review-textarea {
+        width: 100%; border: 1.5px solid var(--border); border-radius: var(--radius);
+        padding: 9px 12px; font-size: .875rem; font-family: inherit;
+        color: var(--text); background: #fff; outline: none; resize: vertical;
+        transition: border-color .2s;
+        margin-bottom: 10px;
+    }
+    .review-textarea:focus { border-color: #aaa; }
+    .review-textarea::placeholder { color: #ccc; }
+    .review-submit {
+        display: inline-flex; align-items: center;
+        padding: 9px 20px; background: var(--text); color: #fff;
+        border: none; border-radius: var(--radius);
+        font-size: .875rem; font-weight: 600; font-family: inherit;
+        cursor: pointer; transition: opacity .15s;
+    }
+    .review-submit:hover { opacity: .85; }
+    .review-login-link {
+        display: inline-flex; align-items: center; gap: 6px;
+        font-size: .82rem; color: var(--accent); text-decoration: none;
+        border: 1px solid var(--border); border-radius: var(--radius);
+        padding: 8px 14px; transition: border-color .15s;
+    }
+    .review-login-link:hover { border-color: #aaa; }
+</style>
+}
+
+@section Scripts {
+<script>
+    document.querySelectorAll('.det-thumb').forEach(t => {
+        t.addEventListener('click', () => {
+            document.querySelectorAll('.det-thumb').forEach(x => x.classList.remove('act'));
+            t.classList.add('act');
+        });
+    });
+    document.getElementById('gCarousel')?.addEventListener('slid.bs.carousel', e => {
+        document.querySelectorAll('.det-thumb').forEach((t, i) => t.classList.toggle('act', i === e.to));
+    });
+
+    async function toggleFav(id) {
+        const token = document.querySelector('input[name="__RequestVerificationToken"]')?.value;
+        const r = await fetch('/Listing/ToggleFavorite', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: 'id=' + id + '&__RequestVerificationToken=' + encodeURIComponent(token ?? '')
+        });
+        if (r.ok) {
+            const d = await r.json();
+            const btn = document.getElementById('favBtn');
+            btn.innerHTML = d.isFavorite
+                ? '<i class="bi bi-heart-fill me-2"></i>@L["Detail_InFavorites"]'
+                : '<i class="bi bi-heart me-2"></i>@L["Detail_AddFavorites"]';
+            btn.classList.toggle('is-fav', d.isFavorite);
+        }
+    }
+
+    // ── Star picker ──
+    const stars = document.querySelectorAll('.star-icon');
+    const ratingInput = document.getElementById('ratingInput');
+    if (stars.length && ratingInput) {
+        let current = 5;
+        function setStars(n) {
+            stars.forEach((s, i) => s.classList.toggle('lit', i < n));
+            ratingInput.value = n;
+            current = n;
+        }
+        stars.forEach((s, i) => {
+            s.addEventListener('mouseover', () => { stars.forEach((x, j) => x.classList.toggle('lit', j <= i)); });
+            s.addEventListener('mouseout',  () => setStars(current));
+            s.addEventListener('click',     () => setStars(i + 1));
+        });
+    }
+</script>
+}
