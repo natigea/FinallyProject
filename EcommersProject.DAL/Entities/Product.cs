@@ -8,7 +8,7 @@ public class Product : BaseEntity
     public decimal Price { get; set; }
     public decimal RatingAverage { get; set; }
     public int StockQuantity { get; set; }
-    public bool IsActive { get; set; }
+    public bool IsActive { get; set; } = true;
 
     public Guid CategoryId { get; set; }
     public Category? Category { get; set; }
