@@ -1,0 +1,62 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\Users\\kera\\source\\repos\\EcommersProject\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{BA86548D-621A-CD67-6A75-B08A678ACF5D}|EcommersProject\\EcommersProject.csproj|c:\\users\\kera\\source\\repos\\ecommersproject\\ecommersproject\\ecommersproject.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|",
+      "RelativeMoniker": "D:0:0:{BA86548D-621A-CD67-6A75-B08A678ACF5D}|EcommersProject\\EcommersProject.csproj|solutionrelative:ecommersproject\\ecommersproject.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{2F9AA2DF-9181-0B9D-C6B5-5AAADFD57276}|EcommersProject.BLL\\EcommersProject.BLL.csproj|c:\\users\\kera\\source\\repos\\ecommersproject\\ecommersproject.bll\\ecommersproject.bll.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|",
+      "RelativeMoniker": "D:0:0:{2F9AA2DF-9181-0B9D-C6B5-5AAADFD57276}|EcommersProject.BLL\\EcommersProject.BLL.csproj|solutionrelative:ecommersproject.bll\\ecommersproject.bll.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 2,
+          "Children": [
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{3ae79031-e1bc-11d0-8f78-00a0c9110057}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{40ea2e6b-2121-4bb8-a43e-c83c04b51041}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "EcommersProject",
+              "DocumentMoniker": "C:\\Users\\kera\\source\\repos\\EcommersProject\\EcommersProject\\EcommersProject.csproj",
+              "RelativeDocumentMoniker": "EcommersProject\\EcommersProject.csproj",
+              "ToolTip": "C:\\Users\\kera\\source\\repos\\EcommersProject\\EcommersProject\\EcommersProject.csproj",
+              "RelativeToolTip": "EcommersProject\\EcommersProject.csproj",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAIAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
+              "WhenOpened": "2026-05-10T13:01:26.422Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "EcommersProject.BLL",
+              "DocumentMoniker": "C:\\Users\\kera\\source\\repos\\EcommersProject\\EcommersProject.BLL\\EcommersProject.BLL.csproj",
+              "RelativeDocumentMoniker": "EcommersProject.BLL\\EcommersProject.BLL.csproj",
+              "ToolTip": "C:\\Users\\kera\\source\\repos\\EcommersProject\\EcommersProject.BLL\\EcommersProject.BLL.csproj",
+              "RelativeToolTip": "EcommersProject.BLL\\EcommersProject.BLL.csproj",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
+              "WhenOpened": "2026-05-10T13:01:17.409Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
