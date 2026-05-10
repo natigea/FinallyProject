@@ -1,325 +1,158 @@
-@using Microsoft.Extensions.Localization
-@using EcommersProject.Resources
-@inject IStringLocalizer<SharedResource> L
 @model HomeViewModel
 @{
-    ViewData["Title"] = L["Nav_AllProducts"].Value;
+    ViewData["Title"] = L["Common_Home"].Value;
+    var catColors = new[] { "#6366f1","#0284c7","#d97706","#16a34a","#db2777","#7c3aed","#dc2626","#0891b2","#ea580c","#0d9488" };
 }
 
-<!-- Hero Banner -->
-<section class="hero-section">
-    <div class="container py-5">
-        <div class="row align-items-center g-4">
-            <div class="col-lg-6">
-                <span class="badge bg-white text-primary fw-semibold mb-3 px-3 py-2 rounded-pill">
-                    🎉 @L["Hero_Badge"]
-                </span>
-                <h1 class="display-4 fw-black mb-3 text-white lh-sm">
-                    @L["Hero_Title"]
-                </h1>
-                <p class="lead mb-4 opacity-90 text-white">
-                    @L["Hero_Subtitle"]
-                </p>
-                <div class="d-flex gap-3 flex-wrap">
-                    <a href="/Shop" class="btn btn-light btn-lg px-4 fw-bold shadow-sm">
-                        <i class="bi bi-grid me-2"></i>@L["Hero_BrowseCatalog"]
-                    </a>
-                    <a href="/Account/Register" class="btn btn-outline-light btn-lg px-4">
-                        @L["Hero_BecomeSeller"]
-                    </a>
-                </div>
-                <!-- Trust badges -->
-                <div class="d-flex gap-4 mt-4 flex-wrap">
-                    <div class="d-flex align-items-center gap-2 text-white">
-                        <i class="bi bi-truck fs-5 opacity-90"></i>
-                        <small>@L["Hero_FastDelivery"]</small>
-                    </div>
-                    <div class="d-flex align-items-center gap-2 text-white">
-                        <i class="bi bi-shield-check fs-5 opacity-90"></i>
-                        <small>@L["Hero_QualityGuarantee"]</small>
-                    </div>
-                    <div class="d-flex align-items-center gap-2 text-white">
-                        <i class="bi bi-arrow-counterclockwise fs-5 opacity-90"></i>
-                        <small>@L["Hero_Return30Days"]</small>
-                    </div>
-                </div>
+<!-- ─── Hero ──────────────────────────────────── -->
+<section class="hero">
+    <div class="container">
+        <h1 class="hero-title">@L["Home_FindEverything"]</h1>
+        <form action="/Listing" method="get" class="hero-form">
+            <div class="hero-input-wrap">
+                <i class="bi bi-search hero-ico"></i>
+                <input type="text" name="q" placeholder="@L["Home_WhatLooking"]" class="hero-input" />
+                <div class="hero-sep"></div>
+                <select name="city" class="hero-city">
+                    <option value="">@L["Home_AllCities"]</option>
+                    <option>Bakı</option><option>Sumqayıt</option><option>Gəncə</option>
+                    <option>Mingəçevir</option><option>Naxçıvan</option><option>Lənkəran</option>
+                    <option>Şəki</option><option>Quba</option><option>Şirvan</option>
+                </select>
+                <button type="submit" class="hero-btn">@L["Home_Find"]</button>
             </div>
-            <div class="col-lg-6 text-center d-none d-lg-block">
-                <div class="hero-img-wrapper">
-                    <div class="hero-blob"></div>
-                    <i class="bi bi-bag-heart-fill hero-icon"></i>
-                </div>
-            </div>
-        </div>
+        </form>
     </div>
 </section>
 
-<!-- Stats bar -->
-<div class="stats-bar">
-    <div class="container">
-        <div class="row g-0">
-            <div class="col-6 col-md-3 stat-item border-end">
-                <div class="stat-num">10K+</div>
-                <div class="stat-label">@L["Stats_Products"]</div>
-            </div>
-            <div class="col-6 col-md-3 stat-item border-end">
-                <div class="stat-num">500+</div>
-                <div class="stat-label">@L["Stats_Sellers"]</div>
-            </div>
-            <div class="col-6 col-md-3 stat-item border-end">
-                <div class="stat-num">50K+</div>
-                <div class="stat-label">@L["Stats_Buyers"]</div>
-            </div>
-            <div class="col-6 col-md-3 stat-item">
-                <div class="stat-num">4.9 ★</div>
-                <div class="stat-label">@L["Stats_Rating"]</div>
+<!-- ─── Categories ────────────────────────────── -->
+@if (Model.Categories.Any())
+{
+    <div class="container" style="margin-top:24px;">
+        <div class="cat-section surface p-3">
+            <div class="cat-grid">
+                @{ int ci = 0; }
+                @foreach (var cat in Model.Categories)
+                {
+                    var color = catColors[ci % catColors.Length];
+                    ci++;
+                    <a href="/Listing?categoryId=@cat.Id" class="cat-item">
+                        <div class="cat-icon" style="background:@(color)14;color:@color;">
+                            <i class="bi @cat.Icon"></i>
+                        </div>
+                        <span class="cat-label">@(L["Cat_" + cat.Slug] is { ResourceNotFound: false } ck ? ck.Value : cat.Name)</span>
+                    </a>
+                }
             </div>
         </div>
     </div>
+}
+
+<!-- ─── Recent listings ───────────────────────── -->
+<div class="container py-4">
+    <div class="d-flex align-items-center justify-content-between mb-3">
+        <h2 class="sec-heading mb-0">@L["Home_FreshListings"]</h2>
+        <a href="/Listing" class="btn-outline-dark-custom px-4 py-2 d-flex align-items-center gap-1" style="font-size:.82rem;">
+            @L["Home_ViewAll"] <i class="bi bi-arrow-right ms-1"></i>
+        </a>
+    </div>
+
+    @if (Model.RecentListings.Any())
+    {
+        <div class="home-grid">
+            @foreach (var l in Model.RecentListings)
+            {
+                @await Html.PartialAsync("_ListingCard", l)
+            }
+        </div>
+    }
+    else
+    {
+        <div class="empty-state">
+            <i class="bi bi-card-list"></i>
+            <p>@L["Home_NoListings"] <a href="/Listing/Create" class="fw-semibold">@L["Home_PostFirst"]</a></p>
+        </div>
+    }
 </div>
 
-<div class="container py-5">
-
-    <!-- Categories -->
-    @if (Model.Categories.Any())
-    {
-        <section class="mb-6">
-            <div class="text-center mb-4">
-                <h2 class="section-title">@L["Home_PopularCategories"]</h2>
-                <p class="text-muted">@L["Home_CategoriesSubtitle"]</p>
-            </div>
-            <div class="row g-3">
-                @{
-                    var catIcons = new[] { "bi-phone", "bi-laptop", "bi-bag", "bi-house", "bi-lightning", "bi-heart", "bi-gem", "bi-camera" };
-                    var catColors = new[] { "#6366f1", "#8b5cf6", "#ec4899", "#f59e0b", "#10b981", "#3b82f6", "#ef4444", "#14b8a6" };
-                    int ci = 0;
-                }
-                @foreach (var cat in Model.Categories.Take(8))
-                {
-                    var icon = catIcons[ci % catIcons.Length];
-                    var color = catColors[ci % catColors.Length];
-                    ci++;
-                    <div class="col-6 col-md-3 col-lg-3">
-                        <a href="/Shop?categoryId=@cat.Id" class="category-card text-decoration-none">
-                            <div class="cat-icon" style="background: @(color)22; color: @color;">
-                                <i class="bi @icon"></i>
-                            </div>
-                            <div class="cat-name">@cat.Name</div>
-                            <div class="cat-sub">@cat.Description</div>
-                        </a>
-                    </div>
-                }
-            </div>
-        </section>
-    }
-
-    <!-- Featured Products -->
-    @if (Model.FeaturedProducts.Any())
-    {
-        <section class="mb-6">
-            <div class="d-flex justify-content-between align-items-end mb-4">
-                <div>
-                    <h2 class="section-title mb-1">@L["Home_FeaturedProducts"]</h2>
-                    <p class="text-muted mb-0">@L["Home_FeaturedSubtitle"]</p>
-                </div>
-                <a href="/Shop" class="btn btn-outline-primary btn-sm px-3">
-                    @L["Home_AllProducts"] <i class="bi bi-arrow-right ms-1"></i>
-                </a>
-            </div>
-            <div class="row g-3">
-                @foreach (var p in Model.FeaturedProducts)
-                {
-                    <div class="col-6 col-md-4 col-lg-3">
-                        @await Html.PartialAsync("_ProductCard", p)
-                    </div>
-                }
-            </div>
-        </section>
-    }
-
-    <!-- Promo banners -->
-    <section class="mb-6">
-        <div class="row g-3">
-            <div class="col-md-6">
-                <div class="promo-card promo-purple">
-                    <div>
-                        <span class="badge bg-white text-purple fw-bold mb-2">@L["Promo_HotDeals"]</span>
-                        <h4 class="fw-bold text-white mb-1">@L["Promo_Electronics50"]</h4>
-                        <p class="text-white opacity-90 small mb-3">@L["Promo_LimitedOffer"]</p>
-                        <a href="/Shop?categoryId=" class="btn btn-white btn-sm px-3 fw-semibold">@L["Promo_Browse"]</a>
-                    </div>
-                    <i class="bi bi-phone-fill promo-icon"></i>
-                </div>
-            </div>
-            <div class="col-md-6">
-                <div class="promo-card promo-teal">
-                    <div>
-                        <span class="badge bg-white text-teal fw-bold mb-2">@L["Promo_NewItems"]</span>
-                        <h4 class="fw-bold text-white mb-1">@L["Promo_FreshCollection"]</h4>
-                        <p class="text-white opacity-90 small mb-3">@L["Promo_BeFirst"]</p>
-                        <a href="/Shop?sort=newest" class="btn btn-white btn-sm px-3 fw-semibold">@L["Promo_Browse"]</a>
-                    </div>
-                    <i class="bi bi-stars promo-icon"></i>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- New Arrivals -->
-    @if (Model.NewArrivals.Any())
-    {
-        <section class="mb-6">
-            <div class="d-flex justify-content-between align-items-end mb-4">
-                <div>
-                    <h2 class="section-title mb-1">@L["Home_NewArrivals"]</h2>
-                    <p class="text-muted mb-0">@L["Home_NewArrivalsSubtitle"]</p>
-                </div>
-                <a href="/Shop" class="btn btn-outline-primary btn-sm px-3">
-                    @L["Home_AllNewArrivals"] <i class="bi bi-arrow-right ms-1"></i>
-                </a>
-            </div>
-            <div class="row g-3">
-                @foreach (var p in Model.NewArrivals)
-                {
-                    <div class="col-6 col-md-4 col-lg-3">
-                        @await Html.PartialAsync("_ProductCard", p)
-                    </div>
-                }
-            </div>
-        </section>
-    }
-
-    <!-- How it works -->
-    <section class="mb-6">
-        <div class="text-center mb-4">
-            <h2 class="section-title">@L["How_Title"]</h2>
-            <p class="text-muted">@L["How_Subtitle"]</p>
-        </div>
-        <div class="row g-4">
-            <div class="col-md-4 text-center">
-                <div class="how-step">
-                    <div class="how-icon" style="background: #e0e7ff;">
-                        <i class="bi bi-search text-primary"></i>
-                    </div>
-                    <div class="how-num">01</div>
-                    <h5 class="fw-bold">@L["How_Step1Title"]</h5>
-                    <p class="text-muted small">@L["How_Step1Desc"]</p>
-                </div>
-            </div>
-            <div class="col-md-4 text-center">
-                <div class="how-step">
-                    <div class="how-icon" style="background: #f0fdf4;">
-                        <i class="bi bi-cart-check text-success"></i>
-                    </div>
-                    <div class="how-num">02</div>
-                    <h5 class="fw-bold">@L["How_Step2Title"]</h5>
-                    <p class="text-muted small">@L["How_Step2Desc"]</p>
-                </div>
-            </div>
-            <div class="col-md-4 text-center">
-                <div class="how-step">
-                    <div class="how-icon" style="background: #fef3c7;">
-                        <i class="bi bi-truck text-warning"></i>
-                    </div>
-                    <div class="how-num">03</div>
-                    <h5 class="fw-bold">@L["How_Step3Title"]</h5>
-                    <p class="text-muted small">@L["How_Step3Desc"]</p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Testimonials -->
-    <section class="mb-6">
-        <div class="text-center mb-4">
-            <h2 class="section-title">@L["Reviews_Title"]</h2>
-        </div>
-        <div class="row g-3">
-            <div class="col-md-4">
-                <div class="testimonial-card">
-                    <div class="rating-stars mb-2"><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i></div>
-                    <p class="mb-3">"@L["Review1_Text"]"</p>
-                    <div class="d-flex align-items-center gap-2">
-                        <div class="avatar-sm bg-primary">А</div>
-                        <div><div class="fw-semibold small">Aytac M.</div><div class="text-muted" style="font-size:.75rem;">@L["Review1_Role"]</div></div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="testimonial-card">
-                    <div class="rating-stars mb-2"><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i></div>
-                    <p class="mb-3">"@L["Review2_Text"]"</p>
-                    <div class="d-flex align-items-center gap-2">
-                        <div class="avatar-sm bg-success">R</div>
-                        <div><div class="fw-semibold small">Rauf A.</div><div class="text-muted" style="font-size:.75rem;">@L["Review2_Role"]</div></div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="testimonial-card">
-                    <div class="rating-stars mb-2"><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-half"></i></div>
-                    <p class="mb-3">"@L["Review3_Text"]"</p>
-                    <div class="d-flex align-items-center gap-2">
-                        <div class="avatar-sm" style="background:#ec4899;">N</div>
-                        <div><div class="fw-semibold small">Nigar H.</div><div class="text-muted" style="font-size:.75rem;">@L["Review3_Role"]</div></div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Seller CTA -->
-    <section class="mb-2">
-        <div class="seller-cta-card">
-            <div class="row align-items-center g-4">
-                <div class="col-lg-8">
-                    <h3 class="fw-bold text-white mb-2">@L["SellerCTA_Title"]</h3>
-                    <p class="text-white opacity-90 mb-0">@L["SellerCTA_Desc"]</p>
-                </div>
-                <div class="col-lg-4 text-lg-end">
-                    <a href="/Account/Register" class="btn btn-light btn-lg px-4 fw-bold me-2">@L["SellerCTA_Btn"]</a>
-                    <a href="/About" class="btn btn-outline-light btn-lg px-4">@L["SellerCTA_LearnMore"]</a>
-                </div>
-            </div>
-        </div>
-    </section>
-
-</div>
 
 @section Styles {
 <style>
     /* Hero */
-    .hero-section { background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 50%, #a855f7 100%); padding: 20px 0 40px; }
-    .hero-blob { position: absolute; width: 340px; height: 340px; background: rgba(255,255,255,.08); border-radius: 50%; top: 50%; left: 50%; transform: translate(-50%,-50%); }
-    .hero-img-wrapper { position: relative; display: inline-block; }
-    .hero-icon { font-size: 12rem; color: rgba(255,255,255,.15); position: relative; z-index: 1; }
-    /* Stats */
-    .stats-bar { background: #fff; border-bottom: 1px solid #f1f5f9; }
-    .stat-item { padding: 1.5rem; text-align: center; }
-    .stat-num { font-size: 1.6rem; font-weight: 800; color: #6366f1; }
-    .stat-label { font-size: .8rem; color: #6b7280; }
-    /* Categories */
-    .mb-6 { margin-bottom: 4rem; }
-    .category-card { display: flex; flex-direction: column; align-items: center; text-align: center; padding: 1.5rem 1rem; background: #fff; border-radius: 14px; border: 1.5px solid #f1f5f9; transition: all .2s; }
-    .category-card:hover { border-color: #6366f1; transform: translateY(-3px); box-shadow: 0 8px 20px rgba(99,102,241,.12); }
-    .cat-icon { width: 64px; height: 64px; border-radius: 16px; display: flex; align-items: center; justify-content: center; font-size: 1.6rem; margin-bottom: .75rem; }
-    .cat-name { font-weight: 700; color: #111827; font-size: .95rem; }
-    .cat-sub { font-size: .75rem; color: #9ca3af; margin-top: 2px; }
-    /* Promo */
-    .promo-card { border-radius: 16px; padding: 2rem; display: flex; justify-content: space-between; align-items: center; overflow: hidden; position: relative; }
-    .promo-purple { background: linear-gradient(135deg, #6366f1, #8b5cf6); }
-    .promo-teal { background: linear-gradient(135deg, #0891b2, #0d9488); }
-    .promo-icon { font-size: 5rem; opacity: .2; }
-    .btn-white { background: #fff; color: #374151; font-weight: 600; }
-    .btn-white:hover { background: #f9fafb; }
-    /* How it works */
-    .how-step { padding: 1.5rem; }
-    .how-icon { width: 72px; height: 72px; border-radius: 20px; display: flex; align-items: center; justify-content: center; font-size: 1.8rem; margin: 0 auto 1rem; }
-    .how-num { font-size: .75rem; font-weight: 800; color: #6366f1; letter-spacing: 1px; margin-bottom: .5rem; }
-    /* Testimonials */
-    .testimonial-card { background: #fff; border-radius: 14px; padding: 1.5rem; border: 1.5px solid #f1f5f9; height: 100%; }
-    .avatar-sm { width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #fff; font-weight: 700; font-size: .85rem; flex-shrink: 0; }
-    /* Seller CTA */
-    .seller-cta-card { background: linear-gradient(135deg, #1e1b4b 0%, #4c1d95 100%); border-radius: 20px; padding: 3rem; }
+    .hero {
+        background: #fff;
+        border-bottom: 1px solid var(--border);
+        padding: 3rem 0 2.5rem;
+    }
+    .hero-eyebrow { font-size: .78rem; color: var(--muted); text-transform: uppercase; letter-spacing: .8px; margin-bottom: .5rem; }
+    .hero-title { font-size: clamp(1.5rem, 3.5vw, 2rem); font-weight: 800; margin-bottom: 1.25rem; color: var(--text); }
+
+    .hero-input-wrap {
+        display: flex;
+        align-items: center;
+        background: var(--bg);
+        border: 1.5px solid var(--border);
+        border-radius: var(--radius);
+        overflow: hidden;
+        max-width: 640px;
+    }
+    .hero-input-wrap:focus-within { border-color: #aaa; }
+    .hero-ico { padding: 0 10px 0 14px; color: var(--muted); font-size: 1rem; flex-shrink: 0; }
+    .hero-input {
+        flex: 1; border: none; outline: none; background: transparent;
+        padding: 11px 8px; font-size: .9rem; font-family: inherit; color: var(--text); min-width: 0;
+    }
+    .hero-sep { width: 1px; height: 22px; background: var(--border); flex-shrink: 0; margin: 0 4px; }
+    .hero-city {
+        border: none; outline: none; background: transparent;
+        padding: 11px 10px; font-size: .85rem; font-family: inherit;
+        color: var(--sub); cursor: pointer; flex-shrink: 0; max-width: 130px;
+    }
+    .hero-btn {
+        background: var(--text); color: #fff;
+        border: none; padding: 11px 20px;
+        font-size: .875rem; font-weight: 600; font-family: inherit;
+        cursor: pointer; white-space: nowrap; flex-shrink: 0; transition: opacity .15s;
+    }
+    .hero-btn:hover { opacity: .85; }
+
+    .hero-tags { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-top: 1rem; }
+    .hero-tags span { font-size: .76rem; color: var(--muted); }
+    .hero-tags a {
+        font-size: .78rem; color: var(--sub);
+        border: 1px solid var(--border);
+        padding: 3px 10px; border-radius: 20px;
+        background: var(--bg); transition: all .15s;
+    }
+    .hero-tags a:hover { border-color: #aaa; color: var(--text); }
+
+    /* Cat section */
+    .cat-section { padding: 1rem; }
+    .cat-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(85px, 1fr));
+        gap: 4px;
+    }
+    .cat-item {
+        display: flex; flex-direction: column; align-items: center; gap: 6px;
+        padding: 12px 6px; border-radius: var(--radius); transition: background .15s; color: var(--text);
+    }
+    .cat-item:hover { background: var(--bg); }
+    .cat-icon {
+        width: 44px; height: 44px; border-radius: 10px;
+        display: flex; align-items: center; justify-content: center;
+        font-size: 1.2rem; transition: transform .18s;
+    }
+    .cat-item:hover .cat-icon { transform: scale(1.08); }
+    .cat-label { font-size: .72rem; font-weight: 500; text-align: center; line-height: 1.2; color: var(--sub); }
+
+    /* Grid */
+    .home-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(185px, 1fr));
+        gap: 10px;
+    }
+    @@media (max-width: 576px) { .home-grid { grid-template-columns: repeat(2, 1fr); gap: 8px; } }
+
 </style>
 }

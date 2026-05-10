@@ -1,122 +1,244 @@
 @{
-    ViewData["Title"] = "О нас";
+    ViewData["Title"] = L["Footer_About"].Value;
 }
 
-<div class="page-hero text-center">
-    <div class="container">
-        <h1 class="display-5 fw-bold mb-3">О компании EcommersShop</h1>
-        <p class="lead opacity-90">Мы создаём лучший опыт покупок в Азербайджане</p>
+@section Styles {
+<style>
+    .about-hero {
+        background: #1a1a1a;
+        color: #fff;
+        padding: 64px 0 56px;
+        text-align: center;
+    }
+    .about-hero h1 { font-size: 2rem; font-weight: 800; letter-spacing: -.5px; margin-bottom: 10px; }
+    .about-hero p  { font-size: 1rem; color: rgba(255,255,255,.55); margin: 0; }
+
+    .about-wrap { max-width: 1020px; margin: 0 auto; padding: 0 16px; }
+
+    /* ── Section spacing ── */
+    .about-section { padding: 56px 0; border-bottom: 1px solid #e8eaed; }
+    .about-section:last-child { border-bottom: none; }
+
+    /* ── Why ── */
+    .why-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; align-items: center; }
+    .why-text h2 { font-size: 1.5rem; font-weight: 800; color: #1a1a1a; margin-bottom: 16px; letter-spacing: -.4px; }
+    .why-text p  { font-size: .9rem; color: #555; line-height: 1.75; margin-bottom: 12px; }
+    .why-text p:last-of-type { margin-bottom: 24px; }
+    .why-btns { display: flex; gap: 10px; flex-wrap: wrap; }
+    .btn-dark-solid {
+        display: inline-flex; align-items: center; gap: 6px;
+        padding: 10px 20px; border-radius: 9px;
+        background: #1a1a1a; color: #fff;
+        font-size: .875rem; font-weight: 600;
+        text-decoration: none; transition: opacity .15s;
+    }
+    .btn-dark-solid:hover { opacity: .85; color: #fff; }
+    .btn-outline-neutral {
+        display: inline-flex; align-items: center; gap: 6px;
+        padding: 9px 18px; border-radius: 9px;
+        border: 1.5px solid #e0e4ec; color: #1a1a1a;
+        font-size: .875rem; font-weight: 600;
+        text-decoration: none; transition: border-color .15s;
+    }
+    .btn-outline-neutral:hover { border-color: #aaa; }
+
+    /* Stats grid */
+    .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    .stat-card {
+        background: #f4f5f7;
+        border-radius: 14px;
+        padding: 20px;
+        text-align: center;
+    }
+    .stat-num { font-size: 1.75rem; font-weight: 800; color: #1a1a1a; line-height: 1; }
+    .stat-label { font-size: .78rem; color: #888; margin-top: 6px; }
+
+    /* ── How ── */
+    .steps-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+    .step-card {
+        background: #fff;
+        border: 1.5px solid #e8eaed;
+        border-radius: 14px;
+        padding: 28px 22px;
+        text-align: center;
+    }
+    .step-icon {
+        width: 56px; height: 56px;
+        border-radius: 14px;
+        background: #f4f5f7;
+        display: flex; align-items: center; justify-content: center;
+        font-size: 1.4rem; color: #1a1a1a;
+        margin: 0 auto 16px;
+    }
+    .step-card h5 { font-size: .95rem; font-weight: 700; color: #1a1a1a; margin-bottom: 8px; }
+    .step-card p  { font-size: .82rem; color: #666; line-height: 1.65; margin: 0; }
+
+    /* ── Values ── */
+    .values-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
+    .value-card { text-align: center; }
+    .value-icon {
+        width: 56px; height: 56px;
+        border-radius: 14px;
+        background: #f4f5f7;
+        display: flex; align-items: center; justify-content: center;
+        font-size: 1.4rem; color: #1a1a1a;
+        margin: 0 auto 14px;
+    }
+    .value-card h5 { font-size: .9rem; font-weight: 700; color: #1a1a1a; margin-bottom: 6px; }
+    .value-card p  { font-size: .8rem; color: #777; line-height: 1.6; margin: 0; }
+
+    /* ── Team ── */
+    .team-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; justify-items: center; }
+    .team-card { text-align: center; }
+    .team-avatar {
+        width: 68px; height: 68px;
+        border-radius: 50%;
+        background: #1a1a1a;
+        color: #fff;
+        display: flex; align-items: center; justify-content: center;
+        font-size: 1.5rem; font-weight: 700;
+        margin: 0 auto 12px;
+    }
+    .team-card h6 { font-size: .88rem; font-weight: 700; color: #1a1a1a; margin-bottom: 2px; }
+    .team-card small { font-size: .75rem; color: #888; }
+
+    /* Section heading */
+    .sec-title { font-size: 1.35rem; font-weight: 800; color: #1a1a1a; margin-bottom: 6px; letter-spacing: -.4px; }
+    .sec-sub   { font-size: .875rem; color: #888; margin-bottom: 32px; }
+    .sec-header { text-align: center; margin-bottom: 36px; }
+
+    @@media (max-width: 768px) {
+        .why-grid    { grid-template-columns: 1fr; gap: 28px; }
+        .steps-grid  { grid-template-columns: 1fr; }
+        .values-grid { grid-template-columns: 1fr 1fr; }
+        .team-grid   { grid-template-columns: 1fr 1fr; }
+        .stats-grid  { grid-template-columns: 1fr 1fr; }
+    }
+</style>
+}
+
+<!-- Hero -->
+<div class="about-hero">
+    <div class="about-wrap">
+        <h1>@L["About_HeroTitle"]</h1>
+        <p>@L["About_HeroSub"]</p>
     </div>
 </div>
 
-<div class="container py-5">
+<div class="about-wrap">
 
-    <!-- Mission -->
-    <div class="row align-items-center g-5 mb-6">
-        <div class="col-lg-6">
-            <span class="badge bg-primary bg-opacity-10 text-primary fw-semibold mb-3 px-3 py-2">Наша миссия</span>
-            <h2 class="fw-bold mb-4">Делаем покупки простыми и доступными</h2>
-            <p class="text-muted mb-3">EcommersShop — это современная торговая платформа, соединяющая тысячи продавцов с миллионами покупателей по всему Азербайджану.</p>
-            <p class="text-muted mb-4">Мы верим, что каждый заслуживает доступа к качественным товарам по честным ценам, а каждый предприниматель должен иметь возможность легко начать продавать онлайн.</p>
-            <div class="d-flex gap-3">
-                <a href="/Shop" class="btn btn-primary px-4">Начать покупки</a>
-                <a href="/Account/Register" class="btn btn-outline-secondary px-4">Стать продавцом</a>
+    <!-- Why section -->
+    <div class="about-section">
+        <div class="why-grid">
+            <div class="why-text">
+                <h2>@L["About_WhyTitle"]</h2>
+                <p>@L["About_P1"]</p>
+                <p>@L["About_P2"]</p>
+                <div class="why-btns">
+                    <a href="/Listing" class="btn-dark-solid"><i class="bi bi-grid"></i>@L["Common_BrowseListings"]</a>
+                    <a href="/Listing/Create" class="btn-outline-neutral"><i class="bi bi-plus-lg"></i>@L["Nav_PostListing"]</a>
+                </div>
+            </div>
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-num">10K+</div>
+                    <div class="stat-label">@L["About_StatListings"]</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-num">5K+</div>
+                    <div class="stat-label">@L["About_StatUsers"]</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-num">80+</div>
+                    <div class="stat-label">@L["About_StatCities"]</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-num">@L["About_StatFree"]</div>
+                    <div class="stat-label">@L["About_StatFreeLabel"]</div>
+                </div>
             </div>
         </div>
-        <div class="col-lg-6">
-            <div class="row g-3">
-                <div class="col-6">
-                    <div class="about-stat-card" style="background: linear-gradient(135deg, #e0e7ff, #ede9fe);">
-                        <div class="about-stat-num text-primary">10K+</div>
-                        <div class="about-stat-label">Товаров на платформе</div>
-                    </div>
-                </div>
-                <div class="col-6">
-                    <div class="about-stat-card" style="background: linear-gradient(135deg, #d1fae5, #a7f3d0);">
-                        <div class="about-stat-num text-success">500+</div>
-                        <div class="about-stat-label">Активных продавцов</div>
-                    </div>
-                </div>
-                <div class="col-6">
-                    <div class="about-stat-card" style="background: linear-gradient(135deg, #fef3c7, #fde68a);">
-                        <div class="about-stat-num text-warning">50K+</div>
-                        <div class="about-stat-label">Довольных покупателей</div>
-                    </div>
-                </div>
-                <div class="col-6">
-                    <div class="about-stat-card" style="background: linear-gradient(135deg, #fee2e2, #fecaca);">
-                        <div class="about-stat-num text-danger">4.9★</div>
-                        <div class="about-stat-label">Средняя оценка сервиса</div>
-                    </div>
-                </div>
+    </div>
+
+    <!-- How it works -->
+    <div class="about-section">
+        <div class="sec-header">
+            <div class="sec-title">@L["About_HowTitle"]</div>
+            <div class="sec-sub">@L["About_HowSub"]</div>
+        </div>
+        <div class="steps-grid">
+            <div class="step-card">
+                <div class="step-icon"><i class="bi bi-person-plus"></i></div>
+                <h5>1. @L["About_Step1T"]</h5>
+                <p>@L["About_Step1D"]</p>
+            </div>
+            <div class="step-card">
+                <div class="step-icon"><i class="bi bi-camera"></i></div>
+                <h5>2. @L["About_Step2T"]</h5>
+                <p>@L["About_Step2D"]</p>
+            </div>
+            <div class="step-card">
+                <div class="step-icon"><i class="bi bi-chat-dots"></i></div>
+                <h5>3. @L["About_Step3T"]</h5>
+                <p>@L["About_Step3D"]</p>
             </div>
         </div>
     </div>
 
     <!-- Values -->
-    <section class="mb-6">
-        <div class="text-center mb-5">
-            <h2 class="fw-bold">Наши ценности</h2>
-            <p class="text-muted">Принципы, которыми мы руководствуемся каждый день</p>
+    <div class="about-section">
+        <div class="sec-header">
+            <div class="sec-title">@L["About_ValTitle"]</div>
+            <div class="sec-sub">@L["About_ValSub"]</div>
         </div>
-        <div class="row g-4">
-            <div class="col-md-3 text-center">
-                <div class="value-icon" style="background:#e0e7ff; color:#6366f1;"><i class="bi bi-shield-check"></i></div>
-                <h5 class="fw-bold mt-3">Надёжность</h5>
-                <p class="text-muted small">Гарантируем качество каждого товара и честность каждой сделки</p>
+        <div class="values-grid">
+            <div class="value-card">
+                <div class="value-icon"><i class="bi bi-shield-check"></i></div>
+                <h5>@L["About_Val1T"]</h5>
+                <p>@L["About_Val1D"]</p>
             </div>
-            <div class="col-md-3 text-center">
-                <div class="value-icon" style="background:#d1fae5; color:#059669;"><i class="bi bi-lightning-charge"></i></div>
-                <h5 class="fw-bold mt-3">Скорость</h5>
-                <p class="text-muted small">Быстрая обработка заказов и оперативная доставка по всей стране</p>
+            <div class="value-card">
+                <div class="value-icon"><i class="bi bi-lightning-charge"></i></div>
+                <h5>@L["About_Val2T"]</h5>
+                <p>@L["About_Val2D"]</p>
             </div>
-            <div class="col-md-3 text-center">
-                <div class="value-icon" style="background:#fef3c7; color:#d97706;"><i class="bi bi-people"></i></div>
-                <h5 class="fw-bold mt-3">Сообщество</h5>
-                <p class="text-muted small">Создаём экосистему, где продавцы и покупатели растут вместе</p>
+            <div class="value-card">
+                <div class="value-icon"><i class="bi bi-people"></i></div>
+                <h5>@L["About_Val3T"]</h5>
+                <p>@L["About_Val3D"]</p>
             </div>
-            <div class="col-md-3 text-center">
-                <div class="value-icon" style="background:#fee2e2; color:#dc2626;"><i class="bi bi-heart"></i></div>
-                <h5 class="fw-bold mt-3">Забота</h5>
-                <p class="text-muted small">Поддержка клиентов 24/7 и программа защиты покупателей</p>
+            <div class="value-card">
+                <div class="value-icon"><i class="bi bi-geo-alt"></i></div>
+                <h5>@L["About_Val4T"]</h5>
+                <p>@L["About_Val4D"]</p>
             </div>
         </div>
-    </section>
+    </div>
 
     <!-- Team -->
-    <section>
-        <div class="text-center mb-5">
-            <h2 class="fw-bold">Наша команда</h2>
-            <p class="text-muted">Люди, которые делают EcommersShop лучше каждый день</p>
+    <div class="about-section">
+        <div class="sec-header">
+            <div class="sec-title">@L["About_TeamTitle"]</div>
+            <div class="sec-sub">@L["About_TeamSub"]</div>
         </div>
-        <div class="row g-4 justify-content-center">
+        <div class="team-grid">
             @{
                 var team = new[] {
-                    new { Name = "Natig E.", Role = "CEO & Co-Founder", Avatar = "N", Color = "#6366f1" },
-                    new { Name = "Aytac M.", Role = "Head of Product", Avatar = "A", Color = "#8b5cf6" },
-                    new { Name = "Rauf A.", Role = "Lead Developer", Avatar = "R", Color = "#10b981" },
-                    new { Name = "Nigar H.", Role = "Marketing Director", Avatar = "N", Color = "#ec4899" },
+                    new { Name = "Natig E.",  Role = "Founder", Init = "N" },
+                    new { Name = "Aytac M.", Role = "Design",   Init = "A" },
+                    new { Name = "Rauf A.",  Role = "Backend",  Init = "R" },
+                    new { Name = "Nigar H.", Role = "Marketing",Init = "N" },
                 };
             }
-            @foreach (var member in team)
+            @foreach (var m in team)
             {
-                <div class="col-6 col-md-3 text-center">
-                    <div class="team-avatar mx-auto mb-3" style="background: @member.Color;">@member.Avatar</div>
-                    <h6 class="fw-bold mb-0">@member.Name</h6>
-                    <small class="text-muted">@member.Role</small>
+                <div class="team-card">
+                    <div class="team-avatar">@m.Init</div>
+                    <h6>@m.Name</h6>
+                    <small>@m.Role</small>
                 </div>
             }
         </div>
-    </section>
-</div>
+    </div>
 
-@section Styles {
-<style>
-    .mb-6 { margin-bottom: 4rem; }
-    .about-stat-card { border-radius: 14px; padding: 1.5rem; text-align: center; }
-    .about-stat-num { font-size: 2rem; font-weight: 800; }
-    .about-stat-label { font-size: .8rem; color: #6b7280; margin-top: 4px; }
-    .value-icon { width: 64px; height: 64px; border-radius: 16px; display: flex; align-items: center; justify-content: center; font-size: 1.6rem; margin: 0 auto; }
-    .team-avatar { width: 80px; height: 80px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 1.8rem; font-weight: 700; }
-</style>
-}
+</div>
