@@ -1,75 +1,422 @@
-@using Microsoft.Extensions.Localization
-@using EcommersProject.Resources
-@inject IStringLocalizer<SharedResource> L
 @model LoginViewModel
 @{
-    ViewData["Title"] = L["Login_Title"].Value;
+    ViewData["Title"] = L["Login_PageTitle"].Value;
     Layout = null;
+    var currentCulture = System.Globalization.CultureInfo.CurrentUICulture.TwoLetterISOLanguageName;
+    var returnUrl = Uri.EscapeDataString(Context.Request.Path + Context.Request.QueryString);
 }
 <!DOCTYPE html>
-<html lang="@System.Globalization.CultureInfo.CurrentUICulture.TwoLetterISOLanguageName">
+<html lang="@currentCulture">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>@L["Login_Title"] — EcommersShop</title>
+    <title>@L["Login_PageTitle"] — Alıs-Veris</title>
+    <link rel="icon" type="image/svg+xml" href="/img/favicon.svg" />
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
     <style>
-        body { background: linear-gradient(135deg, #1e1b4b 0%, #4c1d95 100%); min-height: 100vh; }
-        .auth-card { border-radius: 20px; box-shadow: 0 20px 60px rgba(0,0,0,.3); }
-        .brand-logo { font-size: 1.5rem; font-weight: 700; color: #6366f1; }
-    </style>
-</head>
-<body class="d-flex align-items-center justify-content-center py-5">
-    <div class="auth-card bg-white p-5" style="width:100%; max-width:420px;">
-        <div class="text-center mb-4">
-            <div class="brand-logo mb-2">
-                <i class="bi bi-bag-heart-fill me-1"></i>EcommersShop
-            </div>
-            <h4 class="fw-bold">@L["Login_Welcome"]</h4>
-            <p class="text-muted small">@L["Login_Subtitle"]</p>
-        </div>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-        @if (TempData["Info"] is string info)
-        {
-            <div class="alert alert-info py-2 small mb-3">@info</div>
+        body {
+            font-family: 'Inter', system-ui, sans-serif;
+            min-height: 100vh;
+            display: flex;
+            background: #f4f5f7;
+            color: #1a1a1a;
+            font-size: 14px;
         }
 
-        <form asp-action="Login" method="post">
-            <input type="hidden" asp-for="ReturnUrl" />
-            <div asp-validation-summary="ModelOnly" class="alert alert-danger py-2 small"></div>
+        /* ── Left panel ──────────────────────── */
+        .auth-left {
+            width: 420px;
+            flex-shrink: 0;
+            background: #111;
+            display: flex;
+            flex-direction: column;
+            padding: 48px 44px;
+            position: relative;
+            overflow: hidden;
+        }
 
-            <div class="mb-3">
-                <label class="form-label fw-semibold">Email</label>
-                <div class="input-group">
-                    <span class="input-group-text"><i class="bi bi-envelope"></i></span>
-                    <input asp-for="Email" class="form-control" placeholder="your@email.com" autocomplete="email" />
+        /* Декоративные круги */
+        .auth-left::before {
+            content: '';
+            position: absolute;
+            width: 340px; height: 340px;
+            border-radius: 50%;
+            border: 60px solid rgba(255,255,255,.04);
+            top: -80px; right: -100px;
+            pointer-events: none;
+        }
+        .auth-left::after {
+            content: '';
+            position: absolute;
+            width: 220px; height: 220px;
+            border-radius: 50%;
+            border: 40px solid rgba(255,255,255,.04);
+            bottom: 60px; left: -60px;
+            pointer-events: none;
+        }
+
+        /* Logo */
+        .auth-logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+            margin-bottom: auto;
+        }
+        .auth-logo-word {
+            font-size: 1.2rem;
+            font-weight: 800;
+            color: #fff;
+            letter-spacing: -.4px;
+        }
+        .auth-logo-word span { font-weight: 400; color: #666; }
+
+        /* Panel content */
+        .auth-panel-body { padding: 40px 0; flex: 1; display: flex; flex-direction: column; justify-content: center; }
+        .auth-panel-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(255,255,255,.08);
+            color: rgba(255,255,255,.7);
+            border-radius: 20px;
+            padding: 4px 12px;
+            font-size: .75rem;
+            font-weight: 500;
+            margin-bottom: 20px;
+        }
+        .auth-panel-tag i { font-size: .7rem; color: #4ade80; }
+        .auth-panel-heading {
+            font-size: 1.65rem;
+            font-weight: 800;
+            color: #fff;
+            line-height: 1.25;
+            margin-bottom: 14px;
+            letter-spacing: -.5px;
+        }
+        .auth-panel-sub {
+            font-size: .875rem;
+            color: rgba(255,255,255,.45);
+            line-height: 1.7;
+            margin-bottom: 32px;
+        }
+
+        /* Feature list */
+        .auth-features { display: flex; flex-direction: column; gap: 12px; }
+        .auth-feat {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: rgba(255,255,255,.65);
+            font-size: .82rem;
+        }
+        .auth-feat-icon {
+            width: 30px; height: 30px;
+            border-radius: 8px;
+            background: rgba(255,255,255,.07);
+            display: flex; align-items: center; justify-content: center;
+            font-size: .85rem;
+            color: rgba(255,255,255,.7);
+            flex-shrink: 0;
+        }
+
+        /* Bottom link */
+        .auth-panel-footer {
+            font-size: .78rem;
+            color: rgba(255,255,255,.3);
+        }
+        .auth-panel-footer a { color: rgba(255,255,255,.5); text-decoration: underline; }
+
+        /* ── Right panel ─────────────────────── */
+        .auth-right {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 24px;
+            position: relative;
+        }
+
+        /* Lang switcher top right */
+        .lang-bar {
+            position: absolute;
+            top: 24px; right: 28px;
+            display: flex;
+            gap: 4px;
+        }
+        .lang-btn {
+            font-size: .72rem;
+            font-weight: 600;
+            padding: 4px 9px;
+            border-radius: 6px;
+            border: 1.5px solid #e0e4ec;
+            color: #888;
+            text-decoration: none;
+            transition: all .15s;
+        }
+        .lang-btn:hover { border-color: #aaa; color: #333; }
+        .lang-btn.active { border-color: #111; color: #111; font-weight: 700; }
+
+        /* Form card */
+        .auth-form-wrap {
+            width: 100%;
+            max-width: 400px;
+        }
+        .auth-form-title {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: #1a1a1a;
+            letter-spacing: -.4px;
+            margin-bottom: 6px;
+        }
+        .auth-form-sub {
+            font-size: .85rem;
+            color: #888;
+            margin-bottom: 28px;
+        }
+
+        /* Inputs */
+        .field { margin-bottom: 16px; }
+        .field label {
+            display: block;
+            font-size: .78rem;
+            font-weight: 600;
+            color: #555;
+            margin-bottom: 5px;
+            letter-spacing: .1px;
+        }
+        .input-shell {
+            display: flex;
+            align-items: center;
+            border: 1.5px solid #e0e4ec;
+            border-radius: 9px;
+            background: #fff;
+            transition: border-color .2s, box-shadow .2s;
+            overflow: hidden;
+        }
+        .input-shell:focus-within {
+            border-color: #111;
+            box-shadow: 0 0 0 3px rgba(17,17,17,.07);
+        }
+        .input-shell .ico {
+            padding: 0 12px;
+            color: #bbb;
+            font-size: 1rem;
+            flex-shrink: 0;
+        }
+        .input-shell input {
+            flex: 1;
+            border: none;
+            outline: none;
+            background: transparent;
+            padding: 11px 12px 11px 0;
+            font-size: .9rem;
+            font-family: inherit;
+            color: #1a1a1a;
+            min-width: 0;
+        }
+        .input-shell input::placeholder { color: #ccc; }
+        .input-shell .eye-btn {
+            background: none;
+            border: none;
+            padding: 0 12px;
+            color: #bbb;
+            cursor: pointer;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            transition: color .15s;
+        }
+        .input-shell .eye-btn:hover { color: #555; }
+
+        .field-err { font-size: .75rem; color: #ef4444; margin-top: 4px; }
+
+        /* Alert */
+        .auth-alert {
+            border-radius: 8px;
+            padding: 10px 14px;
+            font-size: .82rem;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .auth-alert-danger { background: #fff0f0; color: #c53030; border: 1px solid #fecaca; }
+        .auth-alert-info   { background: #eff6ff; color: #1e40af; border: 1px solid #bfdbfe; }
+
+        /* Submit button */
+        .auth-submit {
+            width: 100%;
+            padding: 12px;
+            background: #111;
+            color: #fff;
+            border: none;
+            border-radius: 9px;
+            font-size: .9rem;
+            font-weight: 600;
+            font-family: inherit;
+            cursor: pointer;
+            transition: opacity .15s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            margin-top: 8px;
+        }
+        .auth-submit:hover { opacity: .85; }
+
+        /* Divider */
+        .auth-divider {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin: 20px 0;
+            color: #ccc;
+            font-size: .78rem;
+        }
+        .auth-divider::before, .auth-divider::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: #eee;
+        }
+
+        /* Bottom link */
+        .auth-link-row {
+            text-align: center;
+            font-size: .82rem;
+            color: #888;
+        }
+        .auth-link-row a { color: #111; font-weight: 600; text-decoration: none; }
+        .auth-link-row a:hover { text-decoration: underline; }
+
+        /* Mobile */
+        @@media (max-width: 768px) {
+            .auth-left { display: none; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ── Left panel ──────────────────────────────── -->
+    <div class="auth-left">
+        <a href="/" class="auth-logo">
+            <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+                <rect width="32" height="32" rx="8" fill="rgba(255,255,255,0.1)"/>
+                <line x1="6" y1="12" x2="22" y2="12" stroke="white" stroke-width="2.2" stroke-linecap="round"/>
+                <polyline points="18,8 22,12 18,16" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+                <line x1="26" y1="21" x2="10" y2="21" stroke="white" stroke-width="2.2" stroke-linecap="round"/>
+                <polyline points="14,17 10,21 14,25" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+            </svg>
+            <span class="auth-logo-word">Alıs<span>Veris</span></span>
+        </a>
+
+        <div class="auth-panel-body">
+            <h2 class="auth-panel-heading">Milyonlarla elanla tanış ol</h2>
+            <p class="auth-panel-sub">Alış, sat, tap — hər şey bir yerdə. Qeydiyyatdan keç və elanlarını dərc et.</p>
+
+            <div class="auth-features">
+                <div class="auth-feat">
+                    <div class="auth-feat-icon"><i class="bi bi-shield-check"></i></div>
+                    <span>Güvənli alış-veriş platforması</span>
                 </div>
-                <span asp-validation-for="Email" class="text-danger small"></span>
-            </div>
-
-            <div class="mb-4">
-                <label class="form-label fw-semibold">@L["Login_Password"]</label>
-                <div class="input-group">
-                    <span class="input-group-text"><i class="bi bi-lock"></i></span>
-                    <input asp-for="Password" type="password" class="form-control" placeholder="••••••••" autocomplete="current-password" />
+                <div class="auth-feat">
+                    <div class="auth-feat-icon"><i class="bi bi-lightning-charge"></i></div>
+                    <span>Elan yerləşdirmək — pulsuz və sürətli</span>
                 </div>
-                <span asp-validation-for="Password" class="text-danger small"></span>
+                <div class="auth-feat">
+                    <div class="auth-feat-icon"><i class="bi bi-chat-dots"></i></div>
+                    <span>Satıcı ilə birbaşa əlaqə</span>
+                </div>
+                <div class="auth-feat">
+                    <div class="auth-feat-icon"><i class="bi bi-geo-alt"></i></div>
+                    <span>Bütün Azərbaycan şəhərləri</span>
+                </div>
             </div>
+        </div>
 
-            <button type="submit" class="btn btn-primary w-100 py-2 fw-semibold">
-                <i class="bi bi-box-arrow-in-right me-2"></i>@L["Login_Submit"]
-            </button>
-        </form>
-
-        <hr class="my-4" />
-        <p class="text-center text-muted small mb-0">
-            @L["Login_NoAccount"] <a href="/Account/Register" class="text-primary fw-semibold">@L["Login_Register"]</a>
-        </p>
-        <p class="text-center mt-2">
-            <a href="/Auth/Login" class="text-muted small">@L["Login_AdminLogin"]</a>
-        </p>
+        <div class="auth-panel-footer">
+            © @DateTime.Now.Year Alıs-Veris &nbsp;·&nbsp;
+            <a href="#">Məxfilik</a> &nbsp;·&nbsp;
+            <a href="#">Şərtlər</a>
+        </div>
     </div>
+
+    <!-- ── Right panel ─────────────────────────────── -->
+    <div class="auth-right">
+
+        <!-- Language -->
+        <div class="lang-bar">
+            <a href="/Language/Set?culture=ru&returnUrl=@returnUrl" class="lang-btn @(currentCulture == "ru" ? "active" : "")">RU</a>
+            <a href="/Language/Set?culture=az&returnUrl=@returnUrl" class="lang-btn @(currentCulture == "az" ? "active" : "")">AZ</a>
+            <a href="/Language/Set?culture=en&returnUrl=@returnUrl" class="lang-btn @(currentCulture == "en" ? "active" : "")">EN</a>
+        </div>
+
+        <div class="auth-form-wrap">
+            <div class="auth-form-title">@L["Login_Heading"]</div>
+            <div class="auth-form-sub">@L["Login_NoAccount"] <a href="/Account/Register" style="color:#111;font-weight:600;text-decoration:none;">@L["Login_Register"]</a></div>
+
+            @if (TempData["Info"] is string info)
+            {
+                <div class="auth-alert auth-alert-info"><i class="bi bi-info-circle-fill"></i>@info</div>
+            }
+
+            <form asp-action="Login" method="post">
+                <input type="hidden" asp-for="ReturnUrl" />
+
+                @if (!ViewData.ModelState.IsValid)
+                {
+                    <div class="auth-alert auth-alert-danger">
+                        <i class="bi bi-exclamation-circle-fill flex-shrink-0"></i>
+                        <div asp-validation-summary="ModelOnly"></div>
+                    </div>
+                }
+
+                <div class="field">
+                    <label>@L["Login_Email"]</label>
+                    <div class="input-shell">
+                        <i class="bi bi-envelope ico"></i>
+                        <input asp-for="Email" type="email" placeholder="your@email.com" autocomplete="email" />
+                    </div>
+                    <div class="field-err"><span asp-validation-for="Email"></span></div>
+                </div>
+
+                <div class="field">
+                    <label>@L["Login_Password"]</label>
+                    <div class="input-shell">
+                        <i class="bi bi-lock ico"></i>
+                        <input asp-for="Password" type="password" id="pwdInput" placeholder="••••••••" autocomplete="current-password" />
+                        <button type="button" class="eye-btn" onclick="togglePwd('pwdInput', this)" tabindex="-1">
+                            <i class="bi bi-eye"></i>
+                        </button>
+                    </div>
+                    <div class="field-err"><span asp-validation-for="Password"></span></div>
+                </div>
+
+                <button type="submit" class="auth-submit">
+                    <i class="bi bi-box-arrow-in-right"></i>@L["Login_Submit"]
+                </button>
+            </form>
+        </div>
+    </div>
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        function togglePwd(inputId, btn) {
+            const inp = document.getElementById(inputId);
+            const ico = btn.querySelector('i');
+            if (inp.type === 'password') {
+                inp.type = 'text';
+                ico.className = 'bi bi-eye-slash';
+            } else {
+                inp.type = 'password';
+                ico.className = 'bi bi-eye';
+            }
+        }
+    </script>
 </body>
 </html>

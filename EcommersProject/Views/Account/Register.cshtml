@@ -1,113 +1,401 @@
-@using Microsoft.Extensions.Localization
-@using EcommersProject.Resources
-@inject IStringLocalizer<SharedResource> L
 @model RegisterViewModel
 @{
-    ViewData["Title"] = L["Register_Title"].Value;
+    ViewData["Title"] = L["Register_PageTitle"].Value;
     Layout = null;
+    var currentCulture = System.Globalization.CultureInfo.CurrentUICulture.TwoLetterISOLanguageName;
+    var returnUrl = Uri.EscapeDataString(Context.Request.Path + Context.Request.QueryString);
 }
 <!DOCTYPE html>
-<html lang="@System.Globalization.CultureInfo.CurrentUICulture.TwoLetterISOLanguageName">
+<html lang="@currentCulture">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>@L["Register_Title"] — EcommersShop</title>
+    <title>@L["Register_PageTitle"] — Alıs-Veris</title>
+    <link rel="icon" type="image/svg+xml" href="/img/favicon.svg" />
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
     <style>
-        body { background: linear-gradient(135deg, #1e1b4b 0%, #4c1d95 100%); min-height: 100vh; }
-        .auth-card { border-radius: 20px; box-shadow: 0 20px 60px rgba(0,0,0,.3); }
-        .brand-logo { font-size: 1.5rem; font-weight: 700; color: #6366f1; }
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Inter', system-ui, sans-serif;
+            min-height: 100vh;
+            display: flex;
+            background: #f4f5f7;
+            color: #1a1a1a;
+            font-size: 14px;
+        }
+
+        /* ── Left panel ──────────────────────── */
+        .auth-left {
+            width: 400px;
+            flex-shrink: 0;
+            background: #111;
+            display: flex;
+            flex-direction: column;
+            padding: 48px 44px;
+            position: relative;
+            overflow: hidden;
+        }
+        .auth-left::before {
+            content: '';
+            position: absolute;
+            width: 340px; height: 340px;
+            border-radius: 50%;
+            border: 60px solid rgba(255,255,255,.04);
+            top: -80px; right: -100px;
+            pointer-events: none;
+        }
+        .auth-left::after {
+            content: '';
+            position: absolute;
+            width: 220px; height: 220px;
+            border-radius: 50%;
+            border: 40px solid rgba(255,255,255,.04);
+            bottom: 60px; left: -60px;
+            pointer-events: none;
+        }
+
+        .auth-logo {
+            display: flex; align-items: center; gap: 10px;
+            text-decoration: none; margin-bottom: auto;
+        }
+        .auth-logo-word { font-size: 1.2rem; font-weight: 800; color: #fff; letter-spacing: -.4px; }
+        .auth-logo-word span { font-weight: 400; color: #666; }
+
+        .auth-panel-body { padding: 40px 0; flex: 1; display: flex; flex-direction: column; justify-content: center; }
+
+        /* Steps */
+        .reg-steps { display: flex; flex-direction: column; gap: 0; margin-bottom: 32px; }
+        .reg-step {
+            display: flex;
+            align-items: flex-start;
+            gap: 14px;
+            padding: 0 0 24px 0;
+            position: relative;
+        }
+        .reg-step:not(:last-child)::after {
+            content: '';
+            position: absolute;
+            left: 14px; top: 30px;
+            width: 1px; height: calc(100% - 6px);
+            background: rgba(255,255,255,.1);
+        }
+        .step-num {
+            width: 28px; height: 28px; border-radius: 50%;
+            background: rgba(255,255,255,.08);
+            border: 1.5px solid rgba(255,255,255,.15);
+            color: rgba(255,255,255,.6);
+            font-size: .78rem; font-weight: 700;
+            display: flex; align-items: center; justify-content: center;
+            flex-shrink: 0; position: relative; z-index: 1;
+        }
+        .step-text strong { display: block; font-size: .85rem; color: rgba(255,255,255,.85); font-weight: 600; }
+        .step-text span { font-size: .78rem; color: rgba(255,255,255,.35); }
+
+        .auth-panel-footer { font-size: .78rem; color: rgba(255,255,255,.3); }
+        .auth-panel-footer a { color: rgba(255,255,255,.5); text-decoration: underline; }
+
+        /* ── Right panel ─────────────────────── */
+        .auth-right {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 24px;
+            position: relative;
+            overflow-y: auto;
+        }
+
+        .lang-bar {
+            position: absolute;
+            top: 24px; right: 28px;
+            display: flex; gap: 4px;
+        }
+        .lang-btn {
+            font-size: .72rem; font-weight: 600;
+            padding: 4px 9px; border-radius: 6px;
+            border: 1.5px solid #e0e4ec;
+            color: #888; text-decoration: none; transition: all .15s;
+        }
+        .lang-btn:hover { border-color: #aaa; color: #333; }
+        .lang-btn.active { border-color: #111; color: #111; font-weight: 700; }
+
+        .auth-form-wrap { width: 100%; max-width: 440px; padding: 20px 0; }
+        .auth-form-title { font-size: 1.5rem; font-weight: 800; color: #1a1a1a; letter-spacing: -.4px; margin-bottom: 6px; }
+        .auth-form-sub { font-size: .85rem; color: #888; margin-bottom: 24px; }
+
+        /* Inputs */
+        .field { margin-bottom: 14px; }
+        .field label {
+            display: block;
+            font-size: .78rem; font-weight: 600; color: #555;
+            margin-bottom: 5px; letter-spacing: .1px;
+        }
+        .input-shell {
+            display: flex; align-items: center;
+            border: 1.5px solid #e0e4ec; border-radius: 9px;
+            background: #fff; overflow: hidden;
+            transition: border-color .2s, box-shadow .2s;
+        }
+        .input-shell:focus-within {
+            border-color: #111;
+            box-shadow: 0 0 0 3px rgba(17,17,17,.07);
+        }
+        .input-shell .ico { padding: 0 12px; color: #bbb; font-size: 1rem; flex-shrink: 0; }
+        .input-shell input {
+            flex: 1; border: none; outline: none; background: transparent;
+            padding: 11px 12px 11px 0;
+            font-size: .9rem; font-family: inherit; color: #1a1a1a; min-width: 0;
+        }
+        .input-shell input::placeholder { color: #ccc; }
+        .input-shell .eye-btn {
+            background: none; border: none; padding: 0 12px;
+            color: #bbb; cursor: pointer; font-size: 1rem;
+            display: flex; align-items: center; transition: color .15s;
+        }
+        .input-shell .eye-btn:hover { color: #555; }
+
+        /* Row inputs */
+        .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 14px; }
+
+        .field-err { font-size: .75rem; color: #ef4444; margin-top: 4px; }
+
+        /* Password strength */
+        .pwd-strength { margin-top: 6px; }
+        .pwd-bars { display: flex; gap: 3px; height: 3px; margin-bottom: 3px; }
+        .pwd-bar { flex: 1; border-radius: 2px; background: #eee; transition: background .3s; }
+        .pwd-bar.weak   { background: #ef4444; }
+        .pwd-bar.medium { background: #f59e0b; }
+        .pwd-bar.strong { background: #22c55e; }
+        .pwd-label { font-size: .7rem; color: #aaa; }
+
+        /* Alert */
+        .auth-alert {
+            border-radius: 8px; padding: 10px 14px;
+            font-size: .82rem; margin-bottom: 16px;
+            display: flex; align-items: flex-start; gap: 8px;
+        }
+        .auth-alert-danger { background: #fff0f0; color: #c53030; border: 1px solid #fecaca; }
+
+        /* Submit */
+        .auth-submit {
+            width: 100%; padding: 12px;
+            background: #111; color: #fff;
+            border: none; border-radius: 9px;
+            font-size: .9rem; font-weight: 600; font-family: inherit;
+            cursor: pointer; transition: opacity .15s;
+            display: flex; align-items: center; justify-content: center; gap: 8px;
+            margin-top: 6px;
+        }
+        .auth-submit:hover { opacity: .85; }
+
+        .auth-link-row { text-align: center; font-size: .82rem; color: #888; margin-top: 16px; }
+        .auth-link-row a { color: #111; font-weight: 600; text-decoration: none; }
+        .auth-link-row a:hover { text-decoration: underline; }
+
+        .auth-terms { font-size: .75rem; color: #aaa; text-align: center; margin-top: 12px; line-height: 1.5; }
+        .auth-terms a { color: #888; }
+
+        @@media (max-width: 768px) { .auth-left { display: none; } }
     </style>
 </head>
-<body class="d-flex align-items-center justify-content-center py-5">
-    <div class="auth-card bg-white p-5" style="width:100%; max-width:500px;">
-        <div class="text-center mb-4">
-            <div class="brand-logo mb-2">
-                <i class="bi bi-bag-heart-fill me-1"></i>EcommersShop
+<body>
+
+    <!-- ── Left panel ──────────────────────────────── -->
+    <div class="auth-left">
+        <a href="/" class="auth-logo">
+            <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+                <rect width="32" height="32" rx="8" fill="rgba(255,255,255,0.1)"/>
+                <line x1="6" y1="12" x2="22" y2="12" stroke="white" stroke-width="2.2" stroke-linecap="round"/>
+                <polyline points="18,8 22,12 18,16" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+                <line x1="26" y1="21" x2="10" y2="21" stroke="white" stroke-width="2.2" stroke-linecap="round"/>
+                <polyline points="14,17 10,21 14,25" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+            </svg>
+            <span class="auth-logo-word">Alıs<span>Veris</span></span>
+        </a>
+
+        <div class="auth-panel-body">
+            <h2 style="font-size:1.5rem;font-weight:800;color:#fff;letter-spacing:-.5px;margin-bottom:10px;line-height:1.3;">
+                Hesab aç, elan ver
+            </h2>
+            <p style="font-size:.82rem;color:rgba(255,255,255,.4);margin-bottom:28px;line-height:1.7;">
+                Qeydiyyat cəmi 1 dəqiqə çəkir. Başla!
+            </p>
+
+            <div class="reg-steps">
+                <div class="reg-step">
+                    <div class="step-num">1</div>
+                    <div class="step-text">
+                        <strong>Məlumatlarını daxil et</strong>
+                        <span>Ad, e-poçt və şifrə</span>
+                    </div>
+                </div>
+                <div class="reg-step">
+                    <div class="step-num">2</div>
+                    <div class="step-text">
+                        <strong>Elan yarat</strong>
+                        <span>Foto əlavə et, qiymət qoy</span>
+                    </div>
+                </div>
+                <div class="reg-step">
+                    <div class="step-num">3</div>
+                    <div class="step-text">
+                        <strong>Satış et!</strong>
+                        <span>Alıcılarla birbaşa danış</span>
+                    </div>
+                </div>
             </div>
-            <h4 class="fw-bold">@L["Register_Title"]</h4>
         </div>
 
-        <form asp-action="Register" method="post">
-            <div asp-validation-summary="ModelOnly" class="alert alert-danger py-2 small"></div>
+        <div class="auth-panel-footer">
+            © @DateTime.Now.Year Alıs-Veris &nbsp;·&nbsp;
+            <a href="#">Məxfilik</a> &nbsp;·&nbsp;
+            <a href="#">Şərtlər</a>
+        </div>
+    </div>
 
-            <div class="row g-3 mb-3">
-                <div class="col-6">
-                    <label class="form-label fw-semibold">@L["Register_FirstName"]</label>
-                    <input asp-for="FirstName" class="form-control" placeholder="@L["Register_FirstName"].Value" />
-                    <span asp-validation-for="FirstName" class="text-danger small"></span>
+    <!-- ── Right panel ─────────────────────────────── -->
+    <div class="auth-right">
+
+        <div class="lang-bar">
+            <a href="/Language/Set?culture=ru&returnUrl=@returnUrl" class="lang-btn @(currentCulture == "ru" ? "active" : "")">RU</a>
+            <a href="/Language/Set?culture=az&returnUrl=@returnUrl" class="lang-btn @(currentCulture == "az" ? "active" : "")">AZ</a>
+            <a href="/Language/Set?culture=en&returnUrl=@returnUrl" class="lang-btn @(currentCulture == "en" ? "active" : "")">EN</a>
+        </div>
+
+        <div class="auth-form-wrap">
+            <div class="auth-form-title">@L["Register_Heading"]</div>
+            <div class="auth-form-sub">@L["Register_HasAccount"] <a href="/Account/Login" style="color:#111;font-weight:600;text-decoration:none;">@L["Register_Login"]</a></div>
+
+            <form asp-action="Register" method="post">
+
+                @if (!ViewData.ModelState.IsValid)
+                {
+                    <div class="auth-alert auth-alert-danger">
+                        <i class="bi bi-exclamation-circle-fill flex-shrink-0 mt-1"></i>
+                        <div asp-validation-summary="ModelOnly"></div>
+                    </div>
+                }
+
+                <!-- Name row -->
+                <div class="field-row">
+                    <div class="field" style="margin-bottom:0;">
+                        <label>@L["Register_FirstName"]</label>
+                        <div class="input-shell">
+                            <i class="bi bi-person ico"></i>
+                            <input asp-for="FirstName" placeholder="Adınız" />
+                        </div>
+                        <div class="field-err"><span asp-validation-for="FirstName"></span></div>
+                    </div>
+                    <div class="field" style="margin-bottom:0;">
+                        <label>@L["Register_LastName"]</label>
+                        <div class="input-shell">
+                            <input asp-for="LastName" placeholder="Soyadınız" style="padding-left:12px;" />
+                        </div>
+                        <div class="field-err"><span asp-validation-for="LastName"></span></div>
+                    </div>
                 </div>
-                <div class="col-6">
-                    <label class="form-label fw-semibold">@L["Register_LastName"]</label>
-                    <input asp-for="LastName" class="form-control" placeholder="@L["Register_LastName"].Value" />
-                    <span asp-validation-for="LastName" class="text-danger small"></span>
+
+                <div class="field">
+                    <label>@L["Register_Email"]</label>
+                    <div class="input-shell">
+                        <i class="bi bi-envelope ico"></i>
+                        <input asp-for="Email" type="email" placeholder="your@email.com" autocomplete="email" />
+                    </div>
+                    <div class="field-err"><span asp-validation-for="Email"></span></div>
                 </div>
+
+                <div class="field">
+                    <label>@L["Register_Phone"]</label>
+                    <div class="input-shell">
+                        <i class="bi bi-telephone ico"></i>
+                        <input asp-for="PhoneNumber" type="tel" placeholder="+994 50 000 00 00" autocomplete="tel" />
+                    </div>
+                    <div class="field-err"><span asp-validation-for="PhoneNumber"></span></div>
+                </div>
+
+                <div class="field">
+                    <label>@L["Register_Password"]</label>
+                    <div class="input-shell">
+                        <i class="bi bi-lock ico"></i>
+                        <input asp-for="Password" type="password" id="pwd1" placeholder="min. 6 simvol"
+                               autocomplete="new-password" oninput="checkStrength(this.value)" />
+                        <button type="button" class="eye-btn" onclick="togglePwd('pwd1',this)" tabindex="-1">
+                            <i class="bi bi-eye"></i>
+                        </button>
+                    </div>
+                    <div class="pwd-strength">
+                        <div class="pwd-bars">
+                            <div class="pwd-bar" id="bar1"></div>
+                            <div class="pwd-bar" id="bar2"></div>
+                            <div class="pwd-bar" id="bar3"></div>
+                            <div class="pwd-bar" id="bar4"></div>
+                        </div>
+                        <div class="pwd-label" id="pwdLabel"></div>
+                    </div>
+                    <div class="field-err"><span asp-validation-for="Password"></span></div>
+                </div>
+
+                <div class="field">
+                    <label>@L["Register_ConfirmPassword"]</label>
+                    <div class="input-shell">
+                        <i class="bi bi-lock-fill ico"></i>
+                        <input asp-for="ConfirmPassword" type="password" id="pwd2" placeholder="Şifrəni təkrarla"
+                               autocomplete="new-password" />
+                        <button type="button" class="eye-btn" onclick="togglePwd('pwd2',this)" tabindex="-1">
+                            <i class="bi bi-eye"></i>
+                        </button>
+                    </div>
+                    <div class="field-err"><span asp-validation-for="ConfirmPassword"></span></div>
+                </div>
+
+                <button type="submit" class="auth-submit">
+                    <i class="bi bi-person-plus-fill"></i>@L["Register_Submit"]
+                </button>
+            </form>
+
+            <div class="auth-terms">
+                Qeydiyyatdan keçməklə siz <a href="#">İstifadə Şərtləri</a> və <a href="#">Məxfilik Siyasəti</a>ilə razılaşırsınız.
             </div>
 
-            <div class="mb-3">
-                <label class="form-label fw-semibold">Email</label>
-                <input asp-for="Email" type="email" class="form-control" placeholder="your@email.com" />
-                <span asp-validation-for="Email" class="text-danger small"></span>
+            <div class="auth-link-row">
+                @L["Register_HasAccount"] <a href="/Account/Login">@L["Register_Login"]</a>
             </div>
-
-            <div class="mb-3">
-                <label class="form-label fw-semibold">@L["Register_Phone"]</label>
-                <input asp-for="PhoneNumber" class="form-control" placeholder="+994 50 000 00 00" />
-                <span asp-validation-for="PhoneNumber" class="text-danger small"></span>
-            </div>
-
-            <div class="row g-3 mb-3">
-                <div class="col-6">
-                    <label class="form-label fw-semibold">@L["Register_Password"]</label>
-                    <input asp-for="Password" type="password" class="form-control" placeholder="••••••••" />
-                    <span asp-validation-for="Password" class="text-danger small"></span>
-                </div>
-                <div class="col-6">
-                    <label class="form-label fw-semibold">@L["Register_Confirm"]</label>
-                    <input asp-for="ConfirmPassword" type="password" class="form-control" placeholder="••••••••" />
-                    <span asp-validation-for="ConfirmPassword" class="text-danger small"></span>
-                </div>
-            </div>
-
-            <!-- Seller toggle -->
-            <div class="mb-3">
-                <div class="form-check form-switch">
-                    <input asp-for="IsSeller" class="form-check-input" id="isSellerToggle" onchange="toggleShopFields()" />
-                    <label class="form-check-label fw-semibold" for="isSellerToggle">
-                        <i class="bi bi-shop me-1"></i>@L["Register_IsSeller"]
-                    </label>
-                </div>
-            </div>
-
-            <div id="shopFields" class="d-none">
-                <div class="mb-3">
-                    <label class="form-label fw-semibold">@L["Register_ShopName"]</label>
-                    <input asp-for="ShopName" class="form-control" placeholder="@L["Register_ShopName"].Value" />
-                </div>
-                <div class="mb-3">
-                    <label class="form-label fw-semibold">@L["Register_ShopDescription"]</label>
-                    <textarea asp-for="ShopDescription" class="form-control" rows="2" placeholder="@L["Register_ShopDescription"].Value"></textarea>
-                </div>
-            </div>
-
-            <button type="submit" class="btn btn-primary w-100 py-2 fw-semibold mt-2">
-                <i class="bi bi-person-plus me-2"></i>@L["Register_Submit"]
-            </button>
-        </form>
-
-        <hr class="my-4" />
-        <p class="text-center text-muted small mb-0">
-            @L["Register_HasAccount"] <a href="/Account/Login" class="text-primary fw-semibold">@L["Register_Login"]</a>
-        </p>
+        </div>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
     <script>
-    function toggleShopFields() {
-        const checked = document.getElementById('isSellerToggle').checked;
-        document.getElementById('shopFields').classList.toggle('d-none', !checked);
-    }
+        function togglePwd(id, btn) {
+            const inp = document.getElementById(id);
+            const ico = btn.querySelector('i');
+            inp.type = inp.type === 'password' ? 'text' : 'password';
+            ico.className = inp.type === 'password' ? 'bi bi-eye' : 'bi bi-eye-slash';
+        }
+
+        function checkStrength(val) {
+            const bars = [document.getElementById('bar1'), document.getElementById('bar2'),
+                          document.getElementById('bar3'), document.getElementById('bar4')];
+            const lbl  = document.getElementById('pwdLabel');
+
+            let score = 0;
+            if (val.length >= 6)  score++;
+            if (val.length >= 10) score++;
+            if (/[A-Z]/.test(val) || /[0-9]/.test(val)) score++;
+            if (/[^A-Za-z0-9]/.test(val)) score++;
+
+            const cls   = ['', 'weak', 'weak', 'medium', 'strong'];
+            const labels = ['', 'Zəif', 'Zəif', 'Orta', 'Güclü'];
+
+            bars.forEach((b, i) => {
+                b.className = 'pwd-bar ' + (i < score ? cls[score] : '');
+            });
+            lbl.textContent = val.length ? labels[score] : '';
+            lbl.style.color = score >= 3 ? '#22c55e' : score === 2 ? '#f59e0b' : '#ef4444';
+        }
     </script>
 </body>
 </html>
