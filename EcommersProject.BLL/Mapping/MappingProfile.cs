@@ -9,7 +9,8 @@ public class MappingProfile : Profile
     public MappingProfile()
     {
         // User
-        CreateMap<User, UserGetDto>();
+        CreateMap<User, UserGetDto>()
+            .ForMember(d => d.Role, o => o.MapFrom(s => s.Role.ToString()));
         CreateMap<UserCreateDto, User>()
             .ForMember(d => d.IsActive, o => o.MapFrom(_ => true))
             .ForMember(d => d.Email, o => o.MapFrom(s => s.Email.Trim().ToLowerInvariant()))
@@ -17,11 +18,16 @@ public class MappingProfile : Profile
             .ForMember(d => d.CreatedDate, o => o.Ignore())
             .ForMember(d => d.UpdatedDate, o => o.Ignore())
             .ForMember(d => d.IsDeleted, o => o.Ignore())
+            .ForMember(d => d.PasswordHash, o => o.Ignore())
+            .ForMember(d => d.Role, o => o.MapFrom(_ => UserRole.Customer))
+            .ForMember(d => d.ShopName, o => o.Ignore())
+            .ForMember(d => d.ShopDescription, o => o.Ignore())
             .ForMember(d => d.Addresses, o => o.Ignore())
             .ForMember(d => d.Orders, o => o.Ignore())
             .ForMember(d => d.Carts, o => o.Ignore())
             .ForMember(d => d.Reviews, o => o.Ignore())
-            .ForMember(d => d.Wishlists, o => o.Ignore());
+            .ForMember(d => d.Wishlists, o => o.Ignore())
+            .ForMember(d => d.Products, o => o.Ignore());
         CreateMap<UserUpdateDto, User>()
             .ForMember(d => d.Id, o => o.Ignore())
             .ForMember(d => d.Email, o => o.Ignore())
@@ -29,16 +35,22 @@ public class MappingProfile : Profile
             .ForMember(d => d.CreatedDate, o => o.Ignore())
             .ForMember(d => d.UpdatedDate, o => o.Ignore())
             .ForMember(d => d.IsDeleted, o => o.Ignore())
+            .ForMember(d => d.PasswordHash, o => o.Ignore())
+            .ForMember(d => d.Role, o => o.Ignore())
+            .ForMember(d => d.ShopName, o => o.Ignore())
+            .ForMember(d => d.ShopDescription, o => o.Ignore())
             .ForMember(d => d.Addresses, o => o.Ignore())
             .ForMember(d => d.Orders, o => o.Ignore())
             .ForMember(d => d.Carts, o => o.Ignore())
             .ForMember(d => d.Reviews, o => o.Ignore())
-            .ForMember(d => d.Wishlists, o => o.Ignore());
+            .ForMember(d => d.Wishlists, o => o.Ignore())
+            .ForMember(d => d.Products, o => o.Ignore());
 
         // Product
         CreateMap<Product, ProductGetDto>()
             .ForMember(d => d.CategoryName, o => o.MapFrom(s => s.Category != null ? s.Category.Name : null))
             .ForMember(d => d.BrandName, o => o.MapFrom(s => s.Brand != null ? s.Brand.Name : null))
+            .ForMember(d => d.SellerName, o => o.MapFrom(s => s.Seller != null ? s.Seller.FirstName + " " + s.Seller.LastName : null))
             .ForMember(d => d.Images, o => o.MapFrom(s => s.Images));
         CreateMap<ProductCreateDto, Product>()
             .ForMember(d => d.IsActive, o => o.MapFrom(_ => true))
@@ -49,6 +61,7 @@ public class MappingProfile : Profile
             .ForMember(d => d.IsDeleted, o => o.Ignore())
             .ForMember(d => d.Category, o => o.Ignore())
             .ForMember(d => d.Brand, o => o.Ignore())
+            .ForMember(d => d.Seller, o => o.Ignore())
             .ForMember(d => d.Images, o => o.Ignore())
             .ForMember(d => d.Reviews, o => o.Ignore())
             .ForMember(d => d.OrderItems, o => o.Ignore())
@@ -58,11 +71,13 @@ public class MappingProfile : Profile
             .ForMember(d => d.Id, o => o.Ignore())
             .ForMember(d => d.Sku, o => o.Ignore())
             .ForMember(d => d.RatingAverage, o => o.Ignore())
+            .ForMember(d => d.SellerId, o => o.Ignore())
             .ForMember(d => d.CreatedDate, o => o.Ignore())
             .ForMember(d => d.UpdatedDate, o => o.Ignore())
             .ForMember(d => d.IsDeleted, o => o.Ignore())
             .ForMember(d => d.Category, o => o.Ignore())
             .ForMember(d => d.Brand, o => o.Ignore())
+            .ForMember(d => d.Seller, o => o.Ignore())
             .ForMember(d => d.Images, o => o.Ignore())
             .ForMember(d => d.Reviews, o => o.Ignore())
             .ForMember(d => d.OrderItems, o => o.Ignore())

@@ -18,6 +18,11 @@ public class ProductConfiguration : BaseEntityConfiguration<Product>
         builder.Property(product => product.RatingAverage).HasPrecision(4, 2);
         builder.Property(product => product.IsActive).HasDefaultValue(true);
 
+        builder.HasOne(product => product.Seller)
+            .WithMany(user => user.Products)
+            .HasForeignKey(product => product.SellerId)
+            .OnDelete(DeleteBehavior.SetNull);
+
         builder.HasMany(product => product.Images)
             .WithOne(image => image.Product)
             .HasForeignKey(image => image.ProductId)

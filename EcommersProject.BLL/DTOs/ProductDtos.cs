@@ -13,6 +13,8 @@ public record ProductGetDto(
     string? CategoryName,
     Guid BrandId,
     string? BrandName,
+    Guid? SellerId,
+    string? SellerName,
     IReadOnlyList<ProductImageGetDto> Images,
     DateTimeOffset CreatedDate);
 
@@ -23,7 +25,8 @@ public record ProductCreateDto(
     decimal Price,
     int StockQuantity,
     Guid CategoryId,
-    Guid BrandId);
+    Guid BrandId,
+    Guid? SellerId = null);
 
 public record ProductUpdateDto(
     string Name,

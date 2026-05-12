@@ -16,6 +16,9 @@ public class Product : BaseEntity
     public Guid BrandId { get; set; }
     public Brand? Brand { get; set; }
 
+    public Guid? SellerId { get; set; }
+    public User? Seller { get; set; }
+
     public ICollection<ProductImage> Images { get; set; } = new List<ProductImage>();
     public ICollection<Review> Reviews { get; set; } = new List<Review>();
     public ICollection<OrderItem> OrderItems { get; set; } = new List<OrderItem>();

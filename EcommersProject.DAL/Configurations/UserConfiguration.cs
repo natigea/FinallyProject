@@ -16,6 +16,10 @@ public class UserConfiguration : BaseEntityConfiguration<User>
         builder.Property(user => user.LastName).HasMaxLength(100).IsRequired();
         builder.Property(user => user.PhoneNumber).HasMaxLength(30);
         builder.Property(user => user.IsActive).HasDefaultValue(true);
+        builder.Property(user => user.PasswordHash).HasMaxLength(500).IsRequired();
+        builder.Property(user => user.Role).HasDefaultValue(UserRole.Customer);
+        builder.Property(user => user.ShopName).HasMaxLength(200);
+        builder.Property(user => user.ShopDescription).HasMaxLength(1000);
 
         builder.HasMany(user => user.Addresses)
             .WithOne(address => address.User)

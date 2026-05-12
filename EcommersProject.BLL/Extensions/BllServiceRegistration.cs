@@ -26,6 +26,8 @@ public static class BllServiceRegistration
         services.AddScoped<IPaymentService, PaymentService>();
         services.AddScoped<IProductImageService, ProductImageService>();
         services.AddScoped<IWishlistService, WishlistService>();
+        services.AddScoped<IAuthService, AuthService>();
+        services.AddScoped<IStatisticsService, StatisticsService>();
 
         return services;
     }

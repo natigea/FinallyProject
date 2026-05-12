@@ -7,6 +7,9 @@ public record UserGetDto(
     string LastName,
     string PhoneNumber,
     bool IsActive,
+    string Role,
+    string? ShopName,
+    string? ShopDescription,
     DateTimeOffset CreatedDate);
 
 public record UserCreateDto(
