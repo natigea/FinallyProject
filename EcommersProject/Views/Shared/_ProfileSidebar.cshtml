@@ -1,0 +1,41 @@
+@using System.Security.Claims
+@{
+    var fullName  = User.Identity?.Name ?? "";
+    var email     = User.FindFirst(ClaimTypes.Email)?.Value ?? "";
+    var parts     = fullName.Trim().Split(' ', 2, StringSplitOptions.RemoveEmptyEntries);
+    var initials  = parts.Length >= 2
+        ? $"{parts[0][0]}{parts[1][0]}".ToUpper()
+        : fullName.Length > 0 ? fullName[0].ToString().ToUpper() : "?";
+
+    var path         = Context.Request.Path.Value ?? "";
+    bool isProfile   = path.Equals("/Account/Profile",    StringComparison.OrdinalIgnoreCase);
+    bool isListings  = path.StartsWith("/Listing/MyListings", StringComparison.OrdinalIgnoreCase);
+    bool isFavorites = path.StartsWith("/Favorites",      StringComparison.OrdinalIgnoreCase);
+    bool isMessages  = path.StartsWith("/Messages",       StringComparison.OrdinalIgnoreCase);
+}
+<aside class="profile-sidebar">
+    <div class="section-card text-center" style="padding:24px 20px;">
+        <div class="profile-avatar-ring mx-auto">@initials</div>
+        <div class="profile-name">@fullName</div>
+        <div class="profile-email">@email</div>
+    </div>
+
+    <nav class="sidebar-nav">
+        <a href="/Account/Profile" class="@(isProfile ? "active" : "")">
+            <i class="bi bi-person snav-icon"></i>@L["Profile_Title"]
+        </a>
+        <a href="/Listing/MyListings" class="@(isListings ? "active" : "")">
+            <i class="bi bi-card-list snav-icon"></i>@L["Profile_MyListings"]
+        </a>
+        <a href="/Favorites" class="@(isFavorites ? "active" : "")">
+            <i class="bi bi-heart snav-icon"></i>@L["Profile_Favorites"]
+        </a>
+        <a href="/Messages" class="@(isMessages ? "active" : "")">
+            <i class="bi bi-chat snav-icon"></i>@L["Profile_Messages"]
+        </a>
+    </nav>
+
+    <a href="/Listing/Create" class="sidebar-add">
+        <i class="bi bi-plus-lg me-1"></i>@L["Profile_AddListing"]
+    </a>
+</aside>
