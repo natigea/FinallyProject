@@ -1,0 +1,123 @@
+@page
+@model EcommersProject.Pages.Admin.ProductsModel
+@{
+    ViewData["Title"] = "Товары";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h5 class="mb-0 fw-bold">Управление товарами</h5>
+        <small class="text-muted">Всего: @Model.Products.Count</small>
+    </div>
+</div>
+
+<!-- Filters -->
+<div class="card mb-3">
+    <div class="card-body py-2">
+        <form method="get" class="row g-2 align-items-center">
+            <div class="col-auto">
+                <input asp-for="Search" type="text" class="form-control form-control-sm"
+                       placeholder="Поиск по названию / SKU..." style="min-width:220px" />
+            </div>
+            <div class="col-auto">
+                <select asp-for="CategoryFilter" class="form-select form-select-sm">
+                    <option value="">Все категории</option>
+                    @foreach (var c in Model.Categories)
+                    {
+                        <option value="@c.Id">@c.Name</option>
+                    }
+                </select>
+            </div>
+            <div class="col-auto">
+                <button type="submit" class="btn btn-sm btn-outline-primary">
+                    <i class="bi bi-search"></i>
+                </button>
+                <a href="/Admin/Products" class="btn btn-sm btn-outline-secondary ms-1">Сброс</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-body p-0">
+        @if (!Model.Products.Any())
+        {
+            <div class="empty-state">
+                <i class="bi bi-box-seam"></i>
+                Товары не найдены.
+            </div>
+        }
+        else
+        {
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Название</th>
+                            <th>SKU</th>
+                            <th>Категория</th>
+                            <th>Бренд</th>
+                            <th>Продавец</th>
+                            <th>Цена</th>
+                            <th>Склад</th>
+                            <th>Рейтинг</th>
+                            <th>Статус</th>
+                            <th>Действия</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var p in Model.Products)
+                        {
+                            <tr>
+                                <td class="fw-medium">@p.Name</td>
+                                <td><code class="small">@p.Sku</code></td>
+                                <td class="small">@(p.CategoryName ?? "—")</td>
+                                <td class="small">@(p.BrandName ?? "—")</td>
+                                <td class="small">@(p.SellerName ?? "—")</td>
+                                <td class="fw-medium">@p.Price.ToString("N2") ₼</td>
+                                <td>
+                                    @if (p.StockQuantity <= 5)
+                                    {
+                                        <span class="text-danger fw-bold">@p.StockQuantity</span>
+                                    }
+                                    else
+                                    {
+                                        <span>@p.StockQuantity</span>
+                                    }
+                                </td>
+                                <td>
+                                    <span class="text-warning">
+                                        @for (int i = 0; i < (int)Math.Round(p.RatingAverage); i++)
+                                        {
+                                            <i class="bi bi-star-fill" style="font-size:.7rem"></i>
+                                        }
+                                    </span>
+                                    <small class="text-muted">(@p.RatingAverage.ToString("F1"))</small>
+                                </td>
+                                <td>
+                                    @if (p.IsActive)
+                                    {
+                                        <span class="badge bg-success-subtle text-success">Активен</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-secondary-subtle text-secondary">Неактивен</span>
+                                    }
+                                </td>
+                                <td>
+                                    <form method="post" asp-page-handler="Delete"
+                                          onsubmit="return confirm('Удалить товар «@p.Name»?')">
+                                        <input type="hidden" name="id" value="@p.Id" />
+                                        <button class="btn btn-sm btn-outline-danger btn-action" title="Удалить">
+                                            <i class="bi bi-trash"></i>
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+    </div>
+</div>

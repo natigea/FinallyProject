@@ -1,0 +1,242 @@
+@page
+@model EcommersProject.Pages.Seller.DashboardModel
+@using System.Text.Json
+@{
+    ViewData["Title"] = "Моя статистика";
+    var s = Model.Stats;
+}
+
+@if (s is null)
+{
+    <div class="empty-state">
+        <i class="bi bi-exclamation-circle"></i>
+        Не удалось загрузить данные.
+    </div>
+    return;
+}
+
+<!-- KPI Cards -->
+<div class="row g-3 mb-4">
+    <div class="col-sm-6 col-xl-3">
+        <div class="stat-card bg-gradient-primary">
+            <div class="d-flex justify-content-between align-items-start">
+                <div>
+                    <div class="stat-value">@s.TotalProducts</div>
+                    <div class="stat-label">Мои товары</div>
+                </div>
+                <i class="bi bi-bag stat-icon"></i>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-6 col-xl-3">
+        <div class="stat-card bg-gradient-success">
+            <div class="d-flex justify-content-between align-items-start">
+                <div>
+                    <div class="stat-value">@s.TotalOrders</div>
+                    <div class="stat-label">Заказов с моими товарами</div>
+                </div>
+                <i class="bi bi-cart3 stat-icon"></i>
+            </div>
+            <div class="mt-2 small opacity-75">
+                Ожидание: @s.PendingOrders · Отправлено: @s.ShippedOrders
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-6 col-xl-3">
+        <div class="stat-card bg-gradient-warning">
+            <div class="d-flex justify-content-between align-items-start">
+                <div>
+                    <div class="stat-value">@s.TotalRevenue.ToString("N0") ₼</div>
+                    <div class="stat-label">Моя выручка</div>
+                </div>
+                <i class="bi bi-cash-coin stat-icon"></i>
+            </div>
+            <div class="mt-2 small opacity-75">
+                Доставлено: @s.DeliveredOrders заказов
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-6 col-xl-3">
+        <div class="stat-card bg-gradient-danger">
+            <div class="d-flex justify-content-between align-items-start">
+                <div>
+                    <div class="stat-value">@s.PendingOrders</div>
+                    <div class="stat-label">Ожидают обработки</div>
+                </div>
+                <i class="bi bi-hourglass-split stat-icon"></i>
+            </div>
+            <div class="mt-2 small opacity-75">
+                Отменено: @s.CancelledOrders
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Charts -->
+<div class="row g-3 mb-4">
+    <div class="col-lg-8">
+        <div class="card h-100">
+            <div class="card-header py-3">
+                <i class="bi bi-bar-chart-line me-2 text-primary"></i>
+                Мои продажи за последние 12 месяцев
+            </div>
+            <div class="card-body">
+                <div class="chart-container">
+                    <canvas id="revenueChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-4">
+        <div class="card h-100">
+            <div class="card-header py-3">
+                <i class="bi bi-pie-chart me-2 text-success"></i>
+                Статусы заказов
+            </div>
+            <div class="card-body d-flex align-items-center justify-content-center">
+                <div style="position:relative;height:240px;width:240px">
+                    <canvas id="statusChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Tables -->
+<div class="row g-3">
+    <div class="col-lg-7">
+        <div class="card">
+            <div class="card-header py-3 d-flex align-items-center justify-content-between">
+                <span><i class="bi bi-clock-history me-2 text-warning"></i>Последние заказы</span>
+                <a href="/Seller/Orders" class="btn btn-sm btn-outline-secondary">Все заказы</a>
+            </div>
+            <div class="card-body p-0">
+                @if (!s.RecentOrders.Any())
+                {
+                    <div class="empty-state"><i class="bi bi-inbox"></i>Заказов нет</div>
+                }
+                else
+                {
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0 align-middle">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Номер</th>
+                                    <th>Покупатель</th>
+                                    <th>Сумма</th>
+                                    <th>Статус</th>
+                                    <th>Дата</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var o in s.RecentOrders)
+                                {
+                                    <tr>
+                                        <td class="fw-medium small">@o.OrderNumber</td>
+                                        <td class="small">@o.CustomerName</td>
+                                        <td class="fw-medium">@o.TotalAmount.ToString("N2") ₼</td>
+                                        <td><span class="badge-status status-@o.Status.ToLower()">@o.Status</span></td>
+                                        <td class="small text-muted">@o.OrderDate.ToString("dd.MM.yy")</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-5">
+        <div class="card">
+            <div class="card-header py-3 d-flex align-items-center justify-content-between">
+                <span><i class="bi bi-trophy me-2 text-danger"></i>Мои топ товары</span>
+                <a href="/Seller/Products" class="btn btn-sm btn-outline-secondary">Все товары</a>
+            </div>
+            <div class="card-body p-0">
+                @if (!s.TopProducts.Any())
+                {
+                    <div class="empty-state"><i class="bi bi-box"></i>Нет данных о продажах</div>
+                }
+                else
+                {
+                    <table class="table table-hover mb-0 align-middle">
+                        <thead class="table-light">
+                            <tr>
+                                <th>#</th>
+                                <th>Товар</th>
+                                <th>Продано</th>
+                                <th>Выручка</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @for (int i = 0; i < s.TopProducts.Count; i++)
+                            {
+                                var p = s.TopProducts[i];
+                                <tr>
+                                    <td><span class="badge bg-light text-dark">@(i + 1)</span></td>
+                                    <td class="small fw-medium">@p.ProductName</td>
+                                    <td class="small">@p.TotalQuantitySold шт.</td>
+                                    <td class="small fw-medium">@p.TotalRevenue.ToString("N0") ₼</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+<script>
+    const months = @Html.Raw(JsonSerializer.Serialize(s.MonthlySales.Select(m => m.MonthName)));
+    const revenues = @Html.Raw(JsonSerializer.Serialize(s.MonthlySales.Select(m => m.Revenue)));
+
+    new Chart(document.getElementById('revenueChart'), {
+        type: 'line',
+        data: {
+            labels: months,
+            datasets: [{
+                label: 'Выручка (₼)',
+                data: revenues,
+                fill: true,
+                backgroundColor: 'rgba(17,153,142,.15)',
+                borderColor: '#11998e',
+                tension: 0.4,
+                pointBackgroundColor: '#11998e',
+                pointRadius: 4
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: { legend: { display: false } },
+            scales: {
+                y: { beginAtZero: true, grid: { color: 'rgba(0,0,0,.05)' } },
+                x: { grid: { display: false } }
+            }
+        }
+    });
+
+    new Chart(document.getElementById('statusChart'), {
+        type: 'doughnut',
+        data: {
+            labels: ['Ожидание', 'Обработка', 'Отправлен', 'Доставлен', 'Отменён'],
+            datasets: [{
+                data: [@s.PendingOrders, @s.ProcessingOrders, @s.ShippedOrders, @s.DeliveredOrders, @s.CancelledOrders],
+                backgroundColor: ['#ffd200','#4286f4','#a855f7','#11998e','#e94560'],
+                borderWidth: 0
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: { position: 'bottom', labels: { boxWidth: 12, font: { size: 11 } } }
+            },
+            cutout: '65%'
+        }
+    });
+</script>
+}

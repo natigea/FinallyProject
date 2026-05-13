@@ -1,0 +1,123 @@
+@page
+@model EcommersProject.Pages.Admin.CouponsModel
+@{
+    ViewData["Title"] = "Купоны";
+}
+
+<div class="row g-4">
+    <div class="col-lg-8">
+        <div class="card">
+            <div class="card-header py-3 d-flex align-items-center justify-content-between">
+                <span><i class="bi bi-ticket-perforated me-2 text-primary"></i>Купоны на скидку</span>
+                <span class="badge bg-primary-subtle text-primary">@Model.Coupons.Count</span>
+            </div>
+            <div class="card-body p-0">
+                @if (!Model.Coupons.Any())
+                {
+                    <div class="empty-state">
+                        <i class="bi bi-ticket-perforated"></i>
+                        Купонов нет. Создайте первый!
+                    </div>
+                }
+                else
+                {
+                    <table class="table table-hover align-middle mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Код</th>
+                                <th>Скидка ₼</th>
+                                <th>Скидка %</th>
+                                <th>Действует с</th>
+                                <th>Действует до</th>
+                                <th>Лимит</th>
+                                <th>Статус</th>
+                                <th>Действия</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var c in Model.Coupons)
+                            {
+                                var isActive = c.ValidFrom <= DateTimeOffset.UtcNow && c.ValidTo >= DateTimeOffset.UtcNow;
+                                <tr>
+                                    <td><code class="fw-bold text-primary">@c.Code</code></td>
+                                    <td>@(c.DiscountAmount > 0 ? c.DiscountAmount.ToString("N2") + " ₼" : "—")</td>
+                                    <td>@(c.DiscountPercent > 0 ? c.DiscountPercent.ToString("N1") + "%" : "—")</td>
+                                    <td class="small">@c.ValidFrom.ToString("dd.MM.yyyy")</td>
+                                    <td class="small">@c.ValidTo.ToString("dd.MM.yyyy")</td>
+                                    <td class="small">@c.UsageLimit</td>
+                                    <td>
+                                        @if (isActive)
+                                        {
+                                            <span class="badge bg-success-subtle text-success">Активен</span>
+                                        }
+                                        else if (c.ValidTo < DateTimeOffset.UtcNow)
+                                        {
+                                            <span class="badge bg-danger-subtle text-danger">Истёк</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-warning-subtle text-warning">Ещё не начался</span>
+                                        }
+                                    </td>
+                                    <td>
+                                        <form method="post" asp-page-handler="Delete"
+                                              onsubmit="return confirm('Удалить купон @c.Code?')">
+                                            <input type="hidden" name="id" value="@c.Id" />
+                                            <button class="btn btn-sm btn-outline-danger btn-action">
+                                                <i class="bi bi-trash"></i>
+                                            </button>
+                                        </form>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                }
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-4">
+        <div class="card">
+            <div class="card-header py-3">
+                <i class="bi bi-plus-circle me-2 text-success"></i>Новый купон
+            </div>
+            <div class="card-body">
+                <form method="post" asp-page-handler="Create">
+                    <div class="mb-3">
+                        <label class="form-label small fw-medium">Код <span class="text-danger">*</span></label>
+                        <input asp-for="NewCode" type="text" class="form-control"
+                               placeholder="SUMMER2024" required style="text-transform:uppercase" />
+                    </div>
+                    <div class="row g-2 mb-3">
+                        <div class="col-6">
+                            <label class="form-label small fw-medium">Скидка (₼)</label>
+                            <input asp-for="NewDiscountAmount" type="number" step="0.01" min="0" class="form-control" />
+                        </div>
+                        <div class="col-6">
+                            <label class="form-label small fw-medium">Скидка (%)</label>
+                            <input asp-for="NewDiscountPercent" type="number" step="0.1" min="0" max="100" class="form-control" />
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label small fw-medium">Действует с</label>
+                        <input asp-for="NewValidFrom" type="datetime-local" class="form-control"
+                               value="@DateTimeOffset.UtcNow.ToString("yyyy-MM-ddTHH:mm")" />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label small fw-medium">Действует до</label>
+                        <input asp-for="NewValidTo" type="datetime-local" class="form-control"
+                               value="@DateTimeOffset.UtcNow.AddMonths(1).ToString("yyyy-MM-ddTHH:mm")" />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label small fw-medium">Лимит использований</label>
+                        <input asp-for="NewUsageLimit" type="number" min="1" class="form-control" value="100" />
+                    </div>
+                    <button type="submit" class="btn btn-success w-100">
+                        <i class="bi bi-plus-lg me-1"></i>Создать купон
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

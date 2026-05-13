@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] — EcommersAdmin</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet" />
+    <style>
+        :root { --sidebar-width: 260px; }
+
+        body { background: #f0f2f5; min-height: 100vh; }
+
+        .sidebar {
+            width: var(--sidebar-width);
+            min-height: 100vh;
+            background: linear-gradient(180deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            position: fixed;
+            top: 0; left: 0;
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .sidebar-brand {
+            padding: 1.5rem 1.25rem;
+            border-bottom: 1px solid rgba(255,255,255,.1);
+        }
+
+        .sidebar-brand .brand-title {
+            color: #fff;
+            font-size: 1.25rem;
+            font-weight: 700;
+            letter-spacing: .5px;
+        }
+
+        .sidebar-brand .brand-subtitle {
+            color: rgba(255,255,255,.5);
+            font-size: .7rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .sidebar-nav { flex: 1; padding: 1rem 0; overflow-y: auto; }
+
+        .sidebar-section {
+            padding: .5rem 1.25rem .25rem;
+            color: rgba(255,255,255,.35);
+            font-size: .65rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+        }
+
+        .sidebar-nav .nav-link {
+            color: rgba(255,255,255,.7);
+            padding: .6rem 1.25rem;
+            display: flex;
+            align-items: center;
+            gap: .65rem;
+            font-size: .9rem;
+            transition: all .2s;
+            border-radius: 0;
+        }
+
+        .sidebar-nav .nav-link:hover,
+        .sidebar-nav .nav-link.active {
+            color: #fff;
+            background: rgba(255,255,255,.1);
+        }
+
+        .sidebar-nav .nav-link.active {
+            border-left: 3px solid #e94560;
+        }
+
+        .sidebar-nav .nav-link i { font-size: 1rem; width: 1.25rem; text-align: center; }
+
+        .sidebar-footer {
+            padding: 1rem 1.25rem;
+            border-top: 1px solid rgba(255,255,255,.1);
+        }
+
+        .sidebar-user { color: rgba(255,255,255,.8); }
+        .sidebar-user .user-name { font-weight: 600; font-size: .9rem; }
+        .sidebar-user .user-role { font-size: .75rem; color: rgba(255,255,255,.45); }
+
+        .main-wrapper {
+            margin-left: var(--sidebar-width);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .topbar {
+            background: #fff;
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid #e9ecef;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .topbar .page-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #1a1a2e;
+            margin: 0;
+        }
+
+        .main-content { padding: 1.75rem; flex: 1; }
+
+        .stat-card {
+            border: none;
+            border-radius: 12px;
+            padding: 1.5rem;
+            color: #fff;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card::after {
+            content: '';
+            position: absolute;
+            top: -20px; right: -20px;
+            width: 80px; height: 80px;
+            border-radius: 50%;
+            background: rgba(255,255,255,.1);
+        }
+
+        .stat-card .stat-icon { font-size: 2rem; opacity: .8; }
+        .stat-card .stat-value { font-size: 2rem; font-weight: 700; }
+        .stat-card .stat-label { font-size: .8rem; opacity: .85; }
+
+        .bg-gradient-primary { background: linear-gradient(135deg, #667eea, #764ba2); }
+        .bg-gradient-success { background: linear-gradient(135deg, #11998e, #38ef7d); }
+        .bg-gradient-warning { background: linear-gradient(135deg, #f7971e, #ffd200); }
+        .bg-gradient-danger  { background: linear-gradient(135deg, #e94560, #f44369); }
+        .bg-gradient-info    { background: linear-gradient(135deg, #2193b0, #6dd5ed); }
+        .bg-gradient-dark    { background: linear-gradient(135deg, #373b44, #4286f4); }
+
+        .card { border: none; border-radius: 12px; box-shadow: 0 2px 12px rgba(0,0,0,.06); }
+        .card-header { background: transparent; border-bottom: 1px solid #f0f2f5; font-weight: 600; }
+
+        .table th { font-size: .8rem; text-transform: uppercase; letter-spacing: .5px; color: #6c757d; font-weight: 600; border-top: none; }
+
+        .badge-status {
+            padding: .35em .75em;
+            border-radius: 50px;
+            font-size: .75rem;
+            font-weight: 500;
+        }
+
+        .status-pending    { background: #fff3cd; color: #856404; }
+        .status-paid       { background: #d1e7dd; color: #0a3622; }
+        .status-processing { background: #cfe2ff; color: #084298; }
+        .status-shipped    { background: #d3d3ff; color: #2c2878; }
+        .status-delivered  { background: #d1e7dd; color: #0a3622; }
+        .status-cancelled  { background: #f8d7da; color: #842029; }
+
+        .btn-action { padding: .25rem .6rem; font-size: .8rem; }
+
+        .chart-container { position: relative; height: 280px; }
+
+        .empty-state { text-align: center; padding: 3rem; color: #adb5bd; }
+        .empty-state i { font-size: 3rem; display: block; margin-bottom: .75rem; }
+
+        @@media (max-width: 768px) {
+            .sidebar { transform: translateX(-100%); }
+            .main-wrapper { margin-left: 0; }
+        }
+    </style>
+</head>
+<body>
+    <div class="d-flex">
+        <nav class="sidebar">
+            <div class="sidebar-brand">
+                <div class="brand-title"><i class="bi bi-shop-window me-2"></i>EcommersAdmin</div>
+                <div class="brand-subtitle">Панель управления</div>
+            </div>
+
+            <div class="sidebar-nav">
+                @if (User.IsInRole("Admin"))
+                {
+                    <div class="sidebar-section">Администратор</div>
+                    <a class="nav-link @(Context.Request.Path.StartsWithSegments("/Admin/Dashboard") ? "active" : "")"
+                       href="/Admin/Dashboard">
+                        <i class="bi bi-speedometer2"></i> Дашборд
+                    </a>
+                    <a class="nav-link @(Context.Request.Path.StartsWithSegments("/Admin/Users") ? "active" : "")"
+                       href="/Admin/Users">
+                        <i class="bi bi-people"></i> Пользователи
+                    </a>
+                    <a class="nav-link @(Context.Request.Path.StartsWithSegments("/Admin/Products") ? "active" : "")"
+                       href="/Admin/Products">
+                        <i class="bi bi-box-seam"></i> Товары
+                    </a>
+                    <a class="nav-link @(Context.Request.Path.StartsWithSegments("/Admin/Orders") ? "active" : "")"
+                       href="/Admin/Orders">
+                        <i class="bi bi-cart3"></i> Заказы
+                    </a>
+                    <a class="nav-link @(Context.Request.Path.StartsWithSegments("/Admin/Categories") ? "active" : "")"
+                       href="/Admin/Categories">
+                        <i class="bi bi-tags"></i> Категории
+                    </a>
+                    <a class="nav-link @(Context.Request.Path.StartsWithSegments("/Admin/Brands") ? "active" : "")"
+                       href="/Admin/Brands">
+                        <i class="bi bi-bookmark-star"></i> Бренды
+                    </a>
+                    <a class="nav-link @(Context.Request.Path.StartsWithSegments("/Admin/Coupons") ? "active" : "")"
+                       href="/Admin/Coupons">
+                        <i class="bi bi-ticket-perforated"></i> Купоны
+                    </a>
+                }
+
+                @if (User.IsInRole("Seller") || User.IsInRole("Admin"))
+                {
+                    <div class="sidebar-section mt-2">Продавец</div>
+                    <a class="nav-link @(Context.Request.Path.StartsWithSegments("/Seller/Dashboard") ? "active" : "")"
+                       href="/Seller/Dashboard">
+                        <i class="bi bi-graph-up"></i> Моя статистика
+                    </a>
+                    <a class="nav-link @(Context.Request.Path.StartsWithSegments("/Seller/Products") ? "active" : "")"
+                       href="/Seller/Products">
+                        <i class="bi bi-bag"></i> Мои товары
+                    </a>
+                    <a class="nav-link @(Context.Request.Path.StartsWithSegments("/Seller/Orders") ? "active" : "")"
+                       href="/Seller/Orders">
+                        <i class="bi bi-receipt"></i> Мои заказы
+                    </a>
+                }
+            </div>
+
+            <div class="sidebar-footer">
+                <div class="sidebar-user d-flex align-items-center gap-2">
+                    <div class="rounded-circle bg-secondary d-flex align-items-center justify-content-center"
+                         style="width:36px;height:36px;font-size:.9rem">
+                        <i class="bi bi-person text-white"></i>
+                    </div>
+                    <div>
+                        <div class="user-name">@User.Identity?.Name</div>
+                        <div class="user-role">
+                            @(User.IsInRole("Admin") ? "Администратор" : "Продавец")
+                        </div>
+                    </div>
+                    <a href="/Auth/Logout" class="ms-auto text-white-50" title="Выйти">
+                        <i class="bi bi-box-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+        </nav>
+
+        <div class="main-wrapper">
+            <div class="topbar">
+                <h6 class="page-title">@ViewData["Title"]</h6>
+                <div class="d-flex align-items-center gap-3">
+                    <span class="text-muted small">@DateTime.Now.ToString("dd.MM.yyyy")</span>
+                </div>
+            </div>
+
+            <main class="main-content">
+                @if (TempData["SuccessMessage"] is string success)
+                {
+                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                        <i class="bi bi-check-circle me-2"></i>@success
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                }
+                @if (TempData["ErrorMessage"] is string error)
+                {
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        <i class="bi bi-exclamation-triangle me-2"></i>@error
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                }
+                @RenderBody()
+            </main>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

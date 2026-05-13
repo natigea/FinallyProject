@@ -1,0 +1,89 @@
+@page
+@model EcommersProject.Pages.Seller.OrdersModel
+@{
+    ViewData["Title"] = "Мои заказы";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h5 class="mb-0 fw-bold">Заказы с моими товарами</h5>
+        <small class="text-muted">Всего: @Model.Orders.Count</small>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-body p-0">
+        @if (!Model.Orders.Any())
+        {
+            <div class="empty-state">
+                <i class="bi bi-receipt"></i>
+                Заказов с вашими товарами нет.
+            </div>
+        }
+        else
+        {
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Номер заказа</th>
+                            <th>Позиций</th>
+                            <th>Сумма заказа</th>
+                            <th>Статус</th>
+                            <th>Дата</th>
+                            <th>Позиции</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var o in Model.Orders)
+                        {
+                            <tr>
+                                <td class="fw-medium small">@o.OrderNumber</td>
+                                <td class="small">@o.Items.Count</td>
+                                <td class="fw-bold">@o.TotalAmount.ToString("N2") ₼</td>
+                                <td>
+                                    <span class="badge-status status-@o.Status.ToLower()">@o.Status</span>
+                                </td>
+                                <td class="small text-muted">@o.OrderDate.ToString("dd.MM.yyyy HH:mm")</td>
+                                <td>
+                                    <button class="btn btn-sm btn-outline-primary btn-action"
+                                            data-bs-toggle="collapse"
+                                            data-bs-target="#items-@o.Id">
+                                        <i class="bi bi-list-ul"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr class="collapse" id="items-@o.Id">
+                                <td colspan="6" class="p-0">
+                                    <div class="p-3 bg-light">
+                                        <table class="table table-sm mb-0">
+                                            <thead>
+                                                <tr>
+                                                    <th class="small">Товар</th>
+                                                    <th class="small">Кол-во</th>
+                                                    <th class="small">Цена</th>
+                                                    <th class="small">Сумма</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @foreach (var item in o.Items)
+                                                {
+                                                    <tr>
+                                                        <td class="small">@(item.ProductName ?? item.ProductId.ToString())</td>
+                                                        <td class="small">@item.Quantity</td>
+                                                        <td class="small">@item.UnitPrice.ToString("N2") ₼</td>
+                                                        <td class="small fw-medium">@item.TotalPrice.ToString("N2") ₼</td>
+                                                    </tr>
+                                                }
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+    </div>
+</div>

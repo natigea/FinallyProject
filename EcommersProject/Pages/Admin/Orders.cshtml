@@ -1,0 +1,107 @@
+@page
+@model EcommersProject.Pages.Admin.OrdersModel
+@{
+    ViewData["Title"] = "Заказы";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h5 class="mb-0 fw-bold">Управление заказами</h5>
+        <small class="text-muted">Всего: @Model.Orders.Count</small>
+    </div>
+</div>
+
+<!-- Status filter tabs -->
+<div class="card mb-3">
+    <div class="card-body py-2">
+        <div class="d-flex gap-2 flex-wrap">
+            <a href="/Admin/Orders" class="btn btn-sm @(string.IsNullOrEmpty(Model.StatusFilter) ? "btn-primary" : "btn-outline-secondary")">
+                Все
+            </a>
+            @foreach (var status in Model.AllStatuses)
+            {
+                <a href="/Admin/Orders?StatusFilter=@status"
+                   class="btn btn-sm @(Model.StatusFilter == status ? "btn-primary" : "btn-outline-secondary")">
+                    @status
+                </a>
+            }
+        </div>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-body p-0">
+        @if (!Model.Orders.Any())
+        {
+            <div class="empty-state">
+                <i class="bi bi-cart3"></i>
+                Заказы не найдены.
+            </div>
+        }
+        else
+        {
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Номер заказа</th>
+                            <th>Позиций</th>
+                            <th>Скидка</th>
+                            <th>Доставка</th>
+                            <th>Итого</th>
+                            <th>Статус</th>
+                            <th>Дата</th>
+                            <th>Изменить статус</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var o in Model.Orders)
+                        {
+                            <tr>
+                                <td class="fw-medium small">@o.OrderNumber</td>
+                                <td class="small">@o.Items.Count</td>
+                                <td class="small text-danger">
+                                    @if (o.DiscountAmount > 0)
+                                    {
+                                        <span>-@o.DiscountAmount.ToString("N2") ₼</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="text-muted">—</span>
+                                    }
+                                </td>
+                                <td class="small">@o.ShippingAmount.ToString("N2") ₼</td>
+                                <td class="fw-bold">@o.TotalAmount.ToString("N2") ₼</td>
+                                <td>
+                                    <span class="badge-status status-@o.Status.ToLower()">@o.Status</span>
+                                </td>
+                                <td class="small text-muted">@o.OrderDate.ToString("dd.MM.yyyy HH:mm")</td>
+                                <td>
+                                    <form method="post" asp-page-handler="UpdateStatus" class="d-flex gap-1">
+                                        <input type="hidden" name="id" value="@o.Id" />
+                                        <select name="status" class="form-select form-select-sm" style="width:130px">
+                                            @foreach (var s in Model.AllStatuses)
+                                            {
+                                                if (o.Status == s)
+                                                {
+                                                    <option value="@s" selected>@s</option>
+                                                }
+                                                else
+                                                {
+                                                    <option value="@s">@s</option>
+                                                }
+                                            }
+                                        </select>
+                                        <button class="btn btn-sm btn-outline-primary btn-action">
+                                            <i class="bi bi-check"></i>
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+    </div>
+</div>
