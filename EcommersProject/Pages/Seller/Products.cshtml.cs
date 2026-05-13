@@ -38,11 +38,24 @@ public class ProductsModel(
     public async Task<IActionResult> OnPostCreateAsync(CancellationToken cancellationToken)
     {
         SellerId = GetSellerId();
+
+        if (NewCategoryId == Guid.Empty)
+        {
+            TempData["ErrorMessage"] = "Выберите категорию товара.";
+            return RedirectToPage();
+        }
+
+        if (NewBrandId == Guid.Empty)
+        {
+            TempData["ErrorMessage"] = "Выберите бренд товара.";
+            return RedirectToPage();
+        }
+
         await productService.CreateAsync(new ProductCreateDto(
             NewName, NewDescription, NewSku, NewPrice, NewStockQuantity,
-            NewCategoryId, NewBrandId, SellerId), cancellationToken);
+            NewCategoryId, NewBrandId, SellerId, IsActive: false), cancellationToken);
 
-        TempData["SuccessMessage"] = $"Товар «{NewName}» добавлен.";
+        TempData["SuccessMessage"] = $"Товар «{NewName}» отправлен на проверку администратору.";
         return RedirectToPage();
     }
 

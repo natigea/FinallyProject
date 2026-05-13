@@ -62,10 +62,11 @@ public class UsersModel(IUserService userService, IAuthService authService) : Pa
     {
         try
         {
-            await authService.RegisterAsync(new RegisterDto(
+            var created = await authService.RegisterAsync(new RegisterDto(
                 email, firstName, lastName, phone, password,
                 IsSeller: true, ShopName: shopName, ShopDescription: shopDescription),
                 cancellationToken);
+            await userService.ActivateAsync(created.Id, cancellationToken);
             TempData["SuccessMessage"] = $"Продавец {email} создан.";
         }
         catch (Exception ex)

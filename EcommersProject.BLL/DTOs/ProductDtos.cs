@@ -26,7 +26,8 @@ public record ProductCreateDto(
     int StockQuantity,
     Guid CategoryId,
     Guid BrandId,
-    Guid? SellerId = null);
+    Guid? SellerId = null,
+    bool IsActive = true);
 
 public record ProductUpdateDto(
     string Name,

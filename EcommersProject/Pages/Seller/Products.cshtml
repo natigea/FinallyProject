@@ -70,7 +70,9 @@
                                     }
                                     else
                                     {
-                                        <span class="badge bg-secondary-subtle text-secondary">Неактивен</span>
+                                        <span class="badge bg-warning-subtle text-warning">
+                                            <i class="bi bi-hourglass-split me-1"></i>На проверке
+                                        </span>
                                     }
                                 </td>
                                 <td class="small text-muted">@p.CreatedDate.ToString("dd.MM.yyyy")</td>
@@ -91,6 +93,11 @@
         }
     </div>
 </div>
+
+<style>
+    .cat-card:hover { background: #f8faff; border-color: #a5b4fc !important; }
+    .cat-card.selected { background: #eef2ff; border-color: #6366f1 !important; box-shadow: 0 0 0 2px #c7d2fe; }
+</style>
 
 <!-- Add Product Modal -->
 <div class="modal fade" id="addProductModal" tabindex="-1">
@@ -124,16 +131,6 @@
                             <input asp-for="NewStockQuantity" type="number" min="0" class="form-control form-control-sm" value="0" />
                         </div>
                         <div class="col-6">
-                            <label class="form-label small fw-medium">Категория <span class="text-danger">*</span></label>
-                            <select asp-for="NewCategoryId" class="form-select form-select-sm" required>
-                                <option value="">— Выберите —</option>
-                                @foreach (var c in Model.Categories)
-                                {
-                                    <option value="@c.Id">@c.Name</option>
-                                }
-                            </select>
-                        </div>
-                        <div class="col-6">
                             <label class="form-label small fw-medium">Бренд <span class="text-danger">*</span></label>
                             <select asp-for="NewBrandId" class="form-select form-select-sm" required>
                                 <option value="">— Выберите —</option>
@@ -142,6 +139,36 @@
                                     <option value="@b.Id">@b.Name</option>
                                 }
                             </select>
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label small fw-medium">Категория <span class="text-danger">*</span></label>
+                            <input type="hidden" asp-for="NewCategoryId" id="catInput" />
+                            @{
+                                var catMeta = new Dictionary<string, (string Icon, string Color)>(StringComparer.OrdinalIgnoreCase)
+                                {
+                                    ["Техника"] = ("bi-cpu-fill", "#6366f1"),
+                                    ["Одежда"] = ("bi-bag-heart-fill", "#ec4899"),
+                                    ["Запчасти для автомобиля"] = ("bi-car-front-fill", "#475569"),
+                                    ["Машинки для бритья/стрижки"] = ("bi-scissors", "#0891b2"),
+                                    ["Инструменты"] = ("bi-tools", "#ea580c"),
+                                };
+                            }
+                            <div class="row row-cols-3 g-2 mt-1" id="catCards">
+                                @foreach (var c in Model.Categories)
+                                {
+                                    var (icon, color) = catMeta.TryGetValue(c.Name, out var m) ? m : ("bi-tag-fill", "#6b7280");
+                                    <div class="col">
+                                        <div class="cat-card border rounded-3 p-2 text-center h-100"
+                                             data-id="@c.Id"
+                                             onclick="pickCategory(this)"
+                                             style="cursor:pointer;transition:border-color .15s,background .15s">
+                                            <i class="bi @icon d-block mb-1" style="font-size:1.6rem;color:@color"></i>
+                                            <div class="small fw-medium lh-sm">@c.Name</div>
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+                            <div id="catError" class="text-danger small mt-1" style="display:none">Выберите категорию</div>
                         </div>
                     </div>
                 </div>
@@ -155,3 +182,25 @@
         </div>
     </div>
 </div>
+
+<script>
+    function pickCategory(el) {
+        document.querySelectorAll('#catCards .cat-card').forEach(c => c.classList.remove('selected'));
+        el.classList.add('selected');
+        document.getElementById('catInput').value = el.dataset.id;
+        document.getElementById('catError').style.display = 'none';
+    }
+
+    document.querySelector('#addProductModal form').addEventListener('submit', function (e) {
+        if (!document.getElementById('catInput').value) {
+            e.preventDefault();
+            document.getElementById('catError').style.display = 'block';
+        }
+    });
+
+    document.getElementById('addProductModal').addEventListener('hidden.bs.modal', function () {
+        document.querySelectorAll('#catCards .cat-card').forEach(c => c.classList.remove('selected'));
+        document.getElementById('catInput').value = '';
+        document.getElementById('catError').style.display = 'none';
+    });
+</script>

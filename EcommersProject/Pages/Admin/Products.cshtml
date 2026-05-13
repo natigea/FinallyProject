@@ -101,17 +101,39 @@
                                     }
                                     else
                                     {
-                                        <span class="badge bg-secondary-subtle text-secondary">Неактивен</span>
+                                        <span class="badge bg-warning-subtle text-warning">
+                                            <i class="bi bi-hourglass-split me-1"></i>На проверке
+                                        </span>
                                     }
                                 </td>
                                 <td>
-                                    <form method="post" asp-page-handler="Delete"
-                                          onsubmit="return confirm('Удалить товар «@p.Name»?')">
-                                        <input type="hidden" name="id" value="@p.Id" />
-                                        <button class="btn btn-sm btn-outline-danger btn-action" title="Удалить">
-                                            <i class="bi bi-trash"></i>
-                                        </button>
-                                    </form>
+                                    <div class="d-flex gap-1">
+                                        @if (!p.IsActive)
+                                        {
+                                            <form method="post" asp-page-handler="Activate">
+                                                <input type="hidden" name="id" value="@p.Id" />
+                                                <button class="btn btn-sm btn-outline-success btn-action" title="Опубликовать">
+                                                    <i class="bi bi-check-circle"></i>
+                                                </button>
+                                            </form>
+                                        }
+                                        else
+                                        {
+                                            <form method="post" asp-page-handler="Deactivate">
+                                                <input type="hidden" name="id" value="@p.Id" />
+                                                <button class="btn btn-sm btn-outline-warning btn-action" title="Снять с публикации">
+                                                    <i class="bi bi-pause-circle"></i>
+                                                </button>
+                                            </form>
+                                        }
+                                        <form method="post" asp-page-handler="Delete"
+                                              onsubmit="return confirm('Удалить товар «@p.Name»?')">
+                                            <input type="hidden" name="id" value="@p.Id" />
+                                            <button class="btn btn-sm btn-outline-danger btn-action" title="Удалить">
+                                                <i class="bi bi-trash"></i>
+                                            </button>
+                                        </form>
+                                    </div>
                                 </td>
                             </tr>
                         }

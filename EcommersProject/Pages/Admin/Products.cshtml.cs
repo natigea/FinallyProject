@@ -45,6 +45,26 @@ public class ProductsModel(
         Sellers = allUsers.Where(u => u.Role == "Seller").ToList();
     }
 
+    public async Task<IActionResult> OnPostActivateAsync(Guid id, CancellationToken cancellationToken)
+    {
+        var p = await productService.GetByIdAsync(id, cancellationToken);
+        await productService.UpdateAsync(id,
+            new ProductUpdateDto(p.Name, p.Description, p.Price, p.StockQuantity, true, p.CategoryId, p.BrandId),
+            cancellationToken);
+        TempData["SuccessMessage"] = $"Товар «{p.Name}» активирован и опубликован.";
+        return RedirectToPage();
+    }
+
+    public async Task<IActionResult> OnPostDeactivateAsync(Guid id, CancellationToken cancellationToken)
+    {
+        var p = await productService.GetByIdAsync(id, cancellationToken);
+        await productService.UpdateAsync(id,
+            new ProductUpdateDto(p.Name, p.Description, p.Price, p.StockQuantity, false, p.CategoryId, p.BrandId),
+            cancellationToken);
+        TempData["SuccessMessage"] = $"Товар «{p.Name}» деактивирован.";
+        return RedirectToPage();
+    }
+
     public async Task<IActionResult> OnPostDeleteAsync(Guid id, CancellationToken cancellationToken)
     {
         await productService.DeleteAsync(id, cancellationToken);
