@@ -1,0 +1,193 @@
+@using Microsoft.Extensions.Localization
+@using EcommersProject.Resources
+@inject IStringLocalizer<SharedResource> L
+@model EcommersProject.BLL.DTOs.OrderGetDto
+@{
+    ViewData["Title"] = L["OrderDetail_Ordered"].Value + " " + Model.OrderNumber;
+    var o = Model;
+    string StatusLabel(string s) => s switch
+    {
+        "Pending" => L["Status_Pending"].Value,
+        "Paid" => L["Status_Paid"].Value,
+        "Processing" => L["Status_Processing"].Value,
+        "Shipped" => L["Status_Shipped"].Value,
+        "Delivered" => L["Status_Delivered"].Value,
+        "Cancelled" => L["Status_Cancelled"].Value,
+        _ => s
+    };
+    var deadlineUtc = o.OrderDate.UtcDateTime.AddHours(1);
+    var deadlineIso = deadlineUtc.ToString("o");
+}
+
+<div class="container py-4">
+    <nav aria-label="breadcrumb" class="mb-4">
+        <ol class="breadcrumb small">
+            <li class="breadcrumb-item"><a href="/">EcommersShop</a></li>
+            <li class="breadcrumb-item"><a href="/Account/Orders">@L["Orders_Title"]</a></li>
+            <li class="breadcrumb-item active">@o.OrderNumber</li>
+        </ol>
+    </nav>
+
+    <div class="d-flex justify-content-between align-items-start flex-wrap gap-3 mb-4">
+        <div>
+            <h2 class="fw-bold mb-1">@o.OrderNumber</h2>
+            <p class="text-muted mb-0">@L["OrderDetail_Ordered"] @o.OrderDate.ToString("dd MMMM yyyy, HH:mm")</p>
+        </div>
+        <span class="order-status-badge fs-6 status-@o.Status.ToLower()">@StatusLabel(o.Status)</span>
+    </div>
+
+    <div class="row g-4">
+        <!-- Items -->
+        <div class="col-lg-8">
+            <div class="card border-0 shadow-sm rounded-3 mb-4">
+                <div class="card-header bg-transparent border-0 pt-4 pb-0 px-4">
+                    <h5 class="fw-bold">@L["OrderDetail_Composition"]</h5>
+                </div>
+                <div class="card-body px-4 pb-4">
+                    @foreach (var item in o.Items)
+                    {
+                        <div class="d-flex align-items-center gap-3 py-3 border-bottom">
+                            <div style="width:56px; height:56px; background: linear-gradient(135deg, #e0e7ff, #ede9fe); border-radius:10px; display:flex; align-items:center; justify-content:center; flex-shrink:0;">
+                                <i class="bi bi-box text-primary"></i>
+                            </div>
+                            <div class="flex-grow-1">
+                                <a href="/Shop/Detail/@item.ProductId" class="fw-semibold text-dark text-decoration-none">@item.ProductName</a>
+                                <div class="text-muted small">@item.UnitPrice.ToString("N2") ₼ × @item.Quantity шт.</div>
+                            </div>
+                            <div class="fw-bold text-primary">@item.TotalPrice.ToString("N2") ₼</div>
+                        </div>
+                    }
+
+                    <!-- Totals -->
+                    <div class="mt-3">
+                        <div class="d-flex justify-content-between text-muted small mb-1">
+                            <span>@L["OrderDetail_Subtotal"]</span><span>@o.Subtotal.ToString("N2") ₼</span>
+                        </div>
+                        <div class="d-flex justify-content-between text-muted small mb-1">
+                            <span>@L["OrderDetail_Delivery"]</span><span>@o.ShippingAmount.ToString("N2") ₼</span>
+                        </div>
+                        @if (o.DiscountAmount > 0)
+                        {
+                            <div class="d-flex justify-content-between text-success small mb-1">
+                                <span>@L["OrderDetail_Discount"]</span><span>−@o.DiscountAmount.ToString("N2") ₼</span>
+                            </div>
+                        }
+                        <div class="d-flex justify-content-between fw-bold fs-5 border-top pt-2 mt-2">
+                            <span>@L["OrderDetail_Total"]</span>
+                            <span class="text-primary">@o.TotalAmount.ToString("N2") ₼</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <a href="/Account/Orders" class="btn btn-outline-secondary">
+                <i class="bi bi-arrow-left me-2"></i>@L["OrderDetail_BackToOrders"]
+            </a>
+            <a href="/Shop" class="btn btn-primary ms-2">
+                <i class="bi bi-grid me-2"></i>@L["OrderDetail_Continue"]
+            </a>
+        </div>
+
+        <!-- Sidebar -->
+        <div class="col-lg-4">
+            <!-- Status tracker -->
+            <div class="card border-0 shadow-sm rounded-3 mb-3">
+                <div class="card-body p-4">
+                    <h6 class="fw-bold mb-3">@L["OrderDetail_StatusTitle"]</h6>
+                    <div class="d-flex flex-column gap-2">
+                        @{
+                            var steps = new[] { "Pending", "Processing", "Shipped", "Delivered" };
+                            int currentIdx = o.Status == "Cancelled" ? -1 : Array.IndexOf(steps, o.Status);
+                        }
+                        @if (o.Status == "Cancelled")
+                        {
+                            <div class="d-flex align-items-center gap-2">
+                                <div class="status-dot" style="background:#dc2626;border-color:#dc2626;"></div>
+                                <span class="fw-bold text-danger">@L["Status_Cancelled"]</span>
+                            </div>
+                        }
+                        else
+                        {
+                            @for (int si = 0; si < steps.Length; si++)
+                            {
+                                var isDone = si <= currentIdx;
+                                var isCurrent = si == currentIdx;
+                                <div class="d-flex align-items-center gap-2">
+                                    <div class="status-dot @(isDone ? "done" : "") @(isCurrent ? "current" : "")"></div>
+                                    <span class="small @(isCurrent ? "fw-bold" : "") @(!isDone ? "text-muted" : "")">@StatusLabel(steps[si])</span>
+                                </div>
+                            }
+                        }
+                    </div>
+                </div>
+            </div>
+
+            <!-- Order info -->
+            <div class="card border-0 shadow-sm rounded-3 mb-3">
+                <div class="card-body p-4">
+                    <h6 class="fw-bold mb-2">@L["OrderDetail_InfoTitle"]</h6>
+                    <div class="small text-muted d-flex flex-column gap-1">
+                        <div><span class="fw-medium text-dark">@L["OrderDetail_Number"]:</span> @o.OrderNumber</div>
+                        <div><span class="fw-medium text-dark">@L["OrderDetail_Date"]:</span> @o.OrderDate.ToString("dd.MM.yyyy")</div>
+                        <div><span class="fw-medium text-dark">@L["OrderDetail_Items"]:</span> @o.Items.Count</div>
+                        <div><span class="fw-medium text-dark">@L["OrderDetail_Status"]:</span> @StatusLabel(o.Status)</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Cancellation card -->
+            @if (o.CanCancel)
+            {
+                <div class="card border-0 shadow-sm rounded-3 border-warning" style="border:1.5px solid #f59e0b !important;">
+                    <div class="card-body p-4">
+                        <h6 class="fw-bold mb-2 text-warning"><i class="bi bi-clock-history me-1"></i>@L["OrderDetail_CancelTitle"]</h6>
+                        <p class="small text-muted mb-2">@L["OrderDetail_CancelDesc"]</p>
+                        <div class="fw-bold fs-5 text-warning mb-3" id="cancelCountdown">--:--</div>
+                        <form method="post" asp-controller="Account" asp-action="CancelOrder"
+                              onsubmit="return confirm('@L["OrderDetail_CancelConfirm"]')">
+                            <input type="hidden" name="id" value="@o.Id" />
+                            <button class="btn btn-danger w-100">
+                                <i class="bi bi-x-circle me-1"></i>@L["OrderDetail_CancelBtn"]
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+@section Styles {
+<style>
+    .status-dot { width: 14px; height: 14px; border-radius: 50%; background: #e5e7eb; flex-shrink: 0; border: 2px solid #e5e7eb; }
+    .status-dot.done { background: #6366f1; border-color: #6366f1; }
+    .status-dot.current { background: #6366f1; border-color: #6366f1; box-shadow: 0 0 0 4px #e0e7ff; }
+</style>
+}
+
+@if (o.CanCancel)
+{
+    @section Scripts {
+    <script>
+        (function () {
+            const deadline = new Date('@deadlineIso');
+            const el = document.getElementById('cancelCountdown');
+            if (!el) return;
+
+            function tick() {
+                const diff = deadline - new Date();
+                if (diff <= 0) {
+                    el.textContent = '00:00';
+                    el.closest('.card').innerHTML = '<div class="card-body p-4 text-muted small">Время на отмену истекло.</div>';
+                    return;
+                }
+                const m = Math.floor(diff / 60000);
+                const s = Math.floor((diff % 60000) / 1000);
+                el.textContent = String(m).padStart(2, '0') + ':' + String(s).padStart(2, '0');
+                setTimeout(tick, 1000);
+            }
+            tick();
+        })();
+    </script>
+    }
+}

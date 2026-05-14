@@ -2,4 +2,5 @@
   <Project Path="EcommersProject.BLL/EcommersProject.BLL.csproj" />
   <Project Path="EcommersProject.DAL/EcommersProject.DAL.csproj" />
   <Project Path="EcommersProject/EcommersProject.csproj" />
+  <Project Path="EcommersProject.API/EcommersProject.API.csproj" />
 </Solution>

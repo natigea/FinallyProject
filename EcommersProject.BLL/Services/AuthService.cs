@@ -41,7 +41,7 @@ public class AuthService(IUnitOfWork unitOfWork) : IAuthService
             Role = dto.IsSeller ? UserRole.Seller : UserRole.Customer,
             ShopName = dto.ShopName,
             ShopDescription = dto.ShopDescription,
-            IsActive = true
+            IsActive = !dto.IsSeller
         };
 
         await unitOfWork.Users.AddAsync(user, cancellationToken);

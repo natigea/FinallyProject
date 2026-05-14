@@ -1,0 +1,163 @@
+@model ProductDetailViewModel
+@{
+    ViewData["Title"] = Model.Product.Name;
+    var p = Model.Product;
+}
+
+<div class="container py-4">
+    <!-- Breadcrumb -->
+    <nav aria-label="breadcrumb" class="mb-3">
+        <ol class="breadcrumb small">
+            <li class="breadcrumb-item"><a href="/">Главная</a></li>
+            <li class="breadcrumb-item"><a href="/Shop">Каталог</a></li>
+            @if (p.CategoryName != null)
+            {
+                <li class="breadcrumb-item"><a href="/Shop?categoryId=@p.CategoryId">@p.CategoryName</a></li>
+            }
+            <li class="breadcrumb-item active">@p.Name</li>
+        </ol>
+    </nav>
+
+    <div class="row g-4 mb-5">
+        <!-- Image -->
+        <div class="col-md-5">
+            <div class="rounded-3 overflow-hidden" style="background:#f1f5f9;">
+                @if (p.Images.Any())
+                {
+                    <img src="@p.Images.First().Url" class="img-fluid w-100" style="object-fit:cover; max-height:420px;" alt="@p.Name" />
+                }
+                else
+                {
+                    <div class="d-flex align-items-center justify-content-center" style="height:360px; font-size:5rem; color:#6366f1;">
+                        <i class="bi bi-image"></i>
+                    </div>
+                }
+            </div>
+            @if (p.Images.Count > 1)
+            {
+                <div class="d-flex gap-2 mt-2 flex-wrap">
+                    @foreach (var img in p.Images.Skip(1).Take(4))
+                    {
+                        <img src="@img.Url" class="rounded-2" style="width:70px; height:70px; object-fit:cover; cursor:pointer; border: 2px solid #e5e7eb;" />
+                    }
+                </div>
+            }
+        </div>
+
+        <!-- Details -->
+        <div class="col-md-7">
+            <p class="text-muted small mb-1">@p.CategoryName · @p.BrandName</p>
+            <h1 class="h2 fw-bold mb-2">@p.Name</h1>
+
+            <div class="rating-stars mb-2">
+                @for (int i = 1; i <= 5; i++)
+                {
+                    <i class="bi @(i <= (int)p.RatingAverage ? "bi-star-fill" : "bi-star")"></i>
+                }
+                <span class="text-muted ms-2 small">@p.RatingAverage.ToString("N1") · @Model.Reviews.Count отзывов</span>
+            </div>
+
+            <div class="price-tag fs-3 mb-3">@p.Price.ToString("N2") ₼</div>
+
+            @if (p.StockQuantity > 0)
+            {
+                <span class="badge-stock-ok mb-3 d-inline-block">В наличии (@p.StockQuantity шт.)</span>
+            }
+            else
+            {
+                <span class="badge-stock-out mb-3 d-inline-block">Нет в наличии</span>
+            }
+
+            <p class="text-muted mb-4">@p.Description</p>
+
+            <div class="d-flex gap-3 flex-wrap">
+                @if (p.StockQuantity > 0)
+                {
+                    <form method="post" action="/Cart/AddItem" class="d-flex gap-2">
+                        <input type="hidden" name="productId" value="@p.Id" />
+                        <div class="input-group" style="width:130px">
+                            <button type="button" class="btn btn-outline-secondary" onclick="adjustQty(-1)">−</button>
+                            <input type="number" id="qty" name="quantity" value="1" min="1" max="@p.StockQuantity" class="form-control text-center" />
+                            <button type="button" class="btn btn-outline-secondary" onclick="adjustQty(1)">+</button>
+                        </div>
+                        <button class="btn btn-primary px-4 fw-semibold">
+                            <i class="bi bi-cart-plus me-2"></i>В корзину
+                        </button>
+                    </form>
+                }
+                <form method="post" action="/Favorites/Toggle">
+                    <input type="hidden" name="productId" value="@p.Id" />
+                    <input type="hidden" name="returnUrl" value="/Shop/Detail/@p.Id" />
+                    <button type="submit" class="btn @(Model.IsInWishlist ? "btn-danger" : "btn-outline-danger")">
+                        <i class="bi @(Model.IsInWishlist ? "bi-heart-fill" : "bi-heart") me-1"></i>
+                        @(Model.IsInWishlist ? "В избранном" : "В избранное")
+                    </button>
+                </form>
+            </div>
+
+            @if (p.SellerName != null)
+            {
+                <div class="mt-4 p-3 rounded-3" style="background:#f8f9fa; border:1px solid #e5e7eb;">
+                    <small class="text-muted"><i class="bi bi-shop me-1"></i>Продавец: <strong>@p.SellerName</strong></small>
+                </div>
+            }
+        </div>
+    </div>
+
+    <!-- Reviews -->
+    <section class="mb-5">
+        <h3 class="fw-bold mb-4">Отзывы (@Model.Reviews.Count)</h3>
+        @if (!Model.Reviews.Any())
+        {
+            <p class="text-muted">Пока нет отзывов. Будьте первым!</p>
+        }
+        else
+        {
+            <div class="row g-3">
+                @foreach (var r in Model.Reviews)
+                {
+                    <div class="col-md-6">
+                        <div class="card border-0 shadow-sm rounded-3 p-3">
+                            <div class="d-flex justify-content-between mb-1">
+                                <div class="rating-stars small">
+                                    @for (int i = 1; i <= 5; i++)
+                                    {
+                                        <i class="bi @(i <= r.Rating ? "bi-star-fill" : "bi-star")"></i>
+                                    }
+                                </div>
+                                <small class="text-muted">@r.CreatedDate.ToString("dd.MM.yyyy")</small>
+                            </div>
+                            <p class="mb-0 small">@r.Comment</p>
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+    </section>
+
+    <!-- Related -->
+    @if (Model.RelatedProducts.Any())
+    {
+        <section>
+            <h3 class="fw-bold mb-4">Похожие товары</h3>
+            <div class="row g-3">
+                @foreach (var rp in Model.RelatedProducts)
+                {
+                    <div class="col-6 col-md-3">
+                        @await Html.PartialAsync("_ProductCard", rp)
+                    </div>
+                }
+            </div>
+        </section>
+    }
+</div>
+
+@section Scripts {
+<script>
+function adjustQty(delta) {
+    const input = document.getElementById('qty');
+    const newVal = parseInt(input.value) + delta;
+    if (newVal >= 1 && newVal <= parseInt(input.max)) input.value = newVal;
+}
+</script>
+}

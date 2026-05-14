@@ -48,12 +48,17 @@ public class MappingProfile : Profile
 
         // Product
         CreateMap<Product, ProductGetDto>()
-            .ForMember(d => d.CategoryName, o => o.MapFrom(s => s.Category != null ? s.Category.Name : null))
-            .ForMember(d => d.BrandName, o => o.MapFrom(s => s.Brand != null ? s.Brand.Name : null))
-            .ForMember(d => d.SellerName, o => o.MapFrom(s => s.Seller != null ? s.Seller.FirstName + " " + s.Seller.LastName : null))
-            .ForMember(d => d.Images, o => o.MapFrom(s => s.Images));
+            .ConstructUsing((s, ctx) => new ProductGetDto(
+                s.Id, s.Name, s.Description, s.Sku, s.Price, s.RatingAverage,
+                s.StockQuantity, s.IsActive,
+                s.CategoryId, s.Category != null ? s.Category.Name : null,
+                s.BrandId, s.Brand != null ? s.Brand.Name : null,
+                s.SellerId, s.Seller != null ? s.Seller.FirstName + " " + s.Seller.LastName : null,
+                ctx.Mapper.Map<List<ProductImageGetDto>>(s.Images),
+                s.CreatedDate))
+            .ForAllMembers(o => o.Ignore());
         CreateMap<ProductCreateDto, Product>()
-            .ForMember(d => d.IsActive, o => o.MapFrom(_ => true))
+            .ForMember(d => d.IsActive, o => o.MapFrom(s => s.IsActive))
             .ForMember(d => d.RatingAverage, o => o.MapFrom(_ => 0m))
             .ForMember(d => d.Id, o => o.Ignore())
             .ForMember(d => d.CreatedDate, o => o.Ignore())
@@ -132,7 +137,14 @@ public class MappingProfile : Profile
 
         // Order
         CreateMap<Order, OrderGetDto>()
-            .ForMember(d => d.Items, o => o.MapFrom(s => s.Items));
+            .ConstructUsing((s, ctx) => new OrderGetDto(
+                s.Id, s.OrderNumber, s.OrderDate,
+                s.Subtotal, s.DiscountAmount, s.ShippingAmount, s.TotalAmount,
+                s.Status, s.UserId, s.ShippingAddressId, s.CouponId,
+                ctx.Mapper.Map<List<OrderItemGetDto>>(s.Items),
+                (s.Status == OrderStatus.Pending || s.Status == OrderStatus.Paid) &&
+                DateTimeOffset.UtcNow - s.OrderDate <= TimeSpan.FromHours(1)))
+            .ForAllMembers(o => o.Ignore());
         CreateMap<OrderUpdateDto, Order>()
             .ForMember(d => d.Id, o => o.Ignore())
             .ForMember(d => d.OrderNumber, o => o.Ignore())

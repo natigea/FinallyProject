@@ -1,0 +1,138 @@
+@model CheckoutViewModel
+@{
+    ViewData["Title"] = "Оформление заказа";
+}
+
+<div class="container py-4">
+    <h2 class="fw-bold mb-4"><i class="bi bi-bag-check me-2"></i>Оформление заказа</h2>
+
+    <div class="row g-4">
+        <!-- Left: address + coupon -->
+        <div class="col-lg-7">
+
+            <!-- Shipping address -->
+            <div class="card border-0 shadow-sm rounded-3 mb-4">
+                <div class="card-body">
+                    <h5 class="fw-bold mb-3"><i class="bi bi-geo-alt me-2"></i>Адрес доставки</h5>
+
+                    <form method="post" action="/Checkout/PlaceOrder" id="orderForm">
+                        @if (Model.Addresses.Any())
+                        {
+                            @foreach (var addr in Model.Addresses)
+                            {
+                                <div class="form-check mb-2 p-3 rounded-3 @(addr.Id == Model.SelectedAddressId ? "border border-primary bg-light" : "border")">
+                                    <input class="form-check-input" type="radio" name="addressId" id="addr-@addr.Id"
+                                           value="@addr.Id" @(addr.Id == Model.SelectedAddressId ? "checked" : "") />
+                                    <label class="form-check-label ms-2" for="addr-@addr.Id">
+                                        <strong>@addr.Line1</strong>
+                                        @if (!string.IsNullOrEmpty(addr.Line2))
+                                        { <span>, @addr.Line2</span> }
+                                        <br />
+                                        <span class="text-muted small">@addr.City, @addr.State @addr.PostalCode, @addr.Country</span>
+                                        @if (addr.IsDefault)
+                                        {
+                                            <span class="badge bg-primary ms-2 small">По умолчанию</span>
+                                        }
+                                    </label>
+                                </div>
+                            }
+                        }
+
+                        <div class="mt-3">
+                            <a class="text-primary small fw-semibold" data-bs-toggle="collapse" href="#newAddrForm">
+                                <i class="bi bi-plus-circle me-1"></i>Добавить новый адрес
+                            </a>
+                            <div class="collapse mt-3" id="newAddrForm">
+                                <div class="row g-2">
+                                    <div class="col-12">
+                                        <input type="text" class="form-control" name="newLine1" placeholder="Улица, дом *" />
+                                    </div>
+                                    <div class="col-md-6">
+                                        <input type="text" class="form-control" name="newCity" placeholder="Город *" />
+                                    </div>
+                                    <div class="col-md-6">
+                                        <input type="text" class="form-control" name="newState" placeholder="Район/Область" />
+                                    </div>
+                                    <div class="col-md-6">
+                                        <input type="text" class="form-control" name="newPostal" placeholder="Почтовый индекс" />
+                                    </div>
+                                    <div class="col-md-6">
+                                        <input type="text" class="form-control" name="newCountry" placeholder="Страна" value="AZ" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- hidden coupon fields passed from Index action -->
+                        @if (Model.CouponId.HasValue)
+                        {
+                            <input type="hidden" name="couponId" value="@Model.CouponId" />
+                        }
+
+                        <div class="mt-4">
+                            <button type="submit" class="btn btn-primary w-100 py-2 fw-semibold fs-5">
+                                <i class="bi bi-check-circle me-2"></i>Подтвердить заказ
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Coupon -->
+            <div class="card border-0 shadow-sm rounded-3">
+                <div class="card-body">
+                    <h5 class="fw-bold mb-3"><i class="bi bi-tag me-2"></i>Промокод</h5>
+                    @if (!string.IsNullOrEmpty(Model.CouponMessage))
+                    {
+                        <div class="alert @(Model.CouponId.HasValue ? "alert-success" : "alert-warning") py-2 small">
+                            @Model.CouponMessage
+                        </div>
+                    }
+                    <form method="post" action="/Checkout/ApplyCoupon" class="d-flex gap-2">
+                        <input type="text" class="form-control" name="couponCode" placeholder="Введите промокод"
+                               value="@Model.CouponCode" />
+                        <button class="btn btn-outline-primary px-3">Применить</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right: Order summary -->
+        <div class="col-lg-5">
+            <div class="card border-0 shadow-sm rounded-3 p-4">
+                <h5 class="fw-bold mb-4">Ваш заказ</h5>
+                @if (Model.Cart != null)
+                {
+                    @foreach (var item in Model.Cart.Items)
+                    {
+                        <div class="d-flex justify-content-between mb-2">
+                            <span class="small text-muted">@item.ProductName × @item.Quantity</span>
+                            <span class="small fw-semibold">@((item.UnitPrice * item.Quantity).ToString("N2")) ₼</span>
+                        </div>
+                    }
+                }
+                <hr />
+                <div class="d-flex justify-content-between mb-1">
+                    <span class="text-muted">Подытог</span>
+                    <span>@Model.Subtotal.ToString("N2") ₼</span>
+                </div>
+                <div class="d-flex justify-content-between mb-1">
+                    <span class="text-muted">Доставка</span>
+                    <span>@Model.Shipping.ToString("N2") ₼</span>
+                </div>
+                @if (Model.Discount > 0)
+                {
+                    <div class="d-flex justify-content-between mb-1 text-success">
+                        <span>Скидка</span>
+                        <span>−@Model.Discount.ToString("N2") ₼</span>
+                    </div>
+                }
+                <hr />
+                <div class="d-flex justify-content-between fw-bold fs-5">
+                    <span>Итого</span>
+                    <span class="text-primary">@Model.Total.ToString("N2") ₼</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

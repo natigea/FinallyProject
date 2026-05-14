@@ -1,0 +1,151 @@
+@{
+    ViewData["Title"] = "Контакты";
+}
+
+<div class="page-hero text-center">
+    <div class="container">
+        <h1 class="display-5 fw-bold mb-2">Свяжитесь с нами</h1>
+        <p class="lead opacity-90">Мы всегда готовы помочь</p>
+    </div>
+</div>
+
+<div class="container py-5">
+    <div class="row g-5">
+        <!-- Contact info -->
+        <div class="col-lg-4">
+            <h4 class="fw-bold mb-4">Контактная информация</h4>
+            <div class="d-flex flex-column gap-3">
+                <div class="contact-info-item">
+                    <div class="contact-icon" style="background:#e0e7ff; color:#6366f1;">
+                        <i class="bi bi-telephone-fill"></i>
+                    </div>
+                    <div>
+                        <div class="fw-semibold">Телефон</div>
+                        <a href="tel:+994120000000" class="text-muted">+994 12 000 00 00</a>
+                    </div>
+                </div>
+                <div class="contact-info-item">
+                    <div class="contact-icon" style="background:#d1fae5; color:#059669;">
+                        <i class="bi bi-envelope-fill"></i>
+                    </div>
+                    <div>
+                        <div class="fw-semibold">Email</div>
+                        <a href="mailto:support@ecommers.com" class="text-muted">support@ecommers.com</a>
+                    </div>
+                </div>
+                <div class="contact-info-item">
+                    <div class="contact-icon" style="background:#fef3c7; color:#d97706;">
+                        <i class="bi bi-geo-alt-fill"></i>
+                    </div>
+                    <div>
+                        <div class="fw-semibold">Адрес</div>
+                        <span class="text-muted">Баку, Азербайджан</span>
+                    </div>
+                </div>
+                <div class="contact-info-item">
+                    <div class="contact-icon" style="background:#fee2e2; color:#dc2626;">
+                        <i class="bi bi-clock-fill"></i>
+                    </div>
+                    <div>
+                        <div class="fw-semibold">Режим работы</div>
+                        <span class="text-muted">Пн–Пт: 09:00–18:00</span>
+                    </div>
+                </div>
+            </div>
+
+            <h5 class="fw-bold mt-5 mb-3">Мы в соцсетях</h5>
+            <div class="d-flex gap-2">
+                <a href="#" class="btn btn-outline-secondary btn-sm"><i class="bi bi-instagram"></i></a>
+                <a href="#" class="btn btn-outline-secondary btn-sm"><i class="bi bi-facebook"></i></a>
+                <a href="#" class="btn btn-outline-secondary btn-sm"><i class="bi bi-telegram"></i></a>
+                <a href="#" class="btn btn-outline-secondary btn-sm"><i class="bi bi-twitter-x"></i></a>
+            </div>
+        </div>
+
+        <!-- Contact form -->
+        <div class="col-lg-8">
+            <div class="card border-0 shadow-sm rounded-4 p-4">
+                <h4 class="fw-bold mb-4">Отправить сообщение</h4>
+                @if (TempData["ContactSent"] != null)
+                {
+                    <div class="alert alert-success rounded-3">
+                        <i class="bi bi-check-circle me-2"></i>Ваше сообщение отправлено! Мы ответим в течение 24 часов.
+                    </div>
+                }
+                <form asp-controller="Home" asp-action="Contact" method="post">
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold">Имя *</label>
+                            <input type="text" name="name" class="form-control" placeholder="Ваше имя" required />
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold">Email *</label>
+                            <input type="email" name="email" class="form-control" placeholder="your@email.com" required />
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label fw-semibold">Тема</label>
+                            <select class="form-select" name="subject">
+                                @if (false) { <option value="" selected></option> } else { <option value="">Выберите тему...</option> }
+                                <option value="order">Вопрос по заказу</option>
+                                <option value="product">Вопрос по товару</option>
+                                <option value="delivery">Доставка</option>
+                                <option value="return">Возврат и обмен</option>
+                                <option value="seller">Стать продавцом</option>
+                                <option value="other">Другое</option>
+                            </select>
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label fw-semibold">Сообщение *</label>
+                            <textarea name="message" class="form-control" rows="5" placeholder="Опишите ваш вопрос подробно..." required></textarea>
+                        </div>
+                        <div class="col-12">
+                            <button type="submit" class="btn btn-primary px-5 py-2 fw-semibold">
+                                <i class="bi bi-send me-2"></i>Отправить
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- FAQ -->
+    <section class="mt-6">
+        <h3 class="fw-bold text-center mb-4">Часто задаваемые вопросы</h3>
+        <div class="accordion accordion-flush" id="faqAccordion">
+            @{
+                var faqs = new[] {
+                    new { Q = "Как долго идёт доставка?", A = "Стандартная доставка занимает 1-3 рабочих дня по Баку и 3-5 дней по регионам Азербайджана." },
+                    new { Q = "Могу ли я вернуть товар?", A = "Да, вы можете вернуть товар в течение 30 дней после получения, если он не был в употреблении и сохранил товарный вид." },
+                    new { Q = "Как стать продавцом?", A = "Зарегистрируйтесь на сайте, выберите опцию 'Стать продавцом', заполните данные о магазине и начните добавлять товары." },
+                    new { Q = "Безопасны ли платежи на сайте?", A = "Все платежи проходят через защищённые каналы с шифрованием SSL. Мы не храним данные ваших карт." },
+                    new { Q = "Есть ли программа лояльности?", A = "Да, постоянные покупатели получают специальные скидки и ранний доступ к акциям." },
+                };
+                int fi = 0;
+            }
+            @foreach (var faq in faqs)
+            {
+                <div class="accordion-item border-0 mb-2 rounded-3 overflow-hidden shadow-sm">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button @(fi > 0 ? "collapsed" : "") fw-semibold" type="button"
+                                data-bs-toggle="collapse" data-bs-target="#faq@fi">
+                            @faq.Q
+                        </button>
+                    </h2>
+                    <div id="faq@fi" class="accordion-collapse collapse @(fi == 0 ? "show" : "")" data-bs-parent="#faqAccordion">
+                        <div class="accordion-body text-muted">@faq.A</div>
+                    </div>
+                </div>
+                fi++;
+            }
+        </div>
+    </section>
+</div>
+
+@section Styles {
+<style>
+    .mt-6 { margin-top: 4rem; }
+    .contact-info-item { display: flex; align-items: flex-start; gap: 1rem; }
+    .contact-icon { width: 46px; height: 46px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; flex-shrink: 0; }
+</style>
+}
