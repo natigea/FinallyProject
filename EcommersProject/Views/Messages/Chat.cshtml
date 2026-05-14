@@ -1,0 +1,74 @@
+@model EcommersProject.BLL.DTOs.ConversationGetDto
+@{
+    ViewData["Title"] = L["Messages_Title"].Value;
+    var userId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+    var isBuyer = Model.BuyerId.ToString() == userId;
+    var otherName = isBuyer ? Model.SellerName : Model.BuyerName;
+}
+
+<div class="container py-4" style="max-width:700px;">
+    <!-- Header -->
+    <div class="bg-white rounded-3 border p-3 mb-3 d-flex align-items-center gap-3">
+        <a href="/Messages" class="btn btn-sm btn-outline-secondary">
+            <i class="bi bi-arrow-left"></i>
+        </a>
+        @if (Model.ListingImage != null)
+        {
+            <img src="@Model.ListingImage" class="rounded" style="width:48px;height:48px;object-fit:cover;" />
+        }
+        <div class="flex-grow-1 min-width-0">
+            <div class="fw-semibold">@otherName</div>
+            <a href="/Listing/Detail/@Model.ListingId" class="text-success small text-decoration-none text-truncate d-block">
+                @Model.ListingTitle — @Model.ListingPrice?.ToString("N0") ₼
+            </a>
+        </div>
+    </div>
+
+    <!-- Messages -->
+    <div id="chatBox" class="bg-white rounded-3 border p-3 mb-3 d-flex flex-column gap-2"
+         style="min-height:350px; max-height:500px; overflow-y:auto;">
+        @if (Model.Messages == null || !Model.Messages.Any())
+        {
+            <div class="text-muted text-center my-auto py-4">@L["Messages_FirstMsg"]</div>
+        }
+        @foreach (var msg in Model.Messages ?? [])
+        {
+            var isMe = msg.SenderId.ToString() == userId;
+            <div class="d-flex @(isMe ? "justify-content-end" : "justify-content-start")">
+                <div class="rounded-3 px-3 py-2 @(isMe ? "bg-success text-white" : "bg-light text-dark")"
+                     style="max-width:70%; word-wrap:break-word;">
+                    <div style="line-height:1.5;">@msg.Text</div>
+                    <div class="d-flex align-items-center gap-1 mt-1 @(isMe ? "justify-content-end" : "")"
+                         style="font-size:.7rem; opacity:.75;">
+                        <span>@msg.CreatedDate.ToLocalTime().ToString("HH:mm")</span>
+                        @if (isMe)
+                        {
+                            <i class="bi @(msg.IsRead ? "bi-check2-all" : "bi-check2")"></i>
+                        }
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+
+    <!-- Input -->
+    <form asp-controller="Messages" asp-action="Send" method="post">
+        @Html.AntiForgeryToken()
+        <input type="hidden" name="conversationId" value="@Model.Id" />
+        <div class="d-flex gap-2">
+            <input type="text" name="text" class="form-control rounded-pill"
+                   placeholder="@L["Messages_InputPlaceholder"]" required autocomplete="off" />
+            <button class="btn btn-success rounded-pill px-4 fw-semibold">
+                <i class="bi bi-send-fill"></i>
+            </button>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+<script>
+    // Scroll to bottom on load
+    const chatBox = document.getElementById('chatBox');
+    if (chatBox) chatBox.scrollTop = chatBox.scrollHeight;
+</script>
+}

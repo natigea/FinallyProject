@@ -1,52 +1,66 @@
-@model FavoritesViewModel
+@model IReadOnlyList<EcommersProject.BLL.DTOs.FavoriteGetDto>
 @{
-    ViewData["Title"] = "Избранное";
+    ViewData["Title"] = L["Favorites_Title"].Value;
 }
 
-<div class="container py-4">
-    <h2 class="fw-bold mb-4"><i class="bi bi-heart me-2 text-danger"></i>Избранное</h2>
+<div class="profile-wrap">
+    <div class="profile-layout">
+        @await Html.PartialAsync("_ProfileSidebar")
 
-    @if (!Model.Items.Any())
-    {
-        <div class="text-center py-5">
-            <i class="bi bi-heart fs-1 text-muted"></i>
-            <h5 class="mt-3 text-muted">Список избранного пуст</h5>
-            <a href="/Shop" class="btn btn-primary mt-3">Перейти в каталог</a>
-        </div>
-    }
-    else
-    {
-        <div class="row g-3">
-            @foreach (var item in Model.Items)
+        <div class="profile-main">
+            <h1 class="h3 fw-bold mb-4">@L["Favorites_Title"]</h1>
+
+            @if (!Model.Any())
             {
-                <div class="col-6 col-md-4 col-lg-3">
-                    <div class="card product-card h-100">
-                        <div class="card-img-placeholder">
-                            <i class="bi bi-image"></i>
-                        </div>
-                        <div class="card-body p-3">
-                            <a href="/Shop/Detail/@item.ProductId" class="text-decoration-none text-dark fw-semibold d-block mb-2">
-                                @item.ProductName
-                            </a>
-                            <div class="d-flex gap-2">
-                                <form method="post" action="/Cart/AddItem" class="flex-grow-1">
-                                    <input type="hidden" name="productId" value="@item.ProductId" />
-                                    <input type="hidden" name="quantity" value="1" />
-                                    <button class="btn btn-primary btn-sm w-100">
-                                        <i class="bi bi-cart-plus me-1"></i>В корзину
-                                    </button>
-                                </form>
-                                <form method="post" action="/Favorites/Toggle">
-                                    <input type="hidden" name="productId" value="@item.ProductId" />
-                                    <button class="btn btn-outline-danger btn-sm" title="Удалить из избранного">
-                                        <i class="bi bi-heart-fill"></i>
+                <div class="section-card text-center py-5">
+                    <i class="bi bi-heart fs-1 text-muted d-block mb-3"></i>
+                    <h5>@L["Favorites_Empty"]</h5>
+                    <p class="text-muted">@L["Favorites_EmptyDesc"]</p>
+                    <a href="/Listing" class="btn-dark-custom mt-2">@L["Favorites_Browse"]</a>
+                </div>
+            }
+            else
+            {
+                <div class="row g-3">
+                    @foreach (var fav in Model)
+                    {
+                        <div class="col-6 col-md-4 col-lg-4">
+                            <div class="listing-card position-relative">
+                                <a href="/Listing/Detail/@fav.ListingId" class="text-decoration-none">
+                                    @if (fav.ListingImage != null)
+                                    {
+                                        <div class="card-img-wrap">
+                                            <img src="@fav.ListingImage" alt="@fav.ListingTitle" />
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        <div class="card-img-wrap">
+                                            <div class="card-img-placeholder"><i class="bi bi-image"></i></div>
+                                        </div>
+                                    }
+                                    <div class="card-body-custom">
+                                        <div class="card-price">@fav.ListingPrice?.ToString("N0") ₼</div>
+                                        <div class="card-title-text">@fav.ListingTitle</div>
+                                        <div class="card-meta">
+                                            <span><i class="bi bi-geo-alt me-1"></i>@fav.ListingCity</span>
+                                        </div>
+                                    </div>
+                                </a>
+                                <form asp-controller="Listing" asp-action="ToggleFavorite" method="post"
+                                      class="position-absolute top-0 end-0 m-2">
+                                    @Html.AntiForgeryToken()
+                                    <input type="hidden" name="id" value="@fav.ListingId" />
+                                    <button class="btn btn-sm btn-danger rounded-circle p-1" title="@L["Favorites_Remove"]"
+                                            style="width:30px;height:30px;line-height:1;">
+                                        <i class="bi bi-heart-fill" style="font-size:.8rem;"></i>
                                     </button>
                                 </form>
                             </div>
                         </div>
-                    </div>
+                    }
                 </div>
             }
-        </div>
-    }
-</div>
+        </div><!-- /profile-main -->
+    </div><!-- /profile-layout -->
+</div><!-- /profile-wrap -->

@@ -1,0 +1,85 @@
+@model IReadOnlyList<EcommersProject.BLL.DTOs.ConversationGetDto>
+@{
+    ViewData["Title"] = L["Messages_Title"].Value;
+    var userId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+}
+
+<div class="profile-wrap">
+    <div class="profile-layout">
+        @await Html.PartialAsync("_ProfileSidebar")
+
+        <div class="profile-main">
+            <h1 class="h3 fw-bold mb-4">@L["Messages_Title"]</h1>
+
+            @if (!Model.Any())
+            {
+                <div class="section-card text-center py-5">
+                    <i class="bi bi-chat fs-1 text-muted d-block mb-3"></i>
+                    <h5>@L["Messages_Empty"]</h5>
+                    <p class="text-muted">@L["Messages_EmptyDesc"]</p>
+                    <a href="/Listing" class="btn-dark-custom mt-2">@L["Messages_Browse"]</a>
+                </div>
+            }
+            else
+            {
+                <div class="d-flex flex-column gap-2">
+                    @foreach (var conv in Model)
+                    {
+                        var isBuyer    = conv.BuyerId.ToString() == userId;
+                        var otherName  = isBuyer ? conv.SellerName : conv.BuyerName;
+                        var diff       = conv.LastMessage != null ? DateTimeOffset.UtcNow - conv.LastMessage.CreatedDate : (TimeSpan?)null;
+                        var timeAgo    = diff == null ? "" :
+                            diff.Value.TotalHours < 1
+                                ? string.Format(L["Time_Min"].Value,  (int)diff.Value.TotalMinutes)
+                                : diff.Value.TotalHours < 24
+                                    ? string.Format(L["Time_Hour"].Value, (int)diff.Value.TotalHours)
+                                    : diff.Value.TotalDays < 7
+                                        ? string.Format(L["Time_Day"].Value,  (int)diff.Value.TotalDays)
+                                        : conv.LastMessage!.CreatedDate.ToString("dd.MM");
+
+                        <a href="/Messages/Chat/@conv.Id" class="text-decoration-none">
+                            <div class="bg-white rounded-3 border p-3 d-flex gap-3 conv-row @(conv.UnreadCount > 0 ? "border-success" : "")">
+                                @if (conv.ListingImage != null)
+                                {
+                                    <img src="@conv.ListingImage" class="rounded flex-shrink-0"
+                                         style="width:56px;height:56px;object-fit:cover;" />
+                                }
+                                else
+                                {
+                                    <div class="rounded bg-light flex-shrink-0 d-flex align-items-center justify-content-center"
+                                         style="width:56px;height:56px;font-size:1.4rem;color:#9ca3af;">
+                                        <i class="bi bi-image"></i>
+                                    </div>
+                                }
+                                <div class="flex-grow-1 min-width-0">
+                                    <div class="d-flex justify-content-between">
+                                        <span class="fw-semibold small">@otherName</span>
+                                        <span class="text-muted" style="font-size:.75rem;">@timeAgo</span>
+                                    </div>
+                                    <div class="text-muted small text-truncate">@conv.ListingTitle</div>
+                                    @if (conv.LastMessage != null)
+                                    {
+                                        <div class="small text-truncate @(conv.UnreadCount > 0 ? "fw-semibold text-dark" : "text-muted")">
+                                            @conv.LastMessage.Text
+                                        </div>
+                                    }
+                                </div>
+                                @if (conv.UnreadCount > 0)
+                                {
+                                    <span class="badge bg-success rounded-pill align-self-center flex-shrink-0">@conv.UnreadCount</span>
+                                }
+                            </div>
+                        </a>
+                    }
+                </div>
+            }
+        </div><!-- /profile-main -->
+    </div><!-- /profile-layout -->
+</div><!-- /profile-wrap -->
+
+@section Styles {
+<style>
+    .conv-row { transition: box-shadow .15s; }
+    .conv-row:hover { box-shadow: 0 2px 10px rgba(0,0,0,.08); }
+</style>
+}
