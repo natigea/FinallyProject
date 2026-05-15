@@ -112,6 +112,25 @@ public class OrderService
         return Mapper.Map<OrderGetDto>(order);
     }
 
+    public async Task<(bool Success, string Error)> CancelOrderAsync(
+        Guid orderId, Guid userId, CancellationToken cancellationToken = default)
+    {
+        var order = await Repository.GetByIdAsync(orderId, cancellationToken);
+        if (order is null || order.UserId != userId)
+            return (false, "Заказ не найден.");
+
+        if (order.Status is OrderStatus.Shipped or OrderStatus.Delivered or OrderStatus.Cancelled)
+            return (false, "Этот заказ нельзя отменить.");
+
+        if (DateTimeOffset.UtcNow - order.OrderDate > TimeSpan.FromHours(1))
+            return (false, "Время на отмену заказа истекло (1 час с момента оформления).");
+
+        order.Status = OrderStatus.Cancelled;
+        await Repository.UpdateAsync(order, cancellationToken);
+        await UnitOfWork.SaveChangesAsync(cancellationToken);
+        return (true, string.Empty);
+    }
+
     private static string GenerateOrderNumber()
         => $"ORD-{DateTime.UtcNow:yyyyMMdd}-{Guid.NewGuid().ToString("N")[..8].ToUpper()}";
 }

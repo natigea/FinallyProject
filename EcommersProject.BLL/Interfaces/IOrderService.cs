@@ -6,4 +6,5 @@ public interface IOrderService : IGenericService<OrderGetDto, OrderCreateDto, Or
 {
     Task<IReadOnlyList<OrderGetDto>> GetByUserAsync(Guid userId, CancellationToken cancellationToken = default);
     Task<OrderGetDto> UpdateStatusAsync(Guid id, string status, CancellationToken cancellationToken = default);
+    Task<(bool Success, string Error)> CancelOrderAsync(Guid orderId, Guid userId, CancellationToken cancellationToken = default);
 }

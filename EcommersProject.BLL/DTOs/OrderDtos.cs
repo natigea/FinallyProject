@@ -12,7 +12,8 @@ public record OrderGetDto(
     Guid UserId,
     Guid? ShippingAddressId,
     Guid? CouponId,
-    IReadOnlyList<OrderItemGetDto> Items);
+    IReadOnlyList<OrderItemGetDto> Items,
+    bool CanCancel);
 
 public record OrderCreateDto(
     Guid UserId,
