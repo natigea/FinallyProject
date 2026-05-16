@@ -1,0 +1,211 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+
+  <data name="TopBar_Delivery" xml:space="preserve"><value>Free delivery from 50 ₼</value></data>
+
+  <data name="Search_Placeholder" xml:space="preserve"><value>Search products, categories...</value></data>
+  <data name="Nav_Catalog" xml:space="preserve"><value>Catalog</value></data>
+  <data name="Nav_Favorites" xml:space="preserve"><value>Favorites</value></data>
+  <data name="Nav_Profile" xml:space="preserve"><value>Profile</value></data>
+  <data name="Nav_MyOrders" xml:space="preserve"><value>My Orders</value></data>
+  <data name="Nav_AdminPanel" xml:space="preserve"><value>Admin Panel</value></data>
+  <data name="Nav_SellerPanel" xml:space="preserve"><value>Seller Panel</value></data>
+  <data name="Nav_Logout" xml:space="preserve"><value>Logout</value></data>
+  <data name="Nav_Login" xml:space="preserve"><value>Login</value></data>
+  <data name="Nav_AllProducts" xml:space="preserve"><value>All Products</value></data>
+  <data name="Nav_About" xml:space="preserve"><value>About Us</value></data>
+  <data name="Nav_Contacts" xml:space="preserve"><value>Contacts</value></data>
+
+  <data name="Footer_Description" xml:space="preserve"><value>Your reliable online store. Wide product selection, fast delivery and the best prices.</value></data>
+  <data name="Footer_ForBuyers" xml:space="preserve"><value>For Buyers</value></data>
+  <data name="Footer_Catalog" xml:space="preserve"><value>Catalog</value></data>
+  <data name="Footer_Cart" xml:space="preserve"><value>Cart</value></data>
+  <data name="Footer_Orders" xml:space="preserve"><value>Orders</value></data>
+  <data name="Footer_Favorites" xml:space="preserve"><value>Favorites</value></data>
+  <data name="Footer_Account" xml:space="preserve"><value>Account</value></data>
+  <data name="Footer_Register" xml:space="preserve"><value>Register</value></data>
+  <data name="Footer_Company" xml:space="preserve"><value>Company</value></data>
+  <data name="Footer_BecomeASeller" xml:space="preserve"><value>Become a Seller</value></data>
+  <data name="Footer_Contacts" xml:space="preserve"><value>Contacts</value></data>
+  <data name="Footer_Rights" xml:space="preserve"><value>All rights reserved.</value></data>
+  <data name="Footer_Privacy" xml:space="preserve"><value>Privacy Policy</value></data>
+  <data name="Footer_Terms" xml:space="preserve"><value>Terms of Use</value></data>
+
+  <data name="Status_Pending" xml:space="preserve"><value>Pending Payment</value></data>
+  <data name="Status_Paid" xml:space="preserve"><value>Paid</value></data>
+  <data name="Status_Processing" xml:space="preserve"><value>Processing</value></data>
+  <data name="Status_Shipped" xml:space="preserve"><value>Shipped</value></data>
+  <data name="Status_Delivered" xml:space="preserve"><value>Delivered</value></data>
+  <data name="Status_Cancelled" xml:space="preserve"><value>Cancelled</value></data>
+
+  <data name="Orders_Title" xml:space="preserve"><value>My Orders</value></data>
+  <data name="Orders_All" xml:space="preserve"><value>All</value></data>
+  <data name="Orders_Empty" xml:space="preserve"><value>No orders yet</value></data>
+  <data name="Orders_EmptyFiltered" xml:space="preserve"><value>No orders with this status</value></data>
+  <data name="Orders_GoToShop" xml:space="preserve"><value>Go to catalog</value></data>
+  <data name="Orders_CancelBtn" xml:space="preserve"><value>Cancel</value></data>
+  <data name="Orders_CancelConfirm" xml:space="preserve"><value>Cancel this order? This action is irreversible.</value></data>
+
+  <data name="OrderDetail_Composition" xml:space="preserve"><value>Order Composition</value></data>
+  <data name="OrderDetail_Subtotal" xml:space="preserve"><value>Subtotal</value></data>
+  <data name="OrderDetail_Delivery" xml:space="preserve"><value>Delivery</value></data>
+  <data name="OrderDetail_Discount" xml:space="preserve"><value>Discount</value></data>
+  <data name="OrderDetail_Total" xml:space="preserve"><value>Total</value></data>
+  <data name="OrderDetail_BackToOrders" xml:space="preserve"><value>Back to orders</value></data>
+  <data name="OrderDetail_Continue" xml:space="preserve"><value>Continue shopping</value></data>
+  <data name="OrderDetail_StatusTitle" xml:space="preserve"><value>Order Status</value></data>
+  <data name="OrderDetail_InfoTitle" xml:space="preserve"><value>Order Information</value></data>
+  <data name="OrderDetail_Number" xml:space="preserve"><value>Number</value></data>
+  <data name="OrderDetail_Date" xml:space="preserve"><value>Date</value></data>
+  <data name="OrderDetail_Items" xml:space="preserve"><value>Items</value></data>
+  <data name="OrderDetail_Status" xml:space="preserve"><value>Status</value></data>
+  <data name="OrderDetail_CancelTitle" xml:space="preserve"><value>Order Cancellation</value></data>
+  <data name="OrderDetail_CancelBtn" xml:space="preserve"><value>Cancel Order</value></data>
+  <data name="OrderDetail_CancelDesc" xml:space="preserve"><value>You can cancel the order within 1 hour of placing it. Time remaining:</value></data>
+  <data name="OrderDetail_CancelConfirm" xml:space="preserve"><value>Are you sure you want to cancel this order? This action is irreversible.</value></data>
+  <data name="OrderDetail_Ordered" xml:space="preserve"><value>Placed on</value></data>
+
+  <!-- Hero -->
+  <data name="Hero_Badge" xml:space="preserve"><value>New Collection 2025</value></data>
+  <data name="Hero_Title" xml:space="preserve"><value>Everything you need — in one place</value></data>
+  <data name="Hero_Subtitle" xml:space="preserve"><value>Thousands of products from the best sellers. Fast delivery, quality guarantee, best prices.</value></data>
+  <data name="Hero_BrowseCatalog" xml:space="preserve"><value>Browse Catalog</value></data>
+  <data name="Hero_BecomeSeller" xml:space="preserve"><value>Become a Seller</value></data>
+  <data name="Hero_FastDelivery" xml:space="preserve"><value>Fast Delivery</value></data>
+  <data name="Hero_QualityGuarantee" xml:space="preserve"><value>Quality Guarantee</value></data>
+  <data name="Hero_Return30Days" xml:space="preserve"><value>30-Day Returns</value></data>
+
+  <!-- Stats -->
+  <data name="Stats_Products" xml:space="preserve"><value>Products</value></data>
+  <data name="Stats_Sellers" xml:space="preserve"><value>Sellers</value></data>
+  <data name="Stats_Buyers" xml:space="preserve"><value>Buyers</value></data>
+  <data name="Stats_Rating" xml:space="preserve"><value>Average Rating</value></data>
+
+  <!-- Home sections -->
+  <data name="Home_PopularCategories" xml:space="preserve"><value>Popular Categories</value></data>
+  <data name="Home_CategoriesSubtitle" xml:space="preserve"><value>Find what you need quickly and easily</value></data>
+  <data name="Home_FeaturedProducts" xml:space="preserve"><value>Featured Products</value></data>
+  <data name="Home_FeaturedSubtitle" xml:space="preserve"><value>Handpicked by our experts</value></data>
+  <data name="Home_AllProducts" xml:space="preserve"><value>All Products</value></data>
+  <data name="Home_NewArrivals" xml:space="preserve"><value>New Arrivals</value></data>
+  <data name="Home_NewArrivalsSubtitle" xml:space="preserve"><value>Just added products</value></data>
+  <data name="Home_AllNewArrivals" xml:space="preserve"><value>All New Arrivals</value></data>
+
+  <!-- Promo banners -->
+  <data name="Promo_HotDeals" xml:space="preserve"><value>Hot Deals</value></data>
+  <data name="Promo_Electronics50" xml:space="preserve"><value>Up to 50% on electronics</value></data>
+  <data name="Promo_LimitedOffer" xml:space="preserve"><value>Limited offer. Don't miss out!</value></data>
+  <data name="Promo_Browse" xml:space="preserve"><value>Browse</value></data>
+  <data name="Promo_NewItems" xml:space="preserve"><value>New Items</value></data>
+  <data name="Promo_FreshCollection" xml:space="preserve"><value>Fresh Collection</value></data>
+  <data name="Promo_BeFirst" xml:space="preserve"><value>Be first to discover new arrivals</value></data>
+
+  <!-- How it works -->
+  <data name="How_Title" xml:space="preserve"><value>How it works</value></data>
+  <data name="How_Subtitle" xml:space="preserve"><value>Shop in 3 simple steps</value></data>
+  <data name="How_Step1Title" xml:space="preserve"><value>Find a product</value></data>
+  <data name="How_Step1Desc" xml:space="preserve"><value>Use search or catalog to find what you need</value></data>
+  <data name="How_Step2Title" xml:space="preserve"><value>Add to cart</value></data>
+  <data name="How_Step2Desc" xml:space="preserve"><value>Select the quantity and add to your cart</value></data>
+  <data name="How_Step3Title" xml:space="preserve"><value>Receive your order</value></data>
+  <data name="How_Step3Desc" xml:space="preserve"><value>We'll deliver your order fast and safely</value></data>
+
+  <!-- Reviews -->
+  <data name="Reviews_Title" xml:space="preserve"><value>What buyers say</value></data>
+  <data name="Review1_Text" xml:space="preserve"><value>Great store! Fast delivery and quality products. Will order again!</value></data>
+  <data name="Review1_Role" xml:space="preserve"><value>Regular buyer</value></data>
+  <data name="Review2_Text" xml:space="preserve"><value>Prices are much lower than regular stores. Very convenient website and quick support.</value></data>
+  <data name="Review2_Role" xml:space="preserve"><value>Verified buyer</value></data>
+  <data name="Review3_Text" xml:space="preserve"><value>Registered as a seller — very easy! Sales started the very next day.</value></data>
+  <data name="Review3_Role" xml:space="preserve"><value>Seller</value></data>
+
+  <!-- Seller CTA -->
+  <data name="SellerCTA_Title" xml:space="preserve"><value>Want to sell on EcommersShop?</value></data>
+  <data name="SellerCTA_Desc" xml:space="preserve"><value>Register as a seller for free and start receiving orders today. Over 50,000 buyers are waiting for your products!</value></data>
+  <data name="SellerCTA_Btn" xml:space="preserve"><value>Become a Seller</value></data>
+  <data name="SellerCTA_LearnMore" xml:space="preserve"><value>Learn More</value></data>
+
+  <!-- Auth pages -->
+  <data name="Login_Title" xml:space="preserve"><value>Login</value></data>
+  <data name="Login_Welcome" xml:space="preserve"><value>Welcome back!</value></data>
+  <data name="Login_Subtitle" xml:space="preserve"><value>Sign in to your account</value></data>
+  <data name="Login_Password" xml:space="preserve"><value>Password</value></data>
+  <data name="Login_Submit" xml:space="preserve"><value>Sign In</value></data>
+  <data name="Login_NoAccount" xml:space="preserve"><value>Don't have an account?</value></data>
+  <data name="Login_Register" xml:space="preserve"><value>Register</value></data>
+  <data name="Login_AdminLogin" xml:space="preserve"><value>Login as Administrator / Seller</value></data>
+  <data name="Register_Title" xml:space="preserve"><value>Create an account</value></data>
+  <data name="Register_FirstName" xml:space="preserve"><value>First Name</value></data>
+  <data name="Register_LastName" xml:space="preserve"><value>Last Name</value></data>
+  <data name="Register_Phone" xml:space="preserve"><value>Phone</value></data>
+  <data name="Register_Password" xml:space="preserve"><value>Password</value></data>
+  <data name="Register_Confirm" xml:space="preserve"><value>Confirm</value></data>
+  <data name="Register_IsSeller" xml:space="preserve"><value>Register as a seller</value></data>
+  <data name="Register_ShopName" xml:space="preserve"><value>Shop Name</value></data>
+  <data name="Register_ShopDescription" xml:space="preserve"><value>Shop Description</value></data>
+  <data name="Register_Submit" xml:space="preserve"><value>Register</value></data>
+  <data name="Register_HasAccount" xml:space="preserve"><value>Already have an account?</value></data>
+  <data name="Register_Login" xml:space="preserve"><value>Sign In</value></data>
+
+  <!-- Product card -->
+  <data name="Product_OutOfStock" xml:space="preserve"><value>Out of stock</value></data>
+
+  <!-- Profile page -->
+  <data name="Profile_Title" xml:space="preserve"><value>My Profile</value></data>
+  <data name="Profile_Since" xml:space="preserve"><value>With us since</value></data>
+  <data name="Profile_Profile" xml:space="preserve"><value>Profile</value></data>
+  <data name="Profile_Favorites" xml:space="preserve"><value>Favorites</value></data>
+  <data name="Profile_Cart" xml:space="preserve"><value>Cart</value></data>
+  <data name="Profile_RecentOrders" xml:space="preserve"><value>Recent Orders</value></data>
+  <data name="Profile_AllOrders" xml:space="preserve"><value>All Orders</value></data>
+  <data name="Profile_NoOrders" xml:space="preserve"><value>No orders yet</value></data>
+  <data name="Profile_GoToCatalog" xml:space="preserve"><value>Go to catalog</value></data>
+  <data name="Profile_Addresses" xml:space="preserve"><value>Delivery Addresses</value></data>
+  <data name="Profile_AddAddress" xml:space="preserve"><value>Add</value></data>
+  <data name="Profile_NoAddresses" xml:space="preserve"><value>No saved addresses</value></data>
+  <data name="Profile_NewAddress" xml:space="preserve"><value>New Address</value></data>
+  <data name="Profile_Street" xml:space="preserve"><value>Street, building</value></data>
+  <data name="Profile_Apartment" xml:space="preserve"><value>Apartment/office</value></data>
+  <data name="Profile_City" xml:space="preserve"><value>City</value></data>
+  <data name="Profile_District" xml:space="preserve"><value>District</value></data>
+  <data name="Profile_PostalCode" xml:space="preserve"><value>Postal code</value></data>
+  <data name="Profile_Country" xml:space="preserve"><value>Country</value></data>
+  <data name="Profile_DefaultAddress" xml:space="preserve"><value>Default address</value></data>
+  <data name="Profile_IsDefault" xml:space="preserve"><value>Default</value></data>
+  <data name="Profile_Cancel" xml:space="preserve"><value>Cancel</value></data>
+  <data name="Profile_SaveAddress" xml:space="preserve"><value>Save address</value></data>
+  <data name="Profile_OrderItems" xml:space="preserve"><value>items</value></data>
+
+  <!-- Shop page -->
+  <data name="Shop_Title" xml:space="preserve"><value>Catalog</value></data>
+  <data name="Shop_Categories" xml:space="preserve"><value>Categories</value></data>
+  <data name="Shop_AllCategories" xml:space="preserve"><value>All categories</value></data>
+  <data name="Shop_Brands" xml:space="preserve"><value>Brands</value></data>
+  <data name="Shop_SearchResults" xml:space="preserve"><value>Results for:</value></data>
+  <data name="Shop_Found" xml:space="preserve"><value>Found:</value></data>
+  <data name="Shop_Products" xml:space="preserve"><value>products</value></data>
+  <data name="Shop_Sort" xml:space="preserve"><value>Sort:</value></data>
+  <data name="Shop_SortDefault" xml:space="preserve"><value>Default</value></data>
+  <data name="Shop_SortPriceAsc" xml:space="preserve"><value>Price ↑</value></data>
+  <data name="Shop_SortPriceDesc" xml:space="preserve"><value>Price ↓</value></data>
+  <data name="Shop_SortRating" xml:space="preserve"><value>By rating</value></data>
+  <data name="Shop_NotFound" xml:space="preserve"><value>No products found. Try changing the filters.</value></data>
+  <data name="Shop_ResetFilters" xml:space="preserve"><value>Reset filters</value></data>
+
+  <!-- Cart page -->
+  <data name="Cart_Title" xml:space="preserve"><value>Cart</value></data>
+  <data name="Cart_Empty" xml:space="preserve"><value>Your cart is empty</value></data>
+  <data name="Cart_GoToShop" xml:space="preserve"><value>Go to catalog</value></data>
+  <data name="Cart_PerUnit" xml:space="preserve"><value>per unit</value></data>
+  <data name="Cart_Continue" xml:space="preserve"><value>Continue shopping</value></data>
+  <data name="Cart_Clear" xml:space="preserve"><value>Clear cart</value></data>
+  <data name="Cart_Summary" xml:space="preserve"><value>Summary</value></data>
+  <data name="Cart_Products" xml:space="preserve"><value>Products</value></data>
+  <data name="Cart_Delivery" xml:space="preserve"><value>Delivery</value></data>
+  <data name="Cart_Total" xml:space="preserve"><value>Total</value></data>
+  <data name="Cart_Checkout" xml:space="preserve"><value>Place Order</value></data>
+</root>

@@ -1,0 +1,217 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+
+  <!-- Topbar -->
+  <data name="TopBar_Delivery" xml:space="preserve"><value>Бесплатная доставка от 50 ₼</value></data>
+
+  <!-- Navbar -->
+  <data name="Search_Placeholder" xml:space="preserve"><value>Поиск товаров, категорий...</value></data>
+  <data name="Nav_Catalog" xml:space="preserve"><value>Каталог</value></data>
+  <data name="Nav_Favorites" xml:space="preserve"><value>Избранное</value></data>
+  <data name="Nav_Profile" xml:space="preserve"><value>Профиль</value></data>
+  <data name="Nav_MyOrders" xml:space="preserve"><value>Мои заказы</value></data>
+  <data name="Nav_AdminPanel" xml:space="preserve"><value>Админ панель</value></data>
+  <data name="Nav_SellerPanel" xml:space="preserve"><value>Панель продавца</value></data>
+  <data name="Nav_Logout" xml:space="preserve"><value>Выйти</value></data>
+  <data name="Nav_Login" xml:space="preserve"><value>Войти</value></data>
+  <data name="Nav_AllProducts" xml:space="preserve"><value>Все товары</value></data>
+  <data name="Nav_About" xml:space="preserve"><value>О нас</value></data>
+  <data name="Nav_Contacts" xml:space="preserve"><value>Контакты</value></data>
+
+  <!-- Footer -->
+  <data name="Footer_Description" xml:space="preserve"><value>Ваш надёжный интернет-магазин. Широкий выбор товаров, быстрая доставка и лучшие цены.</value></data>
+  <data name="Footer_ForBuyers" xml:space="preserve"><value>Покупателям</value></data>
+  <data name="Footer_Catalog" xml:space="preserve"><value>Каталог</value></data>
+  <data name="Footer_Cart" xml:space="preserve"><value>Корзина</value></data>
+  <data name="Footer_Orders" xml:space="preserve"><value>Заказы</value></data>
+  <data name="Footer_Favorites" xml:space="preserve"><value>Избранное</value></data>
+  <data name="Footer_Account" xml:space="preserve"><value>Аккаунт</value></data>
+  <data name="Footer_Register" xml:space="preserve"><value>Регистрация</value></data>
+  <data name="Footer_Company" xml:space="preserve"><value>Компания</value></data>
+  <data name="Footer_BecomeASeller" xml:space="preserve"><value>Стать продавцом</value></data>
+  <data name="Footer_Contacts" xml:space="preserve"><value>Контакты</value></data>
+  <data name="Footer_Rights" xml:space="preserve"><value>Все права защищены.</value></data>
+  <data name="Footer_Privacy" xml:space="preserve"><value>Политика конфиденциальности</value></data>
+  <data name="Footer_Terms" xml:space="preserve"><value>Условия использования</value></data>
+
+  <!-- Order statuses -->
+  <data name="Status_Pending" xml:space="preserve"><value>Ожидает оплаты</value></data>
+  <data name="Status_Paid" xml:space="preserve"><value>Оплачен</value></data>
+  <data name="Status_Processing" xml:space="preserve"><value>В обработке</value></data>
+  <data name="Status_Shipped" xml:space="preserve"><value>Отправлен</value></data>
+  <data name="Status_Delivered" xml:space="preserve"><value>Доставлен</value></data>
+  <data name="Status_Cancelled" xml:space="preserve"><value>Отменён</value></data>
+
+  <!-- Orders page -->
+  <data name="Orders_Title" xml:space="preserve"><value>Мои заказы</value></data>
+  <data name="Orders_All" xml:space="preserve"><value>Все</value></data>
+  <data name="Orders_Empty" xml:space="preserve"><value>Заказов пока нет</value></data>
+  <data name="Orders_EmptyFiltered" xml:space="preserve"><value>Нет заказов с таким статусом</value></data>
+  <data name="Orders_GoToShop" xml:space="preserve"><value>Перейти в каталог</value></data>
+  <data name="Orders_CancelBtn" xml:space="preserve"><value>Отменить</value></data>
+  <data name="Orders_CancelConfirm" xml:space="preserve"><value>Отменить этот заказ? Это действие необратимо.</value></data>
+
+  <!-- OrderDetail page -->
+  <data name="OrderDetail_Composition" xml:space="preserve"><value>Состав заказа</value></data>
+  <data name="OrderDetail_Subtotal" xml:space="preserve"><value>Подытог</value></data>
+  <data name="OrderDetail_Delivery" xml:space="preserve"><value>Доставка</value></data>
+  <data name="OrderDetail_Discount" xml:space="preserve"><value>Скидка</value></data>
+  <data name="OrderDetail_Total" xml:space="preserve"><value>Итого</value></data>
+  <data name="OrderDetail_BackToOrders" xml:space="preserve"><value>Назад к заказам</value></data>
+  <data name="OrderDetail_Continue" xml:space="preserve"><value>Продолжить покупки</value></data>
+  <data name="OrderDetail_StatusTitle" xml:space="preserve"><value>Статус заказа</value></data>
+  <data name="OrderDetail_InfoTitle" xml:space="preserve"><value>Информация о заказе</value></data>
+  <data name="OrderDetail_Number" xml:space="preserve"><value>Номер</value></data>
+  <data name="OrderDetail_Date" xml:space="preserve"><value>Дата</value></data>
+  <data name="OrderDetail_Items" xml:space="preserve"><value>Позиций</value></data>
+  <data name="OrderDetail_Status" xml:space="preserve"><value>Статус</value></data>
+  <data name="OrderDetail_CancelTitle" xml:space="preserve"><value>Отмена заказа</value></data>
+  <data name="OrderDetail_CancelBtn" xml:space="preserve"><value>Отменить заказ</value></data>
+  <data name="OrderDetail_CancelDesc" xml:space="preserve"><value>Вы можете отменить заказ в течение 1 часа с момента оформления. Оставшееся время:</value></data>
+  <data name="OrderDetail_CancelConfirm" xml:space="preserve"><value>Вы уверены, что хотите отменить заказ? Это действие необратимо.</value></data>
+  <data name="OrderDetail_Ordered" xml:space="preserve"><value>Оформлен</value></data>
+
+  <!-- Hero -->
+  <data name="Hero_Badge" xml:space="preserve"><value>Новая коллекция 2025</value></data>
+  <data name="Hero_Title" xml:space="preserve"><value>Всё что нужно — в одном месте</value></data>
+  <data name="Hero_Subtitle" xml:space="preserve"><value>Тысячи товаров от лучших продавцов. Быстрая доставка, гарантия качества, лучшие цены.</value></data>
+  <data name="Hero_BrowseCatalog" xml:space="preserve"><value>Перейти в каталог</value></data>
+  <data name="Hero_BecomeSeller" xml:space="preserve"><value>Стать продавцом</value></data>
+  <data name="Hero_FastDelivery" xml:space="preserve"><value>Быстрая доставка</value></data>
+  <data name="Hero_QualityGuarantee" xml:space="preserve"><value>Гарантия качества</value></data>
+  <data name="Hero_Return30Days" xml:space="preserve"><value>Возврат 30 дней</value></data>
+
+  <!-- Stats -->
+  <data name="Stats_Products" xml:space="preserve"><value>Товаров</value></data>
+  <data name="Stats_Sellers" xml:space="preserve"><value>Продавцов</value></data>
+  <data name="Stats_Buyers" xml:space="preserve"><value>Покупателей</value></data>
+  <data name="Stats_Rating" xml:space="preserve"><value>Средний рейтинг</value></data>
+
+  <!-- Home sections -->
+  <data name="Home_PopularCategories" xml:space="preserve"><value>Популярные категории</value></data>
+  <data name="Home_CategoriesSubtitle" xml:space="preserve"><value>Найдите нужный товар быстро и легко</value></data>
+  <data name="Home_FeaturedProducts" xml:space="preserve"><value>Рекомендуемые товары</value></data>
+  <data name="Home_FeaturedSubtitle" xml:space="preserve"><value>Отобранные нашими экспертами</value></data>
+  <data name="Home_AllProducts" xml:space="preserve"><value>Все товары</value></data>
+  <data name="Home_NewArrivals" xml:space="preserve"><value>Новинки</value></data>
+  <data name="Home_NewArrivalsSubtitle" xml:space="preserve"><value>Только что добавленные товары</value></data>
+  <data name="Home_AllNewArrivals" xml:space="preserve"><value>Все новинки</value></data>
+
+  <!-- Promo banners -->
+  <data name="Promo_HotDeals" xml:space="preserve"><value>Горячие скидки</value></data>
+  <data name="Promo_Electronics50" xml:space="preserve"><value>До 50% на электронику</value></data>
+  <data name="Promo_LimitedOffer" xml:space="preserve"><value>Ограниченное предложение. Не упустите!</value></data>
+  <data name="Promo_Browse" xml:space="preserve"><value>Смотреть</value></data>
+  <data name="Promo_NewItems" xml:space="preserve"><value>Новинки</value></data>
+  <data name="Promo_FreshCollection" xml:space="preserve"><value>Свежая коллекция</value></data>
+  <data name="Promo_BeFirst" xml:space="preserve"><value>Первыми узнайте о новинках магазина</value></data>
+
+  <!-- How it works -->
+  <data name="How_Title" xml:space="preserve"><value>Как это работает</value></data>
+  <data name="How_Subtitle" xml:space="preserve"><value>Покупка за 3 простых шага</value></data>
+  <data name="How_Step1Title" xml:space="preserve"><value>Найдите товар</value></data>
+  <data name="How_Step1Desc" xml:space="preserve"><value>Используйте поиск или каталог для поиска нужного товара</value></data>
+  <data name="How_Step2Title" xml:space="preserve"><value>Добавьте в корзину</value></data>
+  <data name="How_Step2Desc" xml:space="preserve"><value>Выберите нужное количество и добавьте в корзину</value></data>
+  <data name="How_Step3Title" xml:space="preserve"><value>Получите заказ</value></data>
+  <data name="How_Step3Desc" xml:space="preserve"><value>Мы доставим ваш заказ быстро и в целости</value></data>
+
+  <!-- Reviews -->
+  <data name="Reviews_Title" xml:space="preserve"><value>Что говорят покупатели</value></data>
+  <data name="Review1_Text" xml:space="preserve"><value>Отличный магазин! Быстрая доставка и качественные товары. Буду заказывать снова!</value></data>
+  <data name="Review1_Role" xml:space="preserve"><value>Постоянный покупатель</value></data>
+  <data name="Review2_Text" xml:space="preserve"><value>Цены значительно ниже чем в обычных магазинах. Очень удобный сайт и быстрая поддержка.</value></data>
+  <data name="Review2_Role" xml:space="preserve"><value>Верифицированный покупатель</value></data>
+  <data name="Review3_Text" xml:space="preserve"><value>Зарегистрировалась как продавец — очень просто! Продажи начались уже на следующий день.</value></data>
+  <data name="Review3_Role" xml:space="preserve"><value>Продавец</value></data>
+
+  <!-- Seller CTA -->
+  <data name="SellerCTA_Title" xml:space="preserve"><value>Хотите продавать на EcommersShop?</value></data>
+  <data name="SellerCTA_Desc" xml:space="preserve"><value>Зарегистрируйтесь как продавец бесплатно и начните получать заказы уже сегодня. Более 50 000 покупателей ждут ваши товары!</value></data>
+  <data name="SellerCTA_Btn" xml:space="preserve"><value>Стать продавцом</value></data>
+  <data name="SellerCTA_LearnMore" xml:space="preserve"><value>Узнать больше</value></data>
+
+  <!-- Auth pages -->
+  <data name="Login_Title" xml:space="preserve"><value>Вход</value></data>
+  <data name="Login_Welcome" xml:space="preserve"><value>Добро пожаловать!</value></data>
+  <data name="Login_Subtitle" xml:space="preserve"><value>Войдите в свой аккаунт</value></data>
+  <data name="Login_Password" xml:space="preserve"><value>Пароль</value></data>
+  <data name="Login_Submit" xml:space="preserve"><value>Войти</value></data>
+  <data name="Login_NoAccount" xml:space="preserve"><value>Нет аккаунта?</value></data>
+  <data name="Login_Register" xml:space="preserve"><value>Зарегистрироваться</value></data>
+  <data name="Login_AdminLogin" xml:space="preserve"><value>Войти как Администратор / Продавец</value></data>
+  <data name="Register_Title" xml:space="preserve"><value>Создать аккаунт</value></data>
+  <data name="Register_FirstName" xml:space="preserve"><value>Имя</value></data>
+  <data name="Register_LastName" xml:space="preserve"><value>Фамилия</value></data>
+  <data name="Register_Phone" xml:space="preserve"><value>Телефон</value></data>
+  <data name="Register_Password" xml:space="preserve"><value>Пароль</value></data>
+  <data name="Register_Confirm" xml:space="preserve"><value>Подтвердить</value></data>
+  <data name="Register_IsSeller" xml:space="preserve"><value>Регистрироваться как продавец</value></data>
+  <data name="Register_ShopName" xml:space="preserve"><value>Название магазина</value></data>
+  <data name="Register_ShopDescription" xml:space="preserve"><value>Описание магазина</value></data>
+  <data name="Register_Submit" xml:space="preserve"><value>Зарегистрироваться</value></data>
+  <data name="Register_HasAccount" xml:space="preserve"><value>Уже есть аккаунт?</value></data>
+  <data name="Register_Login" xml:space="preserve"><value>Войти</value></data>
+
+  <!-- Product card -->
+  <data name="Product_OutOfStock" xml:space="preserve"><value>Нет в наличии</value></data>
+
+  <!-- Profile page -->
+  <data name="Profile_Title" xml:space="preserve"><value>Мой профиль</value></data>
+  <data name="Profile_Since" xml:space="preserve"><value>С нами с</value></data>
+  <data name="Profile_Profile" xml:space="preserve"><value>Профиль</value></data>
+  <data name="Profile_Favorites" xml:space="preserve"><value>Избранное</value></data>
+  <data name="Profile_Cart" xml:space="preserve"><value>Корзина</value></data>
+  <data name="Profile_RecentOrders" xml:space="preserve"><value>Последние заказы</value></data>
+  <data name="Profile_AllOrders" xml:space="preserve"><value>Все заказы</value></data>
+  <data name="Profile_NoOrders" xml:space="preserve"><value>Заказов пока нет</value></data>
+  <data name="Profile_GoToCatalog" xml:space="preserve"><value>В каталог</value></data>
+  <data name="Profile_Addresses" xml:space="preserve"><value>Адреса доставки</value></data>
+  <data name="Profile_AddAddress" xml:space="preserve"><value>Добавить</value></data>
+  <data name="Profile_NoAddresses" xml:space="preserve"><value>Нет сохранённых адресов</value></data>
+  <data name="Profile_NewAddress" xml:space="preserve"><value>Новый адрес</value></data>
+  <data name="Profile_Street" xml:space="preserve"><value>Улица, дом</value></data>
+  <data name="Profile_Apartment" xml:space="preserve"><value>Квартира/офис</value></data>
+  <data name="Profile_City" xml:space="preserve"><value>Город</value></data>
+  <data name="Profile_District" xml:space="preserve"><value>Район</value></data>
+  <data name="Profile_PostalCode" xml:space="preserve"><value>Индекс</value></data>
+  <data name="Profile_Country" xml:space="preserve"><value>Страна</value></data>
+  <data name="Profile_DefaultAddress" xml:space="preserve"><value>Адрес по умолчанию</value></data>
+  <data name="Profile_IsDefault" xml:space="preserve"><value>По умолчанию</value></data>
+  <data name="Profile_Cancel" xml:space="preserve"><value>Отмена</value></data>
+  <data name="Profile_SaveAddress" xml:space="preserve"><value>Сохранить адрес</value></data>
+  <data name="Profile_OrderItems" xml:space="preserve"><value>поз.</value></data>
+
+  <!-- Shop page -->
+  <data name="Shop_Title" xml:space="preserve"><value>Каталог</value></data>
+  <data name="Shop_Categories" xml:space="preserve"><value>Категории</value></data>
+  <data name="Shop_AllCategories" xml:space="preserve"><value>Все категории</value></data>
+  <data name="Shop_Brands" xml:space="preserve"><value>Бренды</value></data>
+  <data name="Shop_SearchResults" xml:space="preserve"><value>Результаты для:</value></data>
+  <data name="Shop_Found" xml:space="preserve"><value>Найдено:</value></data>
+  <data name="Shop_Products" xml:space="preserve"><value>товаров</value></data>
+  <data name="Shop_Sort" xml:space="preserve"><value>Сортировка:</value></data>
+  <data name="Shop_SortDefault" xml:space="preserve"><value>По умолчанию</value></data>
+  <data name="Shop_SortPriceAsc" xml:space="preserve"><value>Цена ↑</value></data>
+  <data name="Shop_SortPriceDesc" xml:space="preserve"><value>Цена ↓</value></data>
+  <data name="Shop_SortRating" xml:space="preserve"><value>По рейтингу</value></data>
+  <data name="Shop_NotFound" xml:space="preserve"><value>Товары не найдены. Попробуйте изменить фильтры.</value></data>
+  <data name="Shop_ResetFilters" xml:space="preserve"><value>Сбросить фильтры</value></data>
+
+  <!-- Cart page -->
+  <data name="Cart_Title" xml:space="preserve"><value>Корзина</value></data>
+  <data name="Cart_Empty" xml:space="preserve"><value>Ваша корзина пуста</value></data>
+  <data name="Cart_GoToShop" xml:space="preserve"><value>Перейти в каталог</value></data>
+  <data name="Cart_PerUnit" xml:space="preserve"><value>за шт.</value></data>
+  <data name="Cart_Continue" xml:space="preserve"><value>Продолжить покупки</value></data>
+  <data name="Cart_Clear" xml:space="preserve"><value>Очистить корзину</value></data>
+  <data name="Cart_Summary" xml:space="preserve"><value>Итого</value></data>
+  <data name="Cart_Products" xml:space="preserve"><value>Товары</value></data>
+  <data name="Cart_Delivery" xml:space="preserve"><value>Доставка</value></data>
+  <data name="Cart_Total" xml:space="preserve"><value>Всего</value></data>
+  <data name="Cart_Checkout" xml:space="preserve"><value>Оформить заказ</value></data>
+</root>
