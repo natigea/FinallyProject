@@ -34,9 +34,9 @@ builder.Services.AddBllServices();
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie(options =>
     {
-        options.LoginPath = "/Auth/Login";
-        options.LogoutPath = "/Auth/Logout";
-        options.AccessDeniedPath = "/Auth/AccessDenied";
+        options.LoginPath = "/Account/Login";
+        options.LogoutPath = "/Account/Logout";
+        options.AccessDeniedPath = "/Account/Login";
         options.Cookie.HttpOnly = true;
         options.Cookie.SameSite = SameSiteMode.Strict;
         options.ExpireTimeSpan = TimeSpan.FromHours(8);
@@ -53,7 +53,6 @@ builder.Services.AddRazorPages()
     .AddRazorPagesOptions(options =>
     {
         options.Conventions.AuthorizeFolder("/Admin", "AdminOnly");
-        options.Conventions.AuthorizeFolder("/Seller", "SellerOrAdmin");
         options.Conventions.AllowAnonymousToFolder("/Auth");
     });
 
@@ -66,7 +65,10 @@ using (var scope = app.Services.CreateScope())
     try
     {
         await db.Database.EnsureCreatedAsync();
+        // Validate that key columns from the current schema exist
         _ = await db.Users.Select(u => new { u.PasswordHash, u.Role }).FirstOrDefaultAsync();
+        _ = await db.Categories.Select(c => new { c.Icon, c.Slug }).FirstOrDefaultAsync();
+        _ = await db.Listings.Select(l => new { l.Status, l.City }).FirstOrDefaultAsync();
     }
     catch
     {
@@ -74,6 +76,29 @@ using (var scope = app.Services.CreateScope())
         await db.Database.EnsureCreatedAsync();
     }
 
+    // Ensure Reviews table exists (added after initial schema)
+    try
+    {
+        await db.Database.ExecuteSqlRawAsync(@"
+            IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='Reviews' AND xtype='U')
+            CREATE TABLE [Reviews] (
+                [Id]          UNIQUEIDENTIFIER NOT NULL PRIMARY KEY DEFAULT NEWID(),
+                [ListingId]   UNIQUEIDENTIFIER NOT NULL,
+                [ReviewerId]  UNIQUEIDENTIFIER NOT NULL,
+                [SellerId]    UNIQUEIDENTIFIER NOT NULL,
+                [Rating]      INT NOT NULL DEFAULT 5,
+                [Comment]     NVARCHAR(MAX) NOT NULL DEFAULT '',
+                [CreatedDate] DATETIMEOFFSET NOT NULL DEFAULT GETUTCDATE(),
+                [UpdatedDate] DATETIMEOFFSET NOT NULL DEFAULT GETUTCDATE(),
+                [IsDeleted]   BIT NOT NULL DEFAULT 0,
+                CONSTRAINT [FK_Reviews_Listings] FOREIGN KEY ([ListingId]) REFERENCES [Listings]([Id]),
+                CONSTRAINT [FK_Reviews_Reviewer] FOREIGN KEY ([ReviewerId]) REFERENCES [Users]([Id]),
+                CONSTRAINT [FK_Reviews_Seller]   FOREIGN KEY ([SellerId])   REFERENCES [Users]([Id])
+            )");
+    }
+    catch { /* table already exists or schema issue — ignore */ }
+
+    // Create default admin
     var authService = scope.ServiceProvider.GetRequiredService<IAuthService>();
     var adminEmail = builder.Configuration["AdminDefaults:Email"]!;
     var adminPassword = builder.Configuration["AdminDefaults:Password"]!;
@@ -81,69 +106,31 @@ using (var scope = app.Services.CreateScope())
     var adminLastName = builder.Configuration["AdminDefaults:LastName"]!;
     await authService.CreateAdminAsync(adminEmail, adminPassword, adminFirstName, adminLastName);
 
+    // Seed categories
     var categoryService = scope.ServiceProvider.GetRequiredService<ICategoryService>();
     var existingCategories = await categoryService.GetAllAsync();
     if (!existingCategories.Any())
     {
-        (string Name, string Description)[] defaultCategories =
+        (string Name, string Description, string Icon, string Slug)[] defaultCategories =
         [
-            ("Техника", "Электроника, бытовая техника, гаджеты и устройства"),
-            ("Одежда", "Мужская, женская и детская одежда"),
-            ("Запчасти для автомобиля", "Запчасти, аксессуары и расходники для автомобилей"),
-            ("Машинки для бритья/стрижки", "Электробритвы, машинки для стрижки волос и бороды"),
-            ("Инструменты", "Ручные и электрические инструменты для дома и мастерской"),
+            ("Электроника",    "Телефоны, ноутбуки, планшеты и гаджеты", "bi-phone",    "electronics"),
+            ("Одежда и обувь", "Мужская, женская и детская одежда",       "bi-bag",      "clothing"),
+            ("Авто",           "Автомобили, мотоциклы, запчасти",         "bi-car-front","auto"),
+            ("Недвижимость",   "Квартиры, дома, офисы, земля",            "bi-building", "realestate"),
+            ("Работа",         "Вакансии и резюме",                       "bi-briefcase","jobs"),
+            ("Услуги",         "Ремонт, строительство, репетиторство",    "bi-tools",    "services"),
+            ("Для дома",       "Мебель, техника, декор",                  "bi-house",    "home"),
+            ("Спорт и хобби",  "Спортивный инвентарь, музыка, книги",     "bi-bicycle",  "sports"),
+            ("Животные",       "Домашние животные и товары для них",      "bi-heart",    "animals"),
+            ("Бизнес",         "Оборудование, сырьё, партнёрство",        "bi-graph-up", "business"),
+            ("Другое",         "Всё остальное",                           "bi-three-dots","other"),
         ];
-        foreach (var (name, desc) in defaultCategories)
-            await categoryService.CreateAsync(new CategoryCreateDto(name, desc));
-    }
-
-    var brandService = scope.ServiceProvider.GetRequiredService<IBrandService>();
-    var existingBrands = await brandService.GetAllAsync();
-    if (!existingBrands.Any())
-    {
-        (string Name, string Description)[] defaultBrands =
-        [
-            ("Samsung", "Южнокорейский производитель электроники"),
-            ("Apple", "Американский производитель смартфонов и компьютеров"),
-            ("Philips", "Нидерландский бренд бытовой техники и электроники"),
-            ("Stanley", "Американский производитель инструментов"),
-            ("Bosch", "Немецкий производитель инструментов и бытовой техники"),
-            ("Adidas", "Немецкий бренд спортивной одежды"),
-        ];
-        foreach (var (name, desc) in defaultBrands)
-            await brandService.CreateAsync(new BrandCreateDto(name, desc));
-    }
-
-    var productService = scope.ServiceProvider.GetRequiredService<IProductService>();
-    if (!await db.Products.AnyAsync(p => !p.IsDeleted))
-    {
-        var categories = await categoryService.GetAllAsync();
-        var brands = await brandService.GetAllAsync();
-
-        Guid CatId(string name) => categories.First(c => c.Name == name).Id;
-        Guid BrandId(string name) => brands.First(b => b.Name == name).Id;
-
-        (string Name, string Desc, string Sku, decimal Price, int Stock, string Cat, string Brand)[] sampleProducts =
-        [
-            ("Samsung Galaxy A55", "6.6\" AMOLED, 8/256 ГБ, камера 50 МП", "SAM-A55-256", 899.99m, 20, "Техника", "Samsung"),
-            ("Apple iPhone 15", "6.1\" Super Retina, 128 ГБ, чип A16 Bionic", "APL-IP15-128", 1399.99m, 10, "Техника", "Apple"),
-            ("Philips Series 5000", "Бритва с триммером для бороды, мокрое/сухое бритьё", "PHL-S5000", 149.99m, 35, "Машинки для бритья/стрижки", "Philips"),
-            ("Stanley FatMax Набор", "Набор из 210 инструментов в кейсе", "STN-FM-210", 349.99m, 15, "Инструменты", "Stanley"),
-            ("Adidas Tiro 23", "Спортивные брюки унисекс, полиэстер", "ADI-TIRO23-M", 89.99m, 50, "Одежда", "Adidas"),
-        ];
-
-        foreach (var (name, desc, sku, price, stock, cat, brand) in sampleProducts)
-        {
-            await productService.CreateAsync(new ProductCreateDto(
-                name, desc, sku, price, stock,
-                CatId(cat), BrandId(brand),
-                SellerId: null, IsActive: true));
-        }
+        foreach (var (name, desc, icon, slug) in defaultCategories)
+            await categoryService.CreateAsync(new CategoryCreateDto(name, desc, icon, slug));
     }
 }
 
 app.UseStatusCodePagesWithReExecute("/Error/{0}");
-
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 
