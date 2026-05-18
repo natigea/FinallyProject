@@ -5,207 +5,410 @@
   <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
   <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
 
-  <data name="TopBar_Delivery" xml:space="preserve"><value>50 ₼-dan pulsuz çatdırılma</value></data>
+  <!-- ── NAVBAR ─────────────────────────────────────────── -->
+  <data name="Nav_Search_Placeholder" xml:space="preserve"><value>Elanlar axtar...</value></data>
+  <data name="Nav_PostListing"        xml:space="preserve"><value>Elan yerləşdir</value></data>
+  <data name="Nav_Favorites"          xml:space="preserve"><value>Sevimlilər</value></data>
+  <data name="Nav_Messages"           xml:space="preserve"><value>Mesajlar</value></data>
+  <data name="Nav_Profile"            xml:space="preserve"><value>Mənim profilim</value></data>
+  <data name="Nav_MyListings"         xml:space="preserve"><value>Elanlarım</value></data>
+  <data name="Nav_AdminPanel"         xml:space="preserve"><value>Admin paneli</value></data>
+  <data name="Nav_Login"              xml:space="preserve"><value>Daxil ol</value></data>
+  <data name="Nav_Register"           xml:space="preserve"><value>Qeydiyyat</value></data>
+  <data name="Nav_Logout"             xml:space="preserve"><value>Çıxış</value></data>
 
-  <data name="Search_Placeholder" xml:space="preserve"><value>Məhsul, kateqoriya axtar...</value></data>
-  <data name="Nav_Catalog" xml:space="preserve"><value>Kataloq</value></data>
-  <data name="Nav_Favorites" xml:space="preserve"><value>Sevimlilər</value></data>
-  <data name="Nav_Profile" xml:space="preserve"><value>Profil</value></data>
-  <data name="Nav_MyOrders" xml:space="preserve"><value>Sifarişlərim</value></data>
-  <data name="Nav_AdminPanel" xml:space="preserve"><value>Admin paneli</value></data>
-  <data name="Nav_SellerPanel" xml:space="preserve"><value>Satıcı paneli</value></data>
-  <data name="Nav_Logout" xml:space="preserve"><value>Çıxış</value></data>
-  <data name="Nav_Login" xml:space="preserve"><value>Daxil ol</value></data>
-  <data name="Nav_AllProducts" xml:space="preserve"><value>Bütün məhsullar</value></data>
-  <data name="Nav_About" xml:space="preserve"><value>Haqqımızda</value></data>
-  <data name="Nav_Contacts" xml:space="preserve"><value>Əlaqə</value></data>
+  <!-- ── FOOTER ────────────────────────────────────────── -->
+  <data name="Footer_Description"  xml:space="preserve"><value>Pulsuz elanlar lövhəsi. Asanlıqla alın və satın.</value></data>
+  <data name="Footer_Listings"     xml:space="preserve"><value>Elanlar</value></data>
+  <data name="Footer_AllListings"  xml:space="preserve"><value>Bütün elanlar</value></data>
+  <data name="Footer_PostListing"  xml:space="preserve"><value>Elan yerləşdir</value></data>
+  <data name="Footer_MyListings"   xml:space="preserve"><value>Elanlarım</value></data>
+  <data name="Footer_Cabinet"      xml:space="preserve"><value>Kabinet</value></data>
+  <data name="Footer_Favorites"    xml:space="preserve"><value>Sevimlilər</value></data>
+  <data name="Footer_Messages"     xml:space="preserve"><value>Mesajlar</value></data>
+  <data name="Footer_Company"      xml:space="preserve"><value>Şirkət</value></data>
+  <data name="Footer_About"        xml:space="preserve"><value>Haqqımızda</value></data>
+  <data name="Footer_Contacts"     xml:space="preserve"><value>Əlaqə</value></data>
+  <data name="Footer_Rights"       xml:space="preserve"><value>Bütün hüquqlar qorunur.</value></data>
+  <data name="Footer_Privacy"      xml:space="preserve"><value>Məxfilik siyasəti</value></data>
+  <data name="Footer_Terms"        xml:space="preserve"><value>İstifadə şərtləri</value></data>
 
-  <data name="Footer_Description" xml:space="preserve"><value>Etibarlı onlayn mağazanız. Geniş məhsul seçimi, sürətli çatdırılma və ən yaxşı qiymətlər.</value></data>
-  <data name="Footer_ForBuyers" xml:space="preserve"><value>Alıcılara</value></data>
-  <data name="Footer_Catalog" xml:space="preserve"><value>Kataloq</value></data>
-  <data name="Footer_Cart" xml:space="preserve"><value>Səbət</value></data>
-  <data name="Footer_Orders" xml:space="preserve"><value>Sifarişlər</value></data>
-  <data name="Footer_Favorites" xml:space="preserve"><value>Sevimlilər</value></data>
-  <data name="Footer_Account" xml:space="preserve"><value>Hesab</value></data>
-  <data name="Footer_Register" xml:space="preserve"><value>Qeydiyyat</value></data>
-  <data name="Footer_Company" xml:space="preserve"><value>Şirkət</value></data>
-  <data name="Footer_BecomeASeller" xml:space="preserve"><value>Satıcı ol</value></data>
-  <data name="Footer_Contacts" xml:space="preserve"><value>Əlaqə</value></data>
-  <data name="Footer_Rights" xml:space="preserve"><value>Bütün hüquqlar qorunur.</value></data>
-  <data name="Footer_Privacy" xml:space="preserve"><value>Məxfilik siyasəti</value></data>
-  <data name="Footer_Terms" xml:space="preserve"><value>İstifadə şərtləri</value></data>
+  <!-- ── COMMON ────────────────────────────────────────── -->
+  <data name="Common_All"          xml:space="preserve"><value>Hamısı</value></data>
+  <data name="Common_Cancel"       xml:space="preserve"><value>Ləğv et</value></data>
+  <data name="Common_Save"         xml:space="preserve"><value>Saxla</value></data>
+  <data name="Common_Delete"       xml:space="preserve"><value>Sil</value></data>
+  <data name="Common_Edit"         xml:space="preserve"><value>Redaktə et</value></data>
+  <data name="Common_Home"         xml:space="preserve"><value>Ana səhifə</value></data>
+  <data name="Common_Listings"     xml:space="preserve"><value>Elanlar</value></data>
+  <data name="Common_AddListing"   xml:space="preserve"><value>Elan yerləşdir</value></data>
+  <data name="Common_ViewAll"      xml:space="preserve"><value>Hamısına bax</value></data>
+  <data name="Common_BrowseListings" xml:space="preserve"><value>Elanlara bax</value></data>
 
-  <data name="Status_Pending" xml:space="preserve"><value>Ödəniş gözlənilir</value></data>
-  <data name="Status_Paid" xml:space="preserve"><value>Ödənilib</value></data>
-  <data name="Status_Processing" xml:space="preserve"><value>İşlənilir</value></data>
-  <data name="Status_Shipped" xml:space="preserve"><value>Göndərilib</value></data>
-  <data name="Status_Delivered" xml:space="preserve"><value>Çatdırılıb</value></data>
-  <data name="Status_Cancelled" xml:space="preserve"><value>Ləğv edilib</value></data>
+  <!-- ── TIME AGO ──────────────────────────────────────── -->
+  <data name="Time_MinAgo"  xml:space="preserve"><value>{0} dəq. əvvəl</value></data>
+  <data name="Time_HourAgo" xml:space="preserve"><value>{0} saat əvvəl</value></data>
+  <data name="Time_DayAgo"  xml:space="preserve"><value>{0} gün əvvəl</value></data>
+  <data name="Time_Min"     xml:space="preserve"><value>{0} dəq.</value></data>
+  <data name="Time_Hour"    xml:space="preserve"><value>{0} saat</value></data>
+  <data name="Time_Day"     xml:space="preserve"><value>{0} gün</value></data>
 
-  <data name="Orders_Title" xml:space="preserve"><value>Sifarişlərim</value></data>
-  <data name="Orders_All" xml:space="preserve"><value>Hamısı</value></data>
-  <data name="Orders_Empty" xml:space="preserve"><value>Hələ sifariş yoxdur</value></data>
-  <data name="Orders_EmptyFiltered" xml:space="preserve"><value>Bu statusda sifariş yoxdur</value></data>
-  <data name="Orders_GoToShop" xml:space="preserve"><value>Kataloqa keç</value></data>
-  <data name="Orders_CancelBtn" xml:space="preserve"><value>Ləğv et</value></data>
-  <data name="Orders_CancelConfirm" xml:space="preserve"><value>Bu sifarişi ləğv etmək? Bu əməliyyat geri qaytarılmazdır.</value></data>
+  <!-- ── STATUS ────────────────────────────────────────── -->
+  <data name="Status_Active"  xml:space="preserve"><value>Aktiv</value></data>
+  <data name="Status_Closed"  xml:space="preserve"><value>Bağlanmış</value></data>
+  <data name="Status_Expired" xml:space="preserve"><value>Müddəti keçmiş</value></data>
 
-  <data name="OrderDetail_Composition" xml:space="preserve"><value>Sifariş tərkibi</value></data>
-  <data name="OrderDetail_Subtotal" xml:space="preserve"><value>Aralıq cəm</value></data>
-  <data name="OrderDetail_Delivery" xml:space="preserve"><value>Çatdırılma</value></data>
-  <data name="OrderDetail_Discount" xml:space="preserve"><value>Endirim</value></data>
-  <data name="OrderDetail_Total" xml:space="preserve"><value>Cəmi</value></data>
-  <data name="OrderDetail_BackToOrders" xml:space="preserve"><value>Sifarişlərə qayıt</value></data>
-  <data name="OrderDetail_Continue" xml:space="preserve"><value>Alışverişə davam et</value></data>
-  <data name="OrderDetail_StatusTitle" xml:space="preserve"><value>Sifariş statusu</value></data>
-  <data name="OrderDetail_InfoTitle" xml:space="preserve"><value>Sifariş haqqında</value></data>
-  <data name="OrderDetail_Number" xml:space="preserve"><value>Nömrə</value></data>
-  <data name="OrderDetail_Date" xml:space="preserve"><value>Tarix</value></data>
-  <data name="OrderDetail_Items" xml:space="preserve"><value>Maddələr</value></data>
-  <data name="OrderDetail_Status" xml:space="preserve"><value>Status</value></data>
-  <data name="OrderDetail_CancelTitle" xml:space="preserve"><value>Sifarişin ləğvi</value></data>
-  <data name="OrderDetail_CancelBtn" xml:space="preserve"><value>Sifarişi ləğv et</value></data>
-  <data name="OrderDetail_CancelDesc" xml:space="preserve"><value>Sifarişi tərtib edildiyi andan 1 saat ərzində ləğv edə bilərsiniz. Qalan vaxt:</value></data>
-  <data name="OrderDetail_CancelConfirm" xml:space="preserve"><value>Bu sifarişi ləğv etmək istədiyinizdən əminsiniz? Bu əməliyyat geri qaytarılmazdır.</value></data>
-  <data name="OrderDetail_Ordered" xml:space="preserve"><value>Sifariş tarixi</value></data>
+  <!-- ── HOME PAGE ─────────────────────────────────────── -->
+  <data name="Home_FindEverything"   xml:space="preserve"><value>Lazım olan hər şeyi tap</value></data>
+  <data name="Home_MillionsAds"      xml:space="preserve"><value>Şəxslərdən və şirkətlərdən milyonlarla elan</value></data>
+  <data name="Home_WhatLooking"      xml:space="preserve"><value>Nə axtarırsınız?</value></data>
+  <data name="Home_City"             xml:space="preserve"><value>Şəhər</value></data>
+  <data name="Home_AllCities"        xml:space="preserve"><value>Bütün şəhərlər</value></data>
+  <data name="Home_Find"             xml:space="preserve"><value>Axtar</value></data>
+  <data name="Home_Categories"       xml:space="preserve"><value>Kateqoriyalar</value></data>
+  <data name="Home_FreshListings"    xml:space="preserve"><value>Son elanlar</value></data>
+  <data name="Home_ViewAll"          xml:space="preserve"><value>Hamısına bax</value></data>
+  <data name="Home_NoListings"       xml:space="preserve"><value>Hələ elan yoxdur.</value></data>
+  <data name="Home_PostFirst"        xml:space="preserve"><value>İlki siz yerləşdirin!</value></data>
+  <data name="Home_SellYours"        xml:space="preserve"><value>Özünüzü satın</value></data>
+  <data name="Home_FreeAndFast"      xml:space="preserve"><value>Elan yerləşdirmək — pulsuz və sürətli</value></data>
+  <data name="Home_AddListing"       xml:space="preserve"><value>Elan yerləşdir</value></data>
 
-  <!-- Hero -->
-  <data name="Hero_Badge" xml:space="preserve"><value>Yeni kolleksiya 2025</value></data>
-  <data name="Hero_Title" xml:space="preserve"><value>Lazım olan hər şey — bir yerdə</value></data>
-  <data name="Hero_Subtitle" xml:space="preserve"><value>Ən yaxşı satıcılardan minlərlə məhsul. Sürətli çatdırılma, keyfiyyət zəmanəti, ən yaxşı qiymətlər.</value></data>
-  <data name="Hero_BrowseCatalog" xml:space="preserve"><value>Kataloqa keç</value></data>
-  <data name="Hero_BecomeSeller" xml:space="preserve"><value>Satıcı ol</value></data>
-  <data name="Hero_FastDelivery" xml:space="preserve"><value>Sürətli çatdırılma</value></data>
-  <data name="Hero_QualityGuarantee" xml:space="preserve"><value>Keyfiyyət zəmanəti</value></data>
-  <data name="Hero_Return30Days" xml:space="preserve"><value>30 gün geri qaytarma</value></data>
+  <!-- ── BROWSE (Listing/Index) ────────────────────────── -->
+  <data name="Browse_Title"          xml:space="preserve"><value>Elanlar</value></data>
+  <data name="Browse_Search"         xml:space="preserve"><value>Axtar...</value></data>
+  <data name="Browse_AllCategories"  xml:space="preserve"><value>Bütün kateqoriyalar</value></data>
+  <data name="Browse_City"           xml:space="preserve"><value>Şəhər</value></data>
+  <data name="Browse_PriceFrom"      xml:space="preserve"><value>Qiymət: dan</value></data>
+  <data name="Browse_PriceTo"        xml:space="preserve"><value>-ə qədər</value></data>
+  <data name="Browse_SortNewest"     xml:space="preserve"><value>Ən yeni</value></data>
+  <data name="Browse_SortCheapest"   xml:space="preserve"><value>Ən ucuz</value></data>
+  <data name="Browse_SortExpensive"  xml:space="preserve"><value>Ən baha</value></data>
+  <data name="Browse_Find"           xml:space="preserve"><value>Axtar</value></data>
+  <data name="Browse_Clear"          xml:space="preserve"><value>Sıfırla</value></data>
+  <data name="Browse_All"            xml:space="preserve"><value>Hamısı</value></data>
+  <data name="Browse_Found"          xml:space="preserve"><value>Tapıldı</value></data>
+  <data name="Browse_FoundListings"  xml:space="preserve"><value>elan</value></data>
+  <data name="Browse_ForQuery"       xml:space="preserve"><value>sorğu üçün</value></data>
+  <data name="Browse_AddListing"     xml:space="preserve"><value>Elan yerləşdir</value></data>
+  <data name="Browse_NothingFound"   xml:space="preserve"><value>Heç nə tapılmadı</value></data>
+  <data name="Browse_TryChange"      xml:space="preserve"><value>Axtarış parametrlərini dəyişdirməyə çalışın</value></data>
+  <data name="Browse_ShowAll"        xml:space="preserve"><value>Bütün elanları göstər</value></data>
 
-  <!-- Stats -->
-  <data name="Stats_Products" xml:space="preserve"><value>Məhsullar</value></data>
-  <data name="Stats_Sellers" xml:space="preserve"><value>Satıcılar</value></data>
-  <data name="Stats_Buyers" xml:space="preserve"><value>Alıcılar</value></data>
-  <data name="Stats_Rating" xml:space="preserve"><value>Orta reytinq</value></data>
+  <!-- ── LISTING DETAIL ────────────────────────────────── -->
+  <data name="Detail_Description"       xml:space="preserve"><value>Təsvir</value></data>
+  <data name="Detail_StatusClosed"      xml:space="preserve"><value>Bağlanmış</value></data>
+  <data name="Detail_StatusExpired"     xml:space="preserve"><value>Müddəti keçmiş</value></data>
+  <data name="Detail_PrivatePerson"     xml:space="preserve"><value>Şəxsi şəxs</value></data>
+  <data name="Detail_WritePlaceholder"  xml:space="preserve"><value>Satıcıya yaz...</value></data>
+  <data name="Detail_InFavorites"       xml:space="preserve"><value>Sevimlilərdən çıxar</value></data>
+  <data name="Detail_AddFavorites"      xml:space="preserve"><value>Sevimlilərə əlavə et</value></data>
+  <data name="Detail_LoginToWrite"      xml:space="preserve"><value>Yazmaq üçün daxil ol</value></data>
+  <data name="Detail_Edit"              xml:space="preserve"><value>Redaktə et</value></data>
+  <data name="Detail_Close"             xml:space="preserve"><value>Bağla</value></data>
+  <data name="Detail_Delete"            xml:space="preserve"><value>Sil</value></data>
+  <data name="Detail_DeleteConfirm"     xml:space="preserve"><value>Elanı silmək istəyirsiniz?</value></data>
 
-  <!-- Home sections -->
-  <data name="Home_PopularCategories" xml:space="preserve"><value>Populyar kateqoriyalar</value></data>
-  <data name="Home_CategoriesSubtitle" xml:space="preserve"><value>Lazımi məhsulu tez və asanlıqla tapın</value></data>
-  <data name="Home_FeaturedProducts" xml:space="preserve"><value>Tövsiyə olunan məhsullar</value></data>
-  <data name="Home_FeaturedSubtitle" xml:space="preserve"><value>Mütəxəssislərimiz tərəfindən seçilmiş</value></data>
-  <data name="Home_AllProducts" xml:space="preserve"><value>Bütün məhsullar</value></data>
-  <data name="Home_NewArrivals" xml:space="preserve"><value>Yeniliklər</value></data>
-  <data name="Home_NewArrivalsSubtitle" xml:space="preserve"><value>Yeni əlavə edilən məhsullar</value></data>
-  <data name="Home_AllNewArrivals" xml:space="preserve"><value>Bütün yeniliklər</value></data>
+  <!-- ── CREATE LISTING ────────────────────────────────── -->
+  <data name="Create_PageTitle"         xml:space="preserve"><value>Elan yerləşdir</value></data>
+  <data name="Create_SectionMain"       xml:space="preserve"><value>Əsas məlumat</value></data>
+  <data name="Create_Category"          xml:space="preserve"><value>Kateqoriya</value></data>
+  <data name="Create_SelectCategory"    xml:space="preserve"><value>— Kateqoriya seçin —</value></data>
+  <data name="Create_ListingTitle"      xml:space="preserve"><value>Elanın başlığı</value></data>
+  <data name="Create_TitlePlaceholder"  xml:space="preserve"><value>Məs: iPhone 13 Pro 256GB Space Gray</value></data>
+  <data name="Create_Description"       xml:space="preserve"><value>Təsvir</value></data>
+  <data name="Create_DescPlaceholder"   xml:space="preserve"><value>Məhsul haqqında ətraflı yazın: vəziyyəti, xüsusiyyətləri, satış səbəbi...</value></data>
+  <data name="Create_SectionPrice"      xml:space="preserve"><value>Qiymət və əlaqə</value></data>
+  <data name="Create_Price"             xml:space="preserve"><value>Qiymət (₼)</value></data>
+  <data name="Create_City"              xml:space="preserve"><value>Şəhər</value></data>
+  <data name="Create_Phone"             xml:space="preserve"><value>Əlaqə telefonu</value></data>
+  <data name="Create_SectionPhotos"     xml:space="preserve"><value>Şəkillər</value></data>
+  <data name="Create_PhotosHint"        xml:space="preserve"><value>5-ə qədər şəkil (JPG, PNG, WebP). İlk şəkil üz olacaq.</value></data>
+  <data name="Create_Publish"           xml:space="preserve"><value>Dərc et</value></data>
+  <data name="Create_Cancel"            xml:space="preserve"><value>Ləğv et</value></data>
 
-  <!-- Promo banners -->
-  <data name="Promo_HotDeals" xml:space="preserve"><value>Qaynar endirimlər</value></data>
-  <data name="Promo_Electronics50" xml:space="preserve"><value>Elektronikada 50%-ə qədər</value></data>
-  <data name="Promo_LimitedOffer" xml:space="preserve"><value>Məhdud təklif. Qaçırmayın!</value></data>
-  <data name="Promo_Browse" xml:space="preserve"><value>Baxmaq</value></data>
-  <data name="Promo_NewItems" xml:space="preserve"><value>Yeniliklər</value></data>
-  <data name="Promo_FreshCollection" xml:space="preserve"><value>Təzə kolleksiya</value></data>
-  <data name="Promo_BeFirst" xml:space="preserve"><value>Mağazanın yenilikləri haqqında ilk bilin</value></data>
+  <!-- ── EDIT LISTING ──────────────────────────────────── -->
+  <data name="Edit_PageTitle"       xml:space="preserve"><value>Elanı redaktə et</value></data>
+  <data name="Edit_SectionMain"     xml:space="preserve"><value>Əsas məlumat</value></data>
+  <data name="Edit_Category"        xml:space="preserve"><value>Kateqoriya</value></data>
+  <data name="Edit_SelectCat"       xml:space="preserve"><value>— Seçin —</value></data>
+  <data name="Edit_Title"           xml:space="preserve"><value>Başlıq</value></data>
+  <data name="Edit_Description"     xml:space="preserve"><value>Təsvir</value></data>
+  <data name="Edit_SectionPrice"    xml:space="preserve"><value>Qiymət və əlaqə</value></data>
+  <data name="Edit_Price"           xml:space="preserve"><value>Qiymət (₼)</value></data>
+  <data name="Edit_City"            xml:space="preserve"><value>Şəhər</value></data>
+  <data name="Edit_Phone"           xml:space="preserve"><value>Əlaqə telefonu</value></data>
+  <data name="Edit_CurrentPhotos"   xml:space="preserve"><value>Mövcud şəkillər</value></data>
+  <data name="Edit_DeleteHint"      xml:space="preserve"><value>Silmək üçün şəkilləri işarələyin</value></data>
+  <data name="Edit_AddPhotos"       xml:space="preserve"><value>Şəkil əlavə et</value></data>
+  <data name="Edit_Save"            xml:space="preserve"><value>Saxla</value></data>
+  <data name="Edit_Cancel"          xml:space="preserve"><value>Ləğv et</value></data>
 
-  <!-- How it works -->
-  <data name="How_Title" xml:space="preserve"><value>Bu necə işləyir</value></data>
-  <data name="How_Subtitle" xml:space="preserve"><value>3 sadə addımda alış-veriş</value></data>
-  <data name="How_Step1Title" xml:space="preserve"><value>Məhsulu tapın</value></data>
-  <data name="How_Step1Desc" xml:space="preserve"><value>Lazımi məhsulu tapmaq üçün axtarışdan və ya kataloqdan istifadə edin</value></data>
-  <data name="How_Step2Title" xml:space="preserve"><value>Səbətə əlavə edin</value></data>
-  <data name="How_Step2Desc" xml:space="preserve"><value>Lazımi miqdarı seçin və səbətə əlavə edin</value></data>
-  <data name="How_Step3Title" xml:space="preserve"><value>Sifarişi qəbul edin</value></data>
-  <data name="How_Step3Desc" xml:space="preserve"><value>Sifarişinizi sürətli və sağlam çatdıracağıq</value></data>
+  <!-- ── MY LISTINGS ───────────────────────────────────── -->
+  <data name="MyListings_Title"      xml:space="preserve"><value>Elanlarım</value></data>
+  <data name="MyListings_New"        xml:space="preserve"><value>Yeni elan</value></data>
+  <data name="MyListings_Empty"      xml:space="preserve"><value>Hələ elanınız yoxdur</value></data>
+  <data name="MyListings_EmptyDesc"  xml:space="preserve"><value>İlk elanınızı pulsuz yerləşdirin</value></data>
+  <data name="MyListings_Post"       xml:space="preserve"><value>Elan yerləşdir</value></data>
+  <data name="MyListings_Active"     xml:space="preserve"><value>Aktiv</value></data>
+  <data name="MyListings_Closed"     xml:space="preserve"><value>Bağlanmış</value></data>
+  <data name="MyListings_NoActive"   xml:space="preserve"><value>Aktiv elan yoxdur</value></data>
+  <data name="MyListings_NoClosed"   xml:space="preserve"><value>Bağlanmış elan yoxdur</value></data>
+  <data name="MyListings_DeleteConfirm" xml:space="preserve"><value>Elanı silmək istəyirsiniz?</value></data>
+  <data name="MyListings_CloseTitle" xml:space="preserve"><value>Bağla</value></data>
 
-  <!-- Reviews -->
-  <data name="Reviews_Title" xml:space="preserve"><value>Alıcılar nə deyir</value></data>
-  <data name="Review1_Text" xml:space="preserve"><value>Əla mağaza! Sürətli çatdırılma və keyfiyyətli məhsullar. Yenidən sifariş edəcəyəm!</value></data>
-  <data name="Review1_Role" xml:space="preserve"><value>Daimi alıcı</value></data>
-  <data name="Review2_Text" xml:space="preserve"><value>Qiymətlər adi mağazalardan xeyli aşağıdır. Çox rahat sayt və sürətli dəstək.</value></data>
-  <data name="Review2_Role" xml:space="preserve"><value>Təsdiqlənmiş alıcı</value></data>
-  <data name="Review3_Text" xml:space="preserve"><value>Satıcı kimi qeydiyyatdan keçdim — çox sadə! Satışlar artıq ertəsi gün başladı.</value></data>
-  <data name="Review3_Role" xml:space="preserve"><value>Satıcı</value></data>
+  <!-- ── FAVORITES ─────────────────────────────────────── -->
+  <data name="Favorites_Title"     xml:space="preserve"><value>Sevimlilər</value></data>
+  <data name="Favorites_Empty"     xml:space="preserve"><value>Sevimlilər siyahısı boşdur</value></data>
+  <data name="Favorites_EmptyDesc" xml:space="preserve"><value>İstənilən elana ❤ basaraq sevimlilərə əlavə edin</value></data>
+  <data name="Favorites_Browse"    xml:space="preserve"><value>Elanlara bax</value></data>
+  <data name="Favorites_Remove"    xml:space="preserve"><value>Çıxar</value></data>
 
-  <!-- Seller CTA -->
-  <data name="SellerCTA_Title" xml:space="preserve"><value>EcommersShop-da satmaq istərsinizmi?</value></data>
-  <data name="SellerCTA_Desc" xml:space="preserve"><value>Pulsuz satıcı kimi qeydiyyatdan keçin və bu gün sifarişlər almağa başlayın. 50 000-dən çox alıcı sizin məhsullarınızı gözləyir!</value></data>
-  <data name="SellerCTA_Btn" xml:space="preserve"><value>Satıcı ol</value></data>
-  <data name="SellerCTA_LearnMore" xml:space="preserve"><value>Daha çox öyrən</value></data>
+  <!-- ── MESSAGES ──────────────────────────────────────── -->
+  <data name="Messages_Title"            xml:space="preserve"><value>Mesajlar</value></data>
+  <data name="Messages_Empty"            xml:space="preserve"><value>Mesaj yoxdur</value></data>
+  <data name="Messages_EmptyDesc"        xml:space="preserve"><value>İstənilən elandan satıcıya yazın</value></data>
+  <data name="Messages_Browse"           xml:space="preserve"><value>Elanlara bax</value></data>
+  <data name="Messages_InputPlaceholder" xml:space="preserve"><value>Mesaj yazın...</value></data>
+  <data name="Messages_Send"             xml:space="preserve"><value>Göndər</value></data>
+  <data name="Messages_FirstMsg"         xml:space="preserve"><value>İlk mesajı yazın</value></data>
 
-  <!-- Auth pages -->
-  <data name="Login_Title" xml:space="preserve"><value>Giriş</value></data>
-  <data name="Login_Welcome" xml:space="preserve"><value>Xoş gəlmisiniz!</value></data>
-  <data name="Login_Subtitle" xml:space="preserve"><value>Hesabınıza daxil olun</value></data>
-  <data name="Login_Password" xml:space="preserve"><value>Şifrə</value></data>
-  <data name="Login_Submit" xml:space="preserve"><value>Daxil ol</value></data>
-  <data name="Login_NoAccount" xml:space="preserve"><value>Hesabınız yoxdur?</value></data>
-  <data name="Login_Register" xml:space="preserve"><value>Qeydiyyatdan keçin</value></data>
-  <data name="Login_AdminLogin" xml:space="preserve"><value>Admin / Satıcı kimi daxil olun</value></data>
-  <data name="Register_Title" xml:space="preserve"><value>Hesab yaradın</value></data>
-  <data name="Register_FirstName" xml:space="preserve"><value>Ad</value></data>
-  <data name="Register_LastName" xml:space="preserve"><value>Soyad</value></data>
-  <data name="Register_Phone" xml:space="preserve"><value>Telefon</value></data>
-  <data name="Register_Password" xml:space="preserve"><value>Şifrə</value></data>
-  <data name="Register_Confirm" xml:space="preserve"><value>Təsdiqləyin</value></data>
-  <data name="Register_IsSeller" xml:space="preserve"><value>Satıcı kimi qeydiyyatdan keçin</value></data>
-  <data name="Register_ShopName" xml:space="preserve"><value>Mağaza adı</value></data>
-  <data name="Register_ShopDescription" xml:space="preserve"><value>Mağaza təsviri</value></data>
-  <data name="Register_Submit" xml:space="preserve"><value>Qeydiyyatdan keç</value></data>
-  <data name="Register_HasAccount" xml:space="preserve"><value>Hesabınız var?</value></data>
-  <data name="Register_Login" xml:space="preserve"><value>Daxil olun</value></data>
+  <!-- ── LOGIN ─────────────────────────────────────────── -->
+  <data name="Login_PageTitle"    xml:space="preserve"><value>Daxil ol</value></data>
+  <data name="Login_Heading"      xml:space="preserve"><value>Hesabınıza daxil olun</value></data>
+  <data name="Login_Email"        xml:space="preserve"><value>E-poçt</value></data>
+  <data name="Login_Password"     xml:space="preserve"><value>Şifrə</value></data>
+  <data name="Login_Submit"       xml:space="preserve"><value>Daxil ol</value></data>
+  <data name="Login_NoAccount"    xml:space="preserve"><value>Hesabınız yoxdur?</value></data>
+  <data name="Login_Register"     xml:space="preserve"><value>Qeydiyyat</value></data>
 
-  <!-- Product card -->
-  <data name="Product_OutOfStock" xml:space="preserve"><value>Stokda yoxdur</value></data>
+  <!-- ── REGISTER ──────────────────────────────────────── -->
+  <data name="Register_PageTitle"       xml:space="preserve"><value>Qeydiyyat</value></data>
+  <data name="Register_Heading"         xml:space="preserve"><value>Hesab yaradın</value></data>
+  <data name="Register_FirstName"       xml:space="preserve"><value>Ad</value></data>
+  <data name="Register_LastName"        xml:space="preserve"><value>Soyad</value></data>
+  <data name="Register_Email"           xml:space="preserve"><value>E-poçt</value></data>
+  <data name="Register_Phone"           xml:space="preserve"><value>Telefon</value></data>
+  <data name="Register_Password"        xml:space="preserve"><value>Şifrə</value></data>
+  <data name="Register_ConfirmPassword" xml:space="preserve"><value>Şifrəni təsdiqlə</value></data>
+  <data name="Register_Submit"          xml:space="preserve"><value>Qeydiyyatdan keç</value></data>
+  <data name="Register_HasAccount"      xml:space="preserve"><value>Artıq hesabınız var?</value></data>
+  <data name="Register_Login"           xml:space="preserve"><value>Daxil ol</value></data>
 
-  <!-- Profile page -->
-  <data name="Profile_Title" xml:space="preserve"><value>Profilim</value></data>
-  <data name="Profile_Since" xml:space="preserve"><value>Bizimlə</value></data>
-  <data name="Profile_Profile" xml:space="preserve"><value>Profil</value></data>
-  <data name="Profile_Favorites" xml:space="preserve"><value>Sevimlilər</value></data>
-  <data name="Profile_Cart" xml:space="preserve"><value>Səbət</value></data>
-  <data name="Profile_RecentOrders" xml:space="preserve"><value>Son sifarişlər</value></data>
-  <data name="Profile_AllOrders" xml:space="preserve"><value>Bütün sifarişlər</value></data>
-  <data name="Profile_NoOrders" xml:space="preserve"><value>Hələ sifariş yoxdur</value></data>
-  <data name="Profile_GoToCatalog" xml:space="preserve"><value>Kataloqa</value></data>
-  <data name="Profile_Addresses" xml:space="preserve"><value>Çatdırılma ünvanları</value></data>
-  <data name="Profile_AddAddress" xml:space="preserve"><value>Əlavə et</value></data>
-  <data name="Profile_NoAddresses" xml:space="preserve"><value>Saxlanılmış ünvan yoxdur</value></data>
-  <data name="Profile_NewAddress" xml:space="preserve"><value>Yeni ünvan</value></data>
-  <data name="Profile_Street" xml:space="preserve"><value>Küçə, ev</value></data>
-  <data name="Profile_Apartment" xml:space="preserve"><value>Mənzil/ofis</value></data>
-  <data name="Profile_City" xml:space="preserve"><value>Şəhər</value></data>
-  <data name="Profile_District" xml:space="preserve"><value>Rayon</value></data>
-  <data name="Profile_PostalCode" xml:space="preserve"><value>Poçt indeksi</value></data>
-  <data name="Profile_Country" xml:space="preserve"><value>Ölkə</value></data>
-  <data name="Profile_DefaultAddress" xml:space="preserve"><value>Əsas ünvan</value></data>
-  <data name="Profile_IsDefault" xml:space="preserve"><value>Əsas</value></data>
-  <data name="Profile_Cancel" xml:space="preserve"><value>Ləğv et</value></data>
-  <data name="Profile_SaveAddress" xml:space="preserve"><value>Ünvanı saxla</value></data>
-  <data name="Profile_OrderItems" xml:space="preserve"><value>məhsul</value></data>
+  <!-- ── CATEGORIES ──────────────────────────────────────── -->
+  <data name="Cat_electronics"  xml:space="preserve"><value>Elektronika</value></data>
+  <data name="Cat_clothing"     xml:space="preserve"><value>Geyim və ayaqqabı</value></data>
+  <data name="Cat_auto"         xml:space="preserve"><value>Avtomobil</value></data>
+  <data name="Cat_realestate"   xml:space="preserve"><value>Daşınmaz əmlak</value></data>
+  <data name="Cat_jobs"         xml:space="preserve"><value>İş</value></data>
+  <data name="Cat_services"     xml:space="preserve"><value>Xidmətlər</value></data>
+  <data name="Cat_home"         xml:space="preserve"><value>Ev üçün</value></data>
+  <data name="Cat_sports"       xml:space="preserve"><value>İdman və hobbi</value></data>
+  <data name="Cat_animals"      xml:space="preserve"><value>Heyvanlar</value></data>
+  <data name="Cat_business"     xml:space="preserve"><value>Biznes</value></data>
+  <data name="Cat_other"        xml:space="preserve"><value>Digər</value></data>
 
-  <!-- Shop page -->
-  <data name="Shop_Title" xml:space="preserve"><value>Kataloq</value></data>
-  <data name="Shop_Categories" xml:space="preserve"><value>Kateqoriyalar</value></data>
-  <data name="Shop_AllCategories" xml:space="preserve"><value>Bütün kateqoriyalar</value></data>
-  <data name="Shop_Brands" xml:space="preserve"><value>Brendlər</value></data>
-  <data name="Shop_SearchResults" xml:space="preserve"><value>Nəticələr:</value></data>
-  <data name="Shop_Found" xml:space="preserve"><value>Tapıldı:</value></data>
-  <data name="Shop_Products" xml:space="preserve"><value>məhsul</value></data>
-  <data name="Shop_Sort" xml:space="preserve"><value>Sıralama:</value></data>
-  <data name="Shop_SortDefault" xml:space="preserve"><value>Standart</value></data>
-  <data name="Shop_SortPriceAsc" xml:space="preserve"><value>Qiymət ↑</value></data>
-  <data name="Shop_SortPriceDesc" xml:space="preserve"><value>Qiymət ↓</value></data>
-  <data name="Shop_SortRating" xml:space="preserve"><value>Reytinqə görə</value></data>
-  <data name="Shop_NotFound" xml:space="preserve"><value>Məhsul tapılmadı. Filtrləri dəyişdirməyi cəhd edin.</value></data>
-  <data name="Shop_ResetFilters" xml:space="preserve"><value>Filtrləri sıfırla</value></data>
+  <!-- ── ADMIN / REVIEW ────────────────────────────────────── -->
+  <data name="Status_Pending"          xml:space="preserve"><value>Yoxlamada</value></data>
+  <data name="Admin_PendingListings"   xml:space="preserve"><value>Yoxlamada</value></data>
+  <data name="Admin_Approve"           xml:space="preserve"><value>Təsdiqlə</value></data>
+  <data name="Admin_Reject"            xml:space="preserve"><value>Rədd et</value></data>
+  <data name="Admin_NoPending"         xml:space="preserve"><value>Yoxlanılacaq elan yoxdur</value></data>
+  <data name="Listing_SentForReview"   xml:space="preserve"><value>Elanınız admin yoxlaması üçün göndərildi</value></data>
+  <data name="MyListings_Pending"      xml:space="preserve"><value>Yoxlamada</value></data>
+  <data name="MyListings_NoPending"    xml:space="preserve"><value>Yoxlamada elan yoxdur</value></data>
+  <data name="MyListings_PendingHint"  xml:space="preserve"><value>Admin təsdiqini gözləyir</value></data>
 
-  <!-- Cart page -->
-  <data name="Cart_Title" xml:space="preserve"><value>Səbət</value></data>
-  <data name="Cart_Empty" xml:space="preserve"><value>Səbətiniz boşdur</value></data>
-  <data name="Cart_GoToShop" xml:space="preserve"><value>Kataloqa keç</value></data>
-  <data name="Cart_PerUnit" xml:space="preserve"><value>ədəd üçün</value></data>
-  <data name="Cart_Continue" xml:space="preserve"><value>Alışverişə davam et</value></data>
-  <data name="Cart_Clear" xml:space="preserve"><value>Səbəti təmizlə</value></data>
-  <data name="Cart_Summary" xml:space="preserve"><value>Cəmi</value></data>
-  <data name="Cart_Products" xml:space="preserve"><value>Məhsullar</value></data>
-  <data name="Cart_Delivery" xml:space="preserve"><value>Çatdırılma</value></data>
-  <data name="Cart_Total" xml:space="preserve"><value>Ümumi</value></data>
-  <data name="Cart_Checkout" xml:space="preserve"><value>Sifarişi rəsmiləşdir</value></data>
+  <!-- ── REVIEWS ─────────────────────────────────────────── -->
+  <data name="Review_Title"           xml:space="preserve"><value>Rəylər</value></data>
+  <data name="Review_Leave"           xml:space="preserve"><value>Rəy yaz</value></data>
+  <data name="Review_Rating"          xml:space="preserve"><value>Qiymət</value></data>
+  <data name="Review_Comment"         xml:space="preserve"><value>Şərh</value></data>
+  <data name="Review_Submit"          xml:space="preserve"><value>Rəy göndər</value></data>
+  <data name="Review_Submitted"       xml:space="preserve"><value>Rəyiniz əlavə edildi. Təşəkkür edirik!</value></data>
+  <data name="Review_Already"         xml:space="preserve"><value>Bu elana artıq rəy yazmısınız.</value></data>
+  <data name="Review_NoReviews"       xml:space="preserve"><value>Hələ rəy yoxdur.</value></data>
+  <data name="Review_LoginToReview"   xml:space="preserve"><value>Rəy yazmaq üçün daxil olun</value></data>
+  <data name="Review_CannotReviewOwn" xml:space="preserve"><value>Öz elanınıza rəy yaza bilməzsiniz.</value></data>
+  <data name="Review_Placeholder"     xml:space="preserve"><value>Əməliyyat haqqında danışın. Rəyiniz digər alıcılara kömək edəcək...</value></data>
+
+  <!-- ── MY LISTINGS EARNINGS ─────────────────────────────── -->
+  <data name="MyListings_TotalEarned"   xml:space="preserve"><value>Bağlanmış elanların ümumi məbləği</value></data>
+
+  <!-- ── ADMIN PANEL ──────────────────────────────────────── -->
+  <data name="Admin_Title"          xml:space="preserve"><value>İdarəetmə paneli</value></data>
+  <data name="Admin_SectionAdmin"   xml:space="preserve"><value>Administrator</value></data>
+  <data name="Admin_SectionSeller"  xml:space="preserve"><value>Satıcı</value></data>
+  <data name="Admin_Dashboard"      xml:space="preserve"><value>İdarə paneli</value></data>
+  <data name="Admin_Users"          xml:space="preserve"><value>İstifadəçilər</value></data>
+  <data name="Admin_Listings"       xml:space="preserve"><value>Elanlar</value></data>
+  <data name="Admin_Categories"     xml:space="preserve"><value>Kateqoriyalar</value></data>
+  <data name="Admin_Brands"         xml:space="preserve"><value>Brendlər</value></data>
+  <data name="Admin_MyStats"        xml:space="preserve"><value>Mənim statistikam</value></data>
+  <data name="Admin_MyListings"     xml:space="preserve"><value>Elanlarım</value></data>
+  <data name="Admin_MyOrders"       xml:space="preserve"><value>Sifarişlərim</value></data>
+  <data name="Admin_GoToSite"       xml:space="preserve"><value>Sayta keç</value></data>
+  <data name="Admin_RoleAdmin"      xml:space="preserve"><value>Administrator</value></data>
+  <data name="Admin_RoleSeller"     xml:space="preserve"><value>Satıcı</value></data>
+
+  <!-- Admin pages – table columns -->
+  <data name="Admin_ColTitle"            xml:space="preserve"><value>Başlıq</value></data>
+  <data name="Admin_ColCategory"         xml:space="preserve"><value>Kateqoriya</value></data>
+  <data name="Admin_ColCity"             xml:space="preserve"><value>Şəhər</value></data>
+  <data name="Admin_ColPrice"            xml:space="preserve"><value>Qiymət</value></data>
+  <data name="Admin_ColAuthor"           xml:space="preserve"><value>Müəllif</value></data>
+  <data name="Admin_ColStatus"           xml:space="preserve"><value>Status</value></data>
+  <data name="Admin_ColDate"             xml:space="preserve"><value>Tarix</value></data>
+  <data name="Admin_ColActions"          xml:space="preserve"><value>Əməliyyatlar</value></data>
+  <data name="Admin_ColName"             xml:space="preserve"><value>Ad</value></data>
+  <data name="Admin_ColDescription"      xml:space="preserve"><value>Təsvir</value></data>
+  <data name="Admin_ColEmail"            xml:space="preserve"><value>Email</value></data>
+  <data name="Admin_ColPhone"            xml:space="preserve"><value>Telefon</value></data>
+  <data name="Admin_ColRole"             xml:space="preserve"><value>Rol</value></data>
+
+  <!-- Admin – Dashboard -->
+  <data name="Admin_DashPageTitle"       xml:space="preserve"><value>Administrator panosu</value></data>
+  <data name="Admin_TotalListings"       xml:space="preserve"><value>Ümumi elanlar</value></data>
+  <data name="Admin_ActiveLabel"         xml:space="preserve"><value>Aktiv:</value></data>
+  <data name="Admin_TotalUsers"          xml:space="preserve"><value>İstifadəçilər</value></data>
+  <data name="Admin_TotalCategories"     xml:space="preserve"><value>Kateqoriyalar</value></data>
+  <data name="Admin_RequireReview"       xml:space="preserve"><value>Yoxlanma tələb olunur →</value></data>
+  <data name="Admin_RecentListings"      xml:space="preserve"><value>Son elanlar</value></data>
+  <data name="Admin_AllListings"         xml:space="preserve"><value>Bütün elanlar</value></data>
+  <data name="Admin_NoListings"          xml:space="preserve"><value>Elan yoxdur</value></data>
+
+  <!-- Admin – Listings management -->
+  <data name="Admin_SearchListings"      xml:space="preserve"><value>Ad üzrə axtarış...</value></data>
+  <data name="Admin_AllCategories"       xml:space="preserve"><value>Bütün kateqoriyalar</value></data>
+  <data name="Admin_Reset"               xml:space="preserve"><value>Sıfırla</value></data>
+  <data name="Admin_View"                xml:space="preserve"><value>Baxış</value></data>
+  <data name="Admin_ListingsActive"      xml:space="preserve"><value>Aktiv</value></data>
+  <data name="Admin_ListingsClosed"      xml:space="preserve"><value>Bağlı</value></data>
+  <data name="Admin_Close"               xml:space="preserve"><value>Bitir</value></data>
+  <data name="Admin_Found"               xml:space="preserve"><value>Tapıldı:</value></data>
+  <data name="Admin_NoListingsMsg"       xml:space="preserve"><value>Elan tapılmadı.</value></data>
+  <data name="Admin_DeleteListingConfirm" xml:space="preserve"><value>Elanı sil?</value></data>
+  <data name="Admin_RejectConfirm"       xml:space="preserve"><value>Elanı rədd et?</value></data>
+  <data name="Admin_ApprovedMsg"         xml:space="preserve"><value>Elan təsdiqləndi və dərc olundu.</value></data>
+  <data name="Admin_RejectedMsg"         xml:space="preserve"><value>Elan rədd edildi.</value></data>
+  <data name="Admin_DeletedListingMsg"   xml:space="preserve"><value>Elan silindi.</value></data>
+  <data name="Admin_ClosedListingMsg"    xml:space="preserve"><value>Elan bağlandı.</value></data>
+
+  <!-- Admin – Users management -->
+  <data name="Admin_ManageUsers"         xml:space="preserve"><value>İstifadəçilərin idarəsi</value></data>
+  <data name="Admin_TotalLabel"          xml:space="preserve"><value>Cəmi:</value></data>
+  <data name="Admin_SearchUsers"         xml:space="preserve"><value>Email / ad üzrə axtar...</value></data>
+  <data name="Admin_You"                 xml:space="preserve"><value>siz</value></data>
+  <data name="Admin_RoleUser"            xml:space="preserve"><value>İstifadəçi</value></data>
+  <data name="Admin_UserActive"          xml:space="preserve"><value>Aktiv</value></data>
+  <data name="Admin_UserInactive"        xml:space="preserve"><value>Qeyri-aktiv</value></data>
+  <data name="Admin_MakeAdmin"           xml:space="preserve"><value>Admin et</value></data>
+  <data name="Admin_MakeAdminConfirm"    xml:space="preserve"><value>Admin təyin et?</value></data>
+  <data name="Admin_RemoveAdmin"         xml:space="preserve"><value>Admin hüquqlarını al</value></data>
+  <data name="Admin_RemoveAdminConfirm"  xml:space="preserve"><value>Admin hüquqlarını al?</value></data>
+  <data name="Admin_Deactivate"          xml:space="preserve"><value>Deaktiv et</value></data>
+  <data name="Admin_Activate"            xml:space="preserve"><value>Aktiv et</value></data>
+  <data name="Admin_DeleteUserConfirm"   xml:space="preserve"><value>İstifadəçini sil?</value></data>
+  <data name="Admin_NoUsers"             xml:space="preserve"><value>İstifadəçi tapılmadı.</value></data>
+  <data name="Admin_MakeAdminMsg"        xml:space="preserve"><value>İstifadəçi admin təyin edildi.</value></data>
+  <data name="Admin_RemoveAdminMsg"      xml:space="preserve"><value>Admin hüquqları alındı.</value></data>
+  <data name="Admin_CannotDemoteSelf"    xml:space="preserve"><value>Özünüzün admin rolunu götürə bilməzsiniz.</value></data>
+  <data name="Admin_UserActivatedMsg"    xml:space="preserve"><value>İstifadəçi aktivləşdirildi.</value></data>
+  <data name="Admin_UserDeactivatedMsg"  xml:space="preserve"><value>İstifadəçi deaktiv edildi.</value></data>
+  <data name="Admin_UserDeletedMsg"      xml:space="preserve"><value>İstifadəçi silindi.</value></data>
+  <data name="Admin_CannotDeleteSelf"    xml:space="preserve"><value>Özünüzü silə bilməzsiniz.</value></data>
+
+  <!-- Admin – Categories management -->
+  <data name="Admin_CatSectionTitle"     xml:space="preserve"><value>Məhsul kateqoriyaları</value></data>
+  <data name="Admin_NewCategory"         xml:space="preserve"><value>Yeni kateqoriya</value></data>
+  <data name="Admin_CategoryNameLabel"   xml:space="preserve"><value>Ad *</value></data>
+  <data name="Admin_CategoryDescLabel"   xml:space="preserve"><value>Təsvir</value></data>
+  <data name="Admin_CategoryNamePh"      xml:space="preserve"><value>Məsələn: Elektronika</value></data>
+  <data name="Admin_CategoryDescPh"      xml:space="preserve"><value>Qısa kateqoriya təsviri...</value></data>
+  <data name="Admin_CreateCategory"      xml:space="preserve"><value>Kateqoriya yarat</value></data>
+  <data name="Admin_NoCats"              xml:space="preserve"><value>Kateqoriya yoxdur. Birincini yaradın!</value></data>
+  <data name="Admin_DeleteCatConfirm"    xml:space="preserve"><value>Kateqoriyanı sil?</value></data>
+
+  <!-- Admin – back button -->
+  <data name="Admin_BackToPanel"         xml:space="preserve"><value>← Panelə qayıt</value></data>
+
+  <!-- ── ABOUT PAGE ───────────────────────────────────────── -->
+  <data name="About_HeroTitle"    xml:space="preserve"><value>Alıs-Veris haqqında</value></data>
+  <data name="About_HeroSub"     xml:space="preserve"><value>Azərbaycanda alqı-satqı üçün platforma</value></data>
+  <data name="About_WhyTitle"    xml:space="preserve"><value>Niyə Alıs-Veris?</value></data>
+  <data name="About_P1"          xml:space="preserve"><value>Alıs-Veris — insanların bir-biri ilə birbaşa alqı-satqı edə biləcəyi platformadır. Telefon, avtomobil, mənzil — hər şey burada.</value></data>
+  <data name="About_P2"          xml:space="preserve"><value>Vasitəçi yoxdur. Qiymətlər ədalətlidir. Satıcı ilə birbaşa, öz dilinizdə ünsiyyət.</value></data>
+  <data name="About_StatListings"   xml:space="preserve"><value>Aktiv elan</value></data>
+  <data name="About_StatUsers"      xml:space="preserve"><value>Qeydiyyatlı istifadəçi</value></data>
+  <data name="About_StatCities"     xml:space="preserve"><value>Şəhər və rayon</value></data>
+  <data name="About_StatFree"       xml:space="preserve"><value>Pulsuz</value></data>
+  <data name="About_StatFreeLabel"  xml:space="preserve"><value>Elan yerləşdirmək</value></data>
+  <data name="About_HowTitle"    xml:space="preserve"><value>Necə işləyir?</value></data>
+  <data name="About_HowSub"     xml:space="preserve"><value>Üç addımda satışa başla</value></data>
+  <data name="About_Step1T"     xml:space="preserve"><value>Qeydiyyatdan keç</value></data>
+  <data name="About_Step1D"     xml:space="preserve"><value>E-poçt ünvanınla bir dəqiqədə hesab aç. Tamamilə pulsuzdur.</value></data>
+  <data name="About_Step2T"     xml:space="preserve"><value>Elan yarat</value></data>
+  <data name="About_Step2D"     xml:space="preserve"><value>Şəkil əlavə et, qiymət və şəhər qeyd et — elanın dərhal yayımlanır.</value></data>
+  <data name="About_Step3T"     xml:space="preserve"><value>Alıcı ilə əlaqə qur</value></data>
+  <data name="About_Step3D"     xml:space="preserve"><value>Alıcı sizə mesaj yazır, razılaşırsınız — satış bitdi.</value></data>
+  <data name="About_ValTitle"   xml:space="preserve"><value>Bizim prinsiplərimiz</value></data>
+  <data name="About_ValSub"     xml:space="preserve"><value>Platformanı bu dəyərlər üzərində qurmuşuq</value></data>
+  <data name="About_Val1T"      xml:space="preserve"><value>Etibarlılıq</value></data>
+  <data name="About_Val1D"      xml:space="preserve"><value>Hər istifadəçi doğrulanır. Şübhəli elanlar moderasiyadan keçir.</value></data>
+  <data name="About_Val2T"      xml:space="preserve"><value>Sürət</value></data>
+  <data name="About_Val2D"      xml:space="preserve"><value>Elanın bir neçə dəqiqə ərzində yayımlanır — heç bir gecikmə yoxdur.</value></data>
+  <data name="About_Val3T"      xml:space="preserve"><value>Birlik</value></data>
+  <data name="About_Val3D"      xml:space="preserve"><value>Alıcı da, satıcı da bərabər hüquqludur. Birlikdə daha güclüyük.</value></data>
+  <data name="About_Val4T"      xml:space="preserve"><value>Yerlilik</value></data>
+  <data name="About_Val4D"      xml:space="preserve"><value>Bütün Azərbaycan şəhər və rayonlarını əhatə edirik.</value></data>
+  <data name="About_TeamTitle"  xml:space="preserve"><value>Komanda</value></data>
+  <data name="About_TeamSub"    xml:space="preserve"><value>Platformanı quran insanlar</value></data>
+
+  <!-- ── CONTACT PAGE ──────────────────────────────────────── -->
+  <data name="Contact_HeroTitle"         xml:space="preserve"><value>Bizimlə əlaqə</value></data>
+  <data name="Contact_HeroSub"           xml:space="preserve"><value>Sualınız var? Kömək etməyə hazırıq.</value></data>
+  <data name="Contact_InfoTitle"         xml:space="preserve"><value>Əlaqə məlumatları</value></data>
+  <data name="Contact_EmailLabel"        xml:space="preserve"><value>E-poçt</value></data>
+  <data name="Contact_TelegramLabel"     xml:space="preserve"><value>Telegram</value></data>
+  <data name="Contact_AddressLabel"      xml:space="preserve"><value>Ünvan</value></data>
+  <data name="Contact_AddressVal"        xml:space="preserve"><value>Bakı, Azərbaycan</value></data>
+  <data name="Contact_HoursLabel"        xml:space="preserve"><value>İş saatları</value></data>
+  <data name="Contact_HoursVal"          xml:space="preserve"><value>B.e–Cümə: 09:00–18:00</value></data>
+  <data name="Contact_SocialTitle"       xml:space="preserve"><value>Sosial şəbəkələr</value></data>
+  <data name="Contact_FormTitle"         xml:space="preserve"><value>Mesaj göndər</value></data>
+  <data name="Contact_Sent"             xml:space="preserve"><value>Mesajınız göndərildi! 24 saat ərzində cavab veriləcək.</value></data>
+  <data name="Contact_NameLabel"         xml:space="preserve"><value>Ad *</value></data>
+  <data name="Contact_EmailFieldLabel"   xml:space="preserve"><value>E-poçt *</value></data>
+  <data name="Contact_SubjectLabel"      xml:space="preserve"><value>Mövzu</value></data>
+  <data name="Contact_SubjectPh"         xml:space="preserve"><value>Mövzu seçin...</value></data>
+  <data name="Contact_Subj_Listing"      xml:space="preserve"><value>Elan ilə bağlı sual</value></data>
+  <data name="Contact_Subj_Account"      xml:space="preserve"><value>Hesab problemi</value></data>
+  <data name="Contact_Subj_Safety"       xml:space="preserve"><value>Şübhəli elan şikayəti</value></data>
+  <data name="Contact_Subj_Seller"       xml:space="preserve"><value>Satıcı olmaq</value></data>
+  <data name="Contact_Subj_Other"        xml:space="preserve"><value>Digər</value></data>
+  <data name="Contact_MessageLabel"      xml:space="preserve"><value>Mesaj *</value></data>
+  <data name="Contact_MessagePh"         xml:space="preserve"><value>Sualınızı ətraflı yazın...</value></data>
+  <data name="Contact_Send"             xml:space="preserve"><value>Göndər</value></data>
+  <data name="Contact_FaqTitle"          xml:space="preserve"><value>Tez-tez verilən suallar</value></data>
+  <data name="Contact_Faq1Q"            xml:space="preserve"><value>Elan yerləşdirmək pulsuzdurmu?</value></data>
+  <data name="Contact_Faq1A"            xml:space="preserve"><value>Bəli, Alıs-Veris-də elan yerləşdirmək tamamilə pulsuzdur. Qeydiyyatdan keç və istədiyin qədər elan əlavə et.</value></data>
+  <data name="Contact_Faq2Q"            xml:space="preserve"><value>Elanım nə vaxt yayımlanacaq?</value></data>
+  <data name="Contact_Faq2A"            xml:space="preserve"><value>Elanlar moderasiya yoxlamasından keçdikdən sonra, adətən 1–2 saat ərzində aktiv olur.</value></data>
+  <data name="Contact_Faq3Q"            xml:space="preserve"><value>Satıcı ilə necə əlaqə qura bilərəm?</value></data>
+  <data name="Contact_Faq3A"            xml:space="preserve"><value>Elan səhifəsindəki 'Mesaj göndər' düyməsini klik edin. Satıcı sizin mesajınızı alacaq və cavablayacaq.</value></data>
+  <data name="Contact_Faq4Q"            xml:space="preserve"><value>Şübhəli elanı necə şikayət edə bilərəm?</value></data>
+  <data name="Contact_Faq4A"            xml:space="preserve"><value>Elan səhifəsindəki 'Şikayət et' düyməsinə klik edin. Moderatorlar ən qısa zamanda araşdıracaq.</value></data>
+  <data name="Contact_Faq5Q"            xml:space="preserve"><value>Elanımı redaktə edə bilərəmmi?</value></data>
+  <data name="Contact_Faq5A"            xml:space="preserve"><value>Bəli. 'Profilim → Elanlarım' bölməsindən istənilən elanı redaktə edə bilərsiniz.</value></data>
+
+  <!-- ── PROFILE ───────────────────────────────────────── -->
+  <data name="Profile_Title"         xml:space="preserve"><value>Mənim profilim</value></data>
+  <data name="Profile_Since"         xml:space="preserve"><value>Saytda</value></data>
+  <data name="Profile_MyListings"    xml:space="preserve"><value>Elanlarım</value></data>
+  <data name="Profile_Favorites"     xml:space="preserve"><value>Sevimlilər</value></data>
+  <data name="Profile_Messages"      xml:space="preserve"><value>Mesajlar</value></data>
+  <data name="Profile_AddListing"    xml:space="preserve"><value>Elan yerləşdir</value></data>
+  <data name="Profile_SeeAll"        xml:space="preserve"><value>Hamısı</value></data>
+  <data name="Profile_NoActive"      xml:space="preserve"><value>Aktiv elanınız yoxdur</value></data>
+  <data name="Profile_PrivatePerson" xml:space="preserve"><value>Şəxsi şəxs</value></data>
 </root>
