@@ -1,17 +1,16 @@
 @page
 @model EcommersProject.Pages.Admin.UsersModel
+@using System.Security.Claims
 @{
-    ViewData["Title"] = "Пользователи";
+    ViewData["Title"] = L["Admin_Users"].Value;
+    var currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 }
 
 <div class="d-flex justify-content-between align-items-center mb-4">
     <div>
-        <h5 class="mb-0 fw-bold">Управление пользователями</h5>
-        <small class="text-muted">Всего: @Model.Users.Count</small>
+        <h5 class="mb-0 fw-bold">@L["Admin_ManageUsers"]</h5>
+        <small class="text-muted">@L["Admin_TotalLabel"] @Model.Users.Count</small>
     </div>
-    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createSellerModal">
-        <i class="bi bi-plus-lg me-1"></i>Добавить продавца
-    </button>
 </div>
 
 <!-- Filters -->
@@ -20,21 +19,13 @@
         <form method="get" class="row g-2 align-items-center">
             <div class="col-auto">
                 <input asp-for="Search" type="text" class="form-control form-control-sm"
-                       placeholder="Поиск по email / имени..." style="min-width:220px" />
-            </div>
-            <div class="col-auto">
-                <select asp-for="RoleFilter" class="form-select form-select-sm">
-                    <option value="">Все роли</option>
-                    <option value="Admin">Администратор</option>
-                    <option value="Seller">Продавец</option>
-                    <option value="Customer">Покупатель</option>
-                </select>
+                       placeholder="@L["Admin_SearchUsers"]" style="min-width:220px" />
             </div>
             <div class="col-auto">
                 <button type="submit" class="btn btn-sm btn-outline-primary">
                     <i class="bi bi-search"></i>
                 </button>
-                <a href="/Admin/Users" class="btn btn-sm btn-outline-secondary ms-1">Сброс</a>
+                <a href="/Admin/Users" class="btn btn-sm btn-outline-secondary ms-1">@L["Admin_Reset"]</a>
             </div>
         </form>
     </div>
@@ -47,7 +38,7 @@
         {
             <div class="empty-state">
                 <i class="bi bi-people"></i>
-                Пользователи не найдены.
+                @L["Admin_NoUsers"]
             </div>
         }
         else
@@ -56,79 +47,122 @@
                 <table class="table table-hover align-middle mb-0">
                     <thead class="table-light">
                         <tr>
-                            <th>Имя</th>
-                            <th>Email</th>
-                            <th>Телефон</th>
-                            <th>Роль</th>
-                            <th>Магазин</th>
-                            <th>Статус</th>
-                            <th>Дата регистрации</th>
-                            <th>Действия</th>
+                            <th>@L["Admin_ColName"]</th>
+                            <th>@L["Admin_ColEmail"]</th>
+                            <th>@L["Admin_ColPhone"]</th>
+                            <th>@L["Admin_ColRole"]</th>
+                            <th>@L["Admin_ColStatus"]</th>
+                            <th>@L["Admin_ColDate"]</th>
+                            <th>@L["Admin_ColActions"]</th>
                         </tr>
                     </thead>
                     <tbody>
                         @foreach (var u in Model.Users)
                         {
-                            <tr>
-                                <td class="fw-medium">@u.FirstName @u.LastName</td>
+                            var isSelf = u.Id.ToString() == currentUserId;
+                            var isAdmin = u.Role == "Admin";
+                            <tr class="@(isSelf ? "table-light" : "")">
+                                <td class="fw-medium">
+                                    @u.FirstName @u.LastName
+                                    @if (isSelf)
+                                    {
+                                        <span class="badge bg-secondary ms-1" style="font-size:.65rem;">@L["Admin_You"]</span>
+                                    }
+                                </td>
                                 <td class="small text-muted">@u.Email</td>
                                 <td class="small">@(string.IsNullOrEmpty(u.PhoneNumber) ? "—" : u.PhoneNumber)</td>
                                 <td>
-                                    @{
-                                        var (roleClass, roleName) = u.Role switch
-                                        {
-                                            "Admin" => ("bg-danger", "Админ"),
-                                            "Seller" => ("bg-primary", "Продавец"),
-                                            _ => ("bg-secondary", "Покупатель")
-                                        };
-                                    }
-                                    <span class="badge @roleClass">@roleName</span>
-                                </td>
-                                <td class="small">@(u.ShopName ?? "—")</td>
-                                <td>
-                                    @if (u.IsActive)
+                                    @if (isAdmin)
                                     {
-                                        <span class="badge bg-success-subtle text-success">Активен</span>
-                                    }
-                                    else if (u.Role == "Seller")
-                                    {
-                                        <span class="badge bg-warning-subtle text-warning">Ожидает одобрения</span>
+                                        <span class="badge bg-danger">
+                                            <i class="bi bi-shield-fill me-1"></i>@L["Admin_RoleAdmin"]
+                                        </span>
                                     }
                                     else
                                     {
-                                        <span class="badge bg-danger-subtle text-danger">Неактивен</span>
+                                        <span class="badge bg-secondary">@L["Admin_RoleUser"]</span>
+                                    }
+                                </td>
+                                <td>
+                                    @if (u.IsActive)
+                                    {
+                                        <span class="badge bg-success-subtle text-success">@L["Admin_UserActive"]</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-danger-subtle text-danger">@L["Admin_UserInactive"]</span>
                                     }
                                 </td>
                                 <td class="small text-muted">@u.CreatedDate.ToString("dd.MM.yyyy")</td>
                                 <td>
-                                    <div class="d-flex gap-1">
-                                        @if (u.IsActive)
+                                    <div class="d-flex gap-1 flex-wrap">
+
+                                        @if (!isSelf)
                                         {
-                                            <form method="post" asp-page-handler="Deactivate">
+                                            @if (!isAdmin)
+                                            {
+                                                <form method="post" asp-page-handler="SetRole"
+                                                      onsubmit="return confirm('@L["Admin_MakeAdminConfirm"]')">
+                                                    @Html.AntiForgeryToken()
+                                                    <input type="hidden" name="id"   value="@u.Id" />
+                                                    <input type="hidden" name="role" value="Admin" />
+                                                    <button class="btn btn-sm btn-outline-danger btn-action"
+                                                            title="@L["Admin_MakeAdmin"]">
+                                                        <i class="bi bi-shield-plus"></i>
+                                                    </button>
+                                                </form>
+                                            }
+                                            else
+                                            {
+                                                <form method="post" asp-page-handler="SetRole"
+                                                      onsubmit="return confirm('@L["Admin_RemoveAdminConfirm"]')">
+                                                    @Html.AntiForgeryToken()
+                                                    <input type="hidden" name="id"   value="@u.Id" />
+                                                    <input type="hidden" name="role" value="Customer" />
+                                                    <button class="btn btn-sm btn-outline-warning btn-action"
+                                                            title="@L["Admin_RemoveAdmin"]">
+                                                        <i class="bi bi-shield-minus"></i>
+                                                    </button>
+                                                </form>
+                                            }
+
+                                            @if (u.IsActive)
+                                            {
+                                                <form method="post" asp-page-handler="Deactivate">
+                                                    @Html.AntiForgeryToken()
+                                                    <input type="hidden" name="id" value="@u.Id" />
+                                                    <button class="btn btn-sm btn-outline-warning btn-action"
+                                                            title="@L["Admin_Deactivate"]">
+                                                        <i class="bi bi-pause-circle"></i>
+                                                    </button>
+                                                </form>
+                                            }
+                                            else
+                                            {
+                                                <form method="post" asp-page-handler="Activate">
+                                                    @Html.AntiForgeryToken()
+                                                    <input type="hidden" name="id" value="@u.Id" />
+                                                    <button class="btn btn-sm btn-outline-success btn-action"
+                                                            title="@L["Admin_Activate"]">
+                                                        <i class="bi bi-play-circle"></i>
+                                                    </button>
+                                                </form>
+                                            }
+
+                                            <form method="post" asp-page-handler="Delete"
+                                                  onsubmit="return confirm('@L["Admin_DeleteUserConfirm"]')">
+                                                @Html.AntiForgeryToken()
                                                 <input type="hidden" name="id" value="@u.Id" />
-                                                <button class="btn btn-sm btn-outline-warning btn-action"
-                                                        title="Деактивировать">
-                                                    <i class="bi bi-pause-circle"></i>
+                                                <button class="btn btn-sm btn-outline-danger btn-action"
+                                                        title="@L["Common_Delete"]">
+                                                    <i class="bi bi-trash"></i>
                                                 </button>
                                             </form>
                                         }
                                         else
                                         {
-                                            <form method="post" asp-page-handler="Activate">
-                                                <input type="hidden" name="id" value="@u.Id" />
-                                                <button class="btn btn-sm btn-outline-success btn-action"
-                                                        title="Активировать">
-                                                    <i class="bi bi-play-circle"></i>
-                                                </button>
-                                            </form>
+                                            <span class="text-muted small fst-italic">—</span>
                                         }
-                                        <form method="post" asp-page-handler="Delete"
-                                              onsubmit="return confirm('Удалить пользователя?')">
-                                            <input type="hidden" name="id" value="@u.Id" />
-                                            <button class="btn btn-sm btn-outline-danger btn-action" title="Удалить">
-                                                <i class="bi bi-trash"></i>
-                                            </button>
-                                        </form>
                                     </div>
                                 </td>
                             </tr>
@@ -140,54 +174,8 @@
     </div>
 </div>
 
-<!-- Create Seller Modal -->
-<div class="modal fade" id="createSellerModal" tabindex="-1">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title"><i class="bi bi-person-plus me-2"></i>Создать продавца</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-            </div>
-            <form method="post" asp-page-handler="CreateSeller">
-                <div class="modal-body">
-                    <div class="row g-3">
-                        <div class="col-6">
-                            <label class="form-label small fw-medium">Имя</label>
-                            <input type="text" name="firstName" class="form-control form-control-sm" required />
-                        </div>
-                        <div class="col-6">
-                            <label class="form-label small fw-medium">Фамилия</label>
-                            <input type="text" name="lastName" class="form-control form-control-sm" required />
-                        </div>
-                        <div class="col-12">
-                            <label class="form-label small fw-medium">Email</label>
-                            <input type="email" name="email" class="form-control form-control-sm" required />
-                        </div>
-                        <div class="col-12">
-                            <label class="form-label small fw-medium">Телефон</label>
-                            <input type="text" name="phone" class="form-control form-control-sm" />
-                        </div>
-                        <div class="col-12">
-                            <label class="form-label small fw-medium">Пароль</label>
-                            <input type="password" name="password" class="form-control form-control-sm" required minlength="6" />
-                        </div>
-                        <div class="col-12">
-                            <label class="form-label small fw-medium">Название магазина</label>
-                            <input type="text" name="shopName" class="form-control form-control-sm" />
-                        </div>
-                        <div class="col-12">
-                            <label class="form-label small fw-medium">Описание магазина</label>
-                            <textarea name="shopDescription" class="form-control form-control-sm" rows="2"></textarea>
-                        </div>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">Отмена</button>
-                    <button type="submit" class="btn btn-primary">
-                        <i class="bi bi-check-lg me-1"></i>Создать
-                    </button>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
+@section Styles {
+<style>
+    .btn-action { width: 30px; height: 30px; padding: 0; display: inline-flex; align-items: center; justify-content: center; }
+</style>
+}

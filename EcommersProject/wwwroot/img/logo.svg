@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 40" fill="none">
+  <!-- Mark: rounded square with swap arrows -->
+  <rect width="40" height="40" rx="10" fill="#111111"/>
+
+  <!-- Arrow right (top) -->
+  <line x1="8" y1="14" x2="28" y2="14" stroke="white" stroke-width="2.2" stroke-linecap="round"/>
+  <polyline points="23,9 28,14 23,19" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+
+  <!-- Arrow left (bottom) -->
+  <line x1="32" y1="26" x2="12" y2="26" stroke="white" stroke-width="2.2" stroke-linecap="round"/>
+  <polyline points="17,21 12,26 17,31" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+
+  <!-- Wordmark -->
+  <text x="52" y="27" font-family="Inter, system-ui, sans-serif" font-size="20" font-weight="800" letter-spacing="-0.5" fill="#111111">Alıs</text>
+  <text x="98" y="27" font-family="Inter, system-ui, sans-serif" font-size="20" font-weight="400" letter-spacing="-0.5" fill="#555555">Veris</text>
+</svg>

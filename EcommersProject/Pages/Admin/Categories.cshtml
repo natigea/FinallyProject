@@ -1,14 +1,14 @@
 @page
 @model EcommersProject.Pages.Admin.CategoriesModel
 @{
-    ViewData["Title"] = "Категории";
+    ViewData["Title"] = L["Admin_Categories"].Value;
 }
 
 <div class="row g-4">
     <div class="col-lg-8">
         <div class="card">
             <div class="card-header py-3 d-flex align-items-center justify-content-between">
-                <span><i class="bi bi-tags me-2 text-primary"></i>Категории товаров</span>
+                <span><i class="bi bi-tags me-2 text-primary"></i>@L["Admin_CatSectionTitle"]</span>
                 <span class="badge bg-primary-subtle text-primary">@Model.Categories.Count</span>
             </div>
             <div class="card-body p-0">
@@ -16,7 +16,7 @@
                 {
                     <div class="empty-state">
                         <i class="bi bi-tags"></i>
-                        Категорий нет. Создайте первую!
+                        @L["Admin_NoCats"]
                     </div>
                 }
                 else
@@ -25,9 +25,9 @@
                         <thead class="table-light">
                             <tr>
                                 <th>#</th>
-                                <th>Название</th>
-                                <th>Описание</th>
-                                <th>Действия</th>
+                                <th>@L["Admin_ColName"]</th>
+                                <th>@L["Admin_ColDescription"]</th>
+                                <th>@L["Admin_ColActions"]</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -40,7 +40,7 @@
                                     <td class="text-muted small">@(string.IsNullOrEmpty(c.Description) ? "—" : c.Description)</td>
                                     <td>
                                         <form method="post" asp-page-handler="Delete"
-                                              onsubmit="return confirm('Удалить категорию «@c.Name»?')">
+                                              onsubmit="return confirm('@L["Admin_DeleteCatConfirm"]')">
                                             <input type="hidden" name="id" value="@c.Id" />
                                             <button class="btn btn-sm btn-outline-danger btn-action">
                                                 <i class="bi bi-trash"></i>
@@ -59,21 +59,22 @@
     <div class="col-lg-4">
         <div class="card">
             <div class="card-header py-3">
-                <i class="bi bi-plus-circle me-2 text-success"></i>Новая категория
+                <i class="bi bi-plus-circle me-2 text-success"></i>@L["Admin_NewCategory"]
             </div>
             <div class="card-body">
                 <form method="post" asp-page-handler="Create">
                     <div class="mb-3">
-                        <label class="form-label small fw-medium">Название <span class="text-danger">*</span></label>
-                        <input asp-for="NewName" type="text" class="form-control" placeholder="Например: Электроника" required />
+                        <label class="form-label small fw-medium">@L["Admin_CategoryNameLabel"]</label>
+                        <input asp-for="NewName" type="text" class="form-control"
+                               placeholder="@L["Admin_CategoryNamePh"]" required />
                     </div>
                     <div class="mb-3">
-                        <label class="form-label small fw-medium">Описание</label>
+                        <label class="form-label small fw-medium">@L["Admin_CategoryDescLabel"]</label>
                         <textarea asp-for="NewDescription" class="form-control" rows="3"
-                                  placeholder="Краткое описание категории..."></textarea>
+                                  placeholder="@L["Admin_CategoryDescPh"]"></textarea>
                     </div>
                     <button type="submit" class="btn btn-success w-100">
-                        <i class="bi bi-plus-lg me-1"></i>Создать категорию
+                        <i class="bi bi-plus-lg me-1"></i>@L["Admin_CreateCategory"]
                     </button>
                 </form>
             </div>

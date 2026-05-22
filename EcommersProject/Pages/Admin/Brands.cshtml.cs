@@ -6,39 +6,26 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace EcommersProject.Pages.Admin;
 
+// Repurposed: show all listings for admin moderation
 [Authorize(Policy = "AdminOnly")]
-public class BrandsModel(IBrandService brandService) : PageModel
+public class BrandsModel(IListingService listingService) : PageModel
 {
-    public IReadOnlyList<BrandGetDto> Brands { get; private set; } = [];
-
-    [BindProperty]
-    public string NewName { get; set; } = string.Empty;
-
-    [BindProperty]
-    public string NewDescription { get; set; } = string.Empty;
+    public IReadOnlyList<ListingGetDto> Listings { get; private set; } = [];
+    public int TotalCount { get; private set; }
 
     public async Task OnGetAsync(CancellationToken cancellationToken)
     {
-        Brands = await brandService.GetAllAsync(cancellationToken);
-    }
-
-    public async Task<IActionResult> OnPostCreateAsync(CancellationToken cancellationToken)
-    {
-        if (string.IsNullOrWhiteSpace(NewName))
-        {
-            TempData["ErrorMessage"] = "Название обязательно.";
-            return RedirectToPage();
-        }
-
-        await brandService.CreateAsync(new BrandCreateDto(NewName, NewDescription), cancellationToken);
-        TempData["SuccessMessage"] = $"Бренд «{NewName}» создан.";
-        return RedirectToPage();
+        var (items, total) = await listingService.SearchAsync(
+            new ListingSearchDto(null, null, null, null, null, "newest", 1, 50),
+            cancellationToken);
+        Listings = items;
+        TotalCount = total;
     }
 
     public async Task<IActionResult> OnPostDeleteAsync(Guid id, CancellationToken cancellationToken)
     {
-        await brandService.DeleteAsync(id, cancellationToken);
-        TempData["SuccessMessage"] = "Бренд удалён.";
+        await listingService.DeleteAsync(id, cancellationToken);
+        TempData["SuccessMessage"] = "Объявление удалено.";
         return RedirectToPage();
     }
 }

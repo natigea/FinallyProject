@@ -1,18 +1,22 @@
 using EcommersProject.BLL.DTOs;
 using EcommersProject.BLL.Interfaces;
+using EcommersProject.Resources;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.Extensions.Localization;
+using System.Security.Claims;
 
 namespace EcommersProject.Pages.Admin;
 
 [Authorize(Policy = "AdminOnly")]
-public class UsersModel(IUserService userService, IAuthService authService) : PageModel
+public class UsersModel(
+    IUserService userService,
+    IStringLocalizer<SharedResource> localizer) : PageModel
 {
-    public IReadOnlyList<UserGetDto> Users { get; private set; } = [];
+    private IStringLocalizer<SharedResource> L => localizer;
 
-    [BindProperty(SupportsGet = true)]
-    public string? RoleFilter { get; set; }
+    public IReadOnlyList<UserGetDto> Users { get; private set; } = [];
 
     [BindProperty(SupportsGet = true)]
     public string? Search { get; set; }
@@ -21,9 +25,6 @@ public class UsersModel(IUserService userService, IAuthService authService) : Pa
     {
         var all = await userService.GetAllAsync(cancellationToken);
         var filtered = all.AsEnumerable();
-
-        if (!string.IsNullOrWhiteSpace(RoleFilter))
-            filtered = filtered.Where(u => u.Role.Equals(RoleFilter, StringComparison.OrdinalIgnoreCase));
 
         if (!string.IsNullOrWhiteSpace(Search))
             filtered = filtered.Where(u =>
@@ -34,46 +35,47 @@ public class UsersModel(IUserService userService, IAuthService authService) : Pa
         Users = filtered.OrderByDescending(u => u.CreatedDate).ToList();
     }
 
+    public async Task<IActionResult> OnPostSetRoleAsync(Guid id, string role, CancellationToken cancellationToken)
+    {
+        var currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        if (currentUserId == id.ToString() && role != "Admin")
+        {
+            TempData["ErrorMessage"] = L["Admin_CannotDemoteSelf"].Value;
+            return RedirectToPage();
+        }
+
+        await userService.SetRoleAsync(id, role, cancellationToken);
+        TempData["SuccessMessage"] = role == "Admin"
+            ? L["Admin_MakeAdminMsg"].Value
+            : L["Admin_RemoveAdminMsg"].Value;
+        return RedirectToPage();
+    }
+
     public async Task<IActionResult> OnPostActivateAsync(Guid id, CancellationToken cancellationToken)
     {
         await userService.ActivateAsync(id, cancellationToken);
-        TempData["SuccessMessage"] = "Пользователь активирован.";
+        TempData["SuccessMessage"] = L["Admin_UserActivatedMsg"].Value;
         return RedirectToPage();
     }
 
     public async Task<IActionResult> OnPostDeactivateAsync(Guid id, CancellationToken cancellationToken)
     {
         await userService.DeactivateAsync(id, cancellationToken);
-        TempData["SuccessMessage"] = "Пользователь деактивирован.";
+        TempData["SuccessMessage"] = L["Admin_UserDeactivatedMsg"].Value;
         return RedirectToPage();
     }
 
     public async Task<IActionResult> OnPostDeleteAsync(Guid id, CancellationToken cancellationToken)
     {
+        var currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        if (currentUserId == id.ToString())
+        {
+            TempData["ErrorMessage"] = L["Admin_CannotDeleteSelf"].Value;
+            return RedirectToPage();
+        }
+
         await userService.DeleteAsync(id, cancellationToken);
-        TempData["SuccessMessage"] = "Пользователь удалён.";
-        return RedirectToPage();
-    }
-
-    public async Task<IActionResult> OnPostCreateSellerAsync(
-        string email, string firstName, string lastName, string phone,
-        string password, string shopName, string shopDescription,
-        CancellationToken cancellationToken)
-    {
-        try
-        {
-            var created = await authService.RegisterAsync(new RegisterDto(
-                email, firstName, lastName, phone, password,
-                IsSeller: true, ShopName: shopName, ShopDescription: shopDescription),
-                cancellationToken);
-            await userService.ActivateAsync(created.Id, cancellationToken);
-            TempData["SuccessMessage"] = $"Продавец {email} создан.";
-        }
-        catch (Exception ex)
-        {
-            TempData["ErrorMessage"] = ex.Message;
-        }
-
+        TempData["SuccessMessage"] = L["Admin_UserDeletedMsg"].Value;
         return RedirectToPage();
     }
 }

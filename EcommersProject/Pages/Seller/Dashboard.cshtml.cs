@@ -2,20 +2,24 @@ using System.Security.Claims;
 using EcommersProject.BLL.DTOs;
 using EcommersProject.BLL.Interfaces;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace EcommersProject.Pages.Seller;
 
-[Authorize(Policy = "SellerOrAdmin")]
-public class DashboardModel(IStatisticsService statisticsService) : PageModel
+[Authorize]
+public class DashboardModel(IListingService listingService) : PageModel
 {
-    public SellerDashboardDto? Stats { get; private set; }
+    public IReadOnlyList<ListingGetDto> MyListings { get; private set; } = [];
+    public int ActiveCount { get; private set; }
+    public int ClosedCount { get; private set; }
 
     public async Task OnGetAsync(CancellationToken cancellationToken)
     {
-        var sellerIdStr = User.FindFirstValue(ClaimTypes.NameIdentifier);
-        if (Guid.TryParse(sellerIdStr, out var sellerId))
-            Stats = await statisticsService.GetSellerDashboardAsync(sellerId, cancellationToken);
+        var userIdStr = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        if (!Guid.TryParse(userIdStr, out var userId)) return;
+
+        MyListings = await listingService.GetByUserAsync(userId, cancellationToken);
+        ActiveCount = MyListings.Count(l => l.Status == "Active");
+        ClosedCount = MyListings.Count(l => l.Status != "Active");
     }
 }

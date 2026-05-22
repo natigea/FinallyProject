@@ -58,9 +58,6 @@ public class LoginModel(IAuthService authService) : PageModel
             new(ClaimTypes.Role, result.Role)
         };
 
-        if (!string.IsNullOrEmpty(result.ShopName))
-            claims.Add(new Claim("ShopName", result.ShopName));
-
         var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
         var principal = new ClaimsPrincipal(identity);
 

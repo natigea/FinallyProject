@@ -1,26 +1,26 @@
 @page
 @model EcommersProject.Pages.Seller.ProductsModel
 @{
-    ViewData["Title"] = "Мои товары";
+    ViewData["Title"] = "Мои объявления";
 }
 
 <div class="d-flex justify-content-between align-items-center mb-4">
     <div>
-        <h5 class="mb-0 fw-bold">Мои товары</h5>
-        <small class="text-muted">Всего: @Model.Products.Count</small>
+        <h5 class="mb-0 fw-bold">Мои объявления</h5>
+        <small class="text-muted">Всего: @Model.Listings.Count</small>
     </div>
-    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addProductModal">
-        <i class="bi bi-plus-lg me-1"></i>Добавить товар
-    </button>
+    <a href="/Listing/Create" class="btn btn-success">
+        <i class="bi bi-plus-lg me-1"></i>Подать объявление
+    </a>
 </div>
 
 <div class="card">
     <div class="card-body p-0">
-        @if (!Model.Products.Any())
+        @if (!Model.Listings.Any())
         {
             <div class="empty-state">
-                <i class="bi bi-bag-plus"></i>
-                У вас ещё нет товаров. Добавьте первый!
+                <i class="bi bi-grid-3x3-gap"></i>
+                У вас ещё нет объявлений. <a href="/Listing/Create">Подайте первое!</a>
             </div>
         }
         else
@@ -29,61 +29,69 @@
                 <table class="table table-hover align-middle mb-0">
                     <thead class="table-light">
                         <tr>
+                            <th>Фото</th>
                             <th>Название</th>
-                            <th>SKU</th>
                             <th>Категория</th>
-                            <th>Бренд</th>
+                            <th>Город</th>
                             <th>Цена</th>
-                            <th>Склад</th>
-                            <th>Рейтинг</th>
                             <th>Статус</th>
                             <th>Дата</th>
                             <th>Действия</th>
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach (var p in Model.Products)
+                        @foreach (var l in Model.Listings)
                         {
+                            var thumb = l.Images.OrderBy(i => i.SortOrder).FirstOrDefault()?.Url;
                             <tr>
-                                <td class="fw-medium">@p.Name</td>
-                                <td><code class="small">@p.Sku</code></td>
-                                <td class="small">@(p.CategoryName ?? "—")</td>
-                                <td class="small">@(p.BrandName ?? "—")</td>
-                                <td class="fw-medium">@p.Price.ToString("N2") ₼</td>
                                 <td>
-                                    @if (p.StockQuantity <= 5)
+                                    @if (thumb != null)
                                     {
-                                        <span class="text-danger fw-bold" title="Мало на складе!">
-                                            <i class="bi bi-exclamation-triangle-fill me-1"></i>@p.StockQuantity
-                                        </span>
+                                        <img src="@thumb" class="rounded" style="width:44px;height:44px;object-fit:cover" />
                                     }
                                     else
                                     {
-                                        <span>@p.StockQuantity</span>
+                                        <div class="bg-light rounded d-flex align-items-center justify-content-center"
+                                             style="width:44px;height:44px;">
+                                            <i class="bi bi-image text-muted"></i>
+                                        </div>
                                     }
                                 </td>
-                                <td class="small">@p.RatingAverage.ToString("F1") ⭐</td>
+                                <td class="fw-medium">
+                                    <a href="/Listing/Detail/@l.Id" class="text-decoration-none text-dark">@l.Title</a>
+                                </td>
+                                <td class="small text-muted">@(l.CategoryName ?? "—")</td>
+                                <td class="small">@l.City</td>
+                                <td class="fw-medium">@l.Price.ToString("N0") ₼</td>
                                 <td>
-                                    @if (p.IsActive)
+                                    @if (l.Status == "Active")
                                     {
-                                        <span class="badge bg-success-subtle text-success">Активен</span>
+                                        <span class="badge bg-success-subtle text-success">Активно</span>
+                                    }
+                                    else if (l.Status == "Closed")
+                                    {
+                                        <span class="badge bg-secondary-subtle text-secondary">Закрыто</span>
                                     }
                                     else
                                     {
-                                        <span class="badge bg-warning-subtle text-warning">
-                                            <i class="bi bi-hourglass-split me-1"></i>На проверке
-                                        </span>
+                                        <span class="badge bg-warning-subtle text-warning">@l.Status</span>
                                     }
                                 </td>
-                                <td class="small text-muted">@p.CreatedDate.ToString("dd.MM.yyyy")</td>
+                                <td class="small text-muted">@l.CreatedDate.ToString("dd.MM.yyyy")</td>
                                 <td>
-                                    <form method="post" asp-page-handler="Delete"
-                                          onsubmit="return confirm('Удалить товар «@p.Name»?')">
-                                        <input type="hidden" name="id" value="@p.Id" />
-                                        <button class="btn btn-sm btn-outline-danger btn-action">
-                                            <i class="bi bi-trash"></i>
-                                        </button>
-                                    </form>
+                                    <div class="d-flex gap-1">
+                                        <a href="/Listing/Edit/@l.Id"
+                                           class="btn btn-sm btn-outline-primary btn-action" title="Редактировать">
+                                            <i class="bi bi-pencil"></i>
+                                        </a>
+                                        <form method="post" asp-page-handler="Delete"
+                                              onsubmit="return confirm('Удалить объявление «@l.Title»?')">
+                                            <input type="hidden" name="id" value="@l.Id" />
+                                            <button class="btn btn-sm btn-outline-danger btn-action" title="Удалить">
+                                                <i class="bi bi-trash"></i>
+                                            </button>
+                                        </form>
+                                    </div>
                                 </td>
                             </tr>
                         }
@@ -93,114 +101,3 @@
         }
     </div>
 </div>
-
-<style>
-    .cat-card:hover { background: #f8faff; border-color: #a5b4fc !important; }
-    .cat-card.selected { background: #eef2ff; border-color: #6366f1 !important; box-shadow: 0 0 0 2px #c7d2fe; }
-</style>
-
-<!-- Add Product Modal -->
-<div class="modal fade" id="addProductModal" tabindex="-1">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title"><i class="bi bi-bag-plus me-2"></i>Добавить товар</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-            </div>
-            <form method="post" asp-page-handler="Create">
-                <div class="modal-body">
-                    <div class="row g-3">
-                        <div class="col-12">
-                            <label class="form-label small fw-medium">Название <span class="text-danger">*</span></label>
-                            <input asp-for="NewName" type="text" class="form-control form-control-sm" required />
-                        </div>
-                        <div class="col-12">
-                            <label class="form-label small fw-medium">Описание</label>
-                            <textarea asp-for="NewDescription" class="form-control form-control-sm" rows="2"></textarea>
-                        </div>
-                        <div class="col-6">
-                            <label class="form-label small fw-medium">SKU <span class="text-danger">*</span></label>
-                            <input asp-for="NewSku" type="text" class="form-control form-control-sm" required />
-                        </div>
-                        <div class="col-6">
-                            <label class="form-label small fw-medium">Цена (₼) <span class="text-danger">*</span></label>
-                            <input asp-for="NewPrice" type="number" step="0.01" min="0" class="form-control form-control-sm" required />
-                        </div>
-                        <div class="col-6">
-                            <label class="form-label small fw-medium">Кол-во на складе</label>
-                            <input asp-for="NewStockQuantity" type="number" min="0" class="form-control form-control-sm" value="0" />
-                        </div>
-                        <div class="col-6">
-                            <label class="form-label small fw-medium">Бренд <span class="text-danger">*</span></label>
-                            <select asp-for="NewBrandId" class="form-select form-select-sm" required>
-                                <option value="">— Выберите —</option>
-                                @foreach (var b in Model.Brands)
-                                {
-                                    <option value="@b.Id">@b.Name</option>
-                                }
-                            </select>
-                        </div>
-                        <div class="col-12">
-                            <label class="form-label small fw-medium">Категория <span class="text-danger">*</span></label>
-                            <input type="hidden" asp-for="NewCategoryId" id="catInput" />
-                            @{
-                                var catMeta = new Dictionary<string, (string Icon, string Color)>(StringComparer.OrdinalIgnoreCase)
-                                {
-                                    ["Техника"] = ("bi-cpu-fill", "#6366f1"),
-                                    ["Одежда"] = ("bi-bag-heart-fill", "#ec4899"),
-                                    ["Запчасти для автомобиля"] = ("bi-car-front-fill", "#475569"),
-                                    ["Машинки для бритья/стрижки"] = ("bi-scissors", "#0891b2"),
-                                    ["Инструменты"] = ("bi-tools", "#ea580c"),
-                                };
-                            }
-                            <div class="row row-cols-3 g-2 mt-1" id="catCards">
-                                @foreach (var c in Model.Categories)
-                                {
-                                    var (icon, color) = catMeta.TryGetValue(c.Name, out var m) ? m : ("bi-tag-fill", "#6b7280");
-                                    <div class="col">
-                                        <div class="cat-card border rounded-3 p-2 text-center h-100"
-                                             data-id="@c.Id"
-                                             onclick="pickCategory(this)"
-                                             style="cursor:pointer;transition:border-color .15s,background .15s">
-                                            <i class="bi @icon d-block mb-1" style="font-size:1.6rem;color:@color"></i>
-                                            <div class="small fw-medium lh-sm">@c.Name</div>
-                                        </div>
-                                    </div>
-                                }
-                            </div>
-                            <div id="catError" class="text-danger small mt-1" style="display:none">Выберите категорию</div>
-                        </div>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">Отмена</button>
-                    <button type="submit" class="btn btn-primary">
-                        <i class="bi bi-check-lg me-1"></i>Добавить
-                    </button>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
-
-<script>
-    function pickCategory(el) {
-        document.querySelectorAll('#catCards .cat-card').forEach(c => c.classList.remove('selected'));
-        el.classList.add('selected');
-        document.getElementById('catInput').value = el.dataset.id;
-        document.getElementById('catError').style.display = 'none';
-    }
-
-    document.querySelector('#addProductModal form').addEventListener('submit', function (e) {
-        if (!document.getElementById('catInput').value) {
-            e.preventDefault();
-            document.getElementById('catError').style.display = 'block';
-        }
-    });
-
-    document.getElementById('addProductModal').addEventListener('hidden.bs.modal', function () {
-        document.querySelectorAll('#catCards .cat-card').forEach(c => c.classList.remove('selected'));
-        document.getElementById('catInput').value = '';
-        document.getElementById('catError').style.display = 'none';
-    });
-</script>

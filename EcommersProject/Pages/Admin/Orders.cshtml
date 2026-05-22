@@ -1,41 +1,41 @@
 @page
 @model EcommersProject.Pages.Admin.OrdersModel
 @{
-    ViewData["Title"] = "Заказы";
+    ViewData["Title"] = "Все объявления";
 }
 
 <div class="d-flex justify-content-between align-items-center mb-4">
     <div>
-        <h5 class="mb-0 fw-bold">Управление заказами</h5>
-        <small class="text-muted">Всего: @Model.Orders.Count</small>
+        <h5 class="mb-0 fw-bold">Все объявления</h5>
+        <small class="text-muted">Найдено: @Model.Listings.Count</small>
     </div>
 </div>
 
-<!-- Status filter tabs -->
+<!-- Search filter -->
 <div class="card mb-3">
     <div class="card-body py-2">
-        <div class="d-flex gap-2 flex-wrap">
-            <a href="/Admin/Orders" class="btn btn-sm @(string.IsNullOrEmpty(Model.StatusFilter) ? "btn-primary" : "btn-outline-secondary")">
-                Все
-            </a>
-            @foreach (var status in Model.AllStatuses)
-            {
-                <a href="/Admin/Orders?StatusFilter=@status"
-                   class="btn btn-sm @(Model.StatusFilter == status ? "btn-primary" : "btn-outline-secondary")">
-                    @status
-                </a>
-            }
-        </div>
+        <form method="get" class="row g-2 align-items-center">
+            <div class="col-auto">
+                <input asp-for="Search" type="text" class="form-control form-control-sm"
+                       placeholder="Поиск по названию..." style="min-width:260px" />
+            </div>
+            <div class="col-auto">
+                <button type="submit" class="btn btn-sm btn-outline-primary">
+                    <i class="bi bi-search"></i>
+                </button>
+                <a href="/Admin/Orders" class="btn btn-sm btn-outline-secondary ms-1">Сброс</a>
+            </div>
+        </form>
     </div>
 </div>
 
 <div class="card">
     <div class="card-body p-0">
-        @if (!Model.Orders.Any())
+        @if (!Model.Listings.Any())
         {
             <div class="empty-state">
-                <i class="bi bi-cart3"></i>
-                Заказы не найдены.
+                <i class="bi bi-grid-3x3-gap"></i>
+                Объявления не найдены.
             </div>
         }
         else
@@ -44,58 +44,61 @@
                 <table class="table table-hover align-middle mb-0">
                     <thead class="table-light">
                         <tr>
-                            <th>Номер заказа</th>
-                            <th>Позиций</th>
-                            <th>Скидка</th>
-                            <th>Доставка</th>
-                            <th>Итого</th>
+                            <th>Название</th>
+                            <th>Категория</th>
+                            <th>Город</th>
+                            <th>Цена</th>
+                            <th>Автор</th>
                             <th>Статус</th>
                             <th>Дата</th>
-                            <th>Изменить статус</th>
+                            <th>Действия</th>
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach (var o in Model.Orders)
+                        @foreach (var l in Model.Listings)
                         {
                             <tr>
-                                <td class="fw-medium small">@o.OrderNumber</td>
-                                <td class="small">@o.Items.Count</td>
-                                <td class="small text-danger">
-                                    @if (o.DiscountAmount > 0)
+                                <td class="fw-medium">
+                                    <a href="/Listing/Detail/@l.Id" class="text-decoration-none text-dark">@l.Title</a>
+                                </td>
+                                <td class="small text-muted">@(l.CategoryName ?? "—")</td>
+                                <td class="small">@l.City</td>
+                                <td class="fw-medium">@l.Price.ToString("N0") ₼</td>
+                                <td class="small">@(l.UserName ?? "—")</td>
+                                <td>
+                                    @if (l.Status == "Active")
                                     {
-                                        <span>-@o.DiscountAmount.ToString("N2") ₼</span>
+                                        <span class="badge bg-success-subtle text-success">Активно</span>
+                                    }
+                                    else if (l.Status == "Closed")
+                                    {
+                                        <span class="badge bg-secondary-subtle text-secondary">Закрыто</span>
                                     }
                                     else
                                     {
-                                        <span class="text-muted">—</span>
+                                        <span class="badge bg-warning-subtle text-warning">@l.Status</span>
                                     }
                                 </td>
-                                <td class="small">@o.ShippingAmount.ToString("N2") ₼</td>
-                                <td class="fw-bold">@o.TotalAmount.ToString("N2") ₼</td>
+                                <td class="small text-muted">@l.CreatedDate.ToString("dd.MM.yyyy")</td>
                                 <td>
-                                    <span class="badge-status status-@o.Status.ToLower()">@o.Status</span>
-                                </td>
-                                <td class="small text-muted">@o.OrderDate.ToString("dd.MM.yyyy HH:mm")</td>
-                                <td>
-                                    <form method="post" asp-page-handler="UpdateStatus" class="d-flex gap-1">
-                                        <input type="hidden" name="id" value="@o.Id" />
-                                        <select name="status" class="form-select form-select-sm" style="width:130px">
-                                            @foreach (var s in Model.AllStatuses)
-                                            {
-                                                if (o.Status == s)
-                                                {
-                                                    <option value="@s" selected>@s</option>
-                                                }
-                                                else
-                                                {
-                                                    <option value="@s">@s</option>
-                                                }
-                                            }
-                                        </select>
-                                        <button class="btn btn-sm btn-outline-primary btn-action">
-                                            <i class="bi bi-check"></i>
-                                        </button>
-                                    </form>
+                                    <div class="d-flex gap-1">
+                                        @if (l.Status == "Active")
+                                        {
+                                            <form method="post" asp-page-handler="Close">
+                                                <input type="hidden" name="id" value="@l.Id" />
+                                                <button class="btn btn-sm btn-outline-warning btn-action" title="Закрыть">
+                                                    <i class="bi bi-x-circle"></i>
+                                                </button>
+                                            </form>
+                                        }
+                                        <form method="post" asp-page-handler="Delete"
+                                              onsubmit="return confirm('Удалить объявление?')">
+                                            <input type="hidden" name="id" value="@l.Id" />
+                                            <button class="btn btn-sm btn-outline-danger btn-action" title="Удалить">
+                                                <i class="bi bi-trash"></i>
+                                            </button>
+                                        </form>
+                                    </div>
                                 </td>
                             </tr>
                         }

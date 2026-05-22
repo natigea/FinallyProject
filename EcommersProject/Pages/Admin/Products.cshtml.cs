@@ -1,74 +1,85 @@
 using EcommersProject.BLL.DTOs;
 using EcommersProject.BLL.Interfaces;
+using EcommersProject.Resources;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.Extensions.Localization;
 
 namespace EcommersProject.Pages.Admin;
 
 [Authorize(Policy = "AdminOnly")]
 public class ProductsModel(
-    IProductService productService,
+    IListingService listingService,
     ICategoryService categoryService,
-    IBrandService brandService,
-    IUserService userService) : PageModel
+    IStringLocalizer<SharedResource> localizer) : PageModel
 {
-    public IReadOnlyList<ProductGetDto> Products { get; private set; } = [];
-    public IReadOnlyList<CategoryGetDto> Categories { get; private set; } = [];
-    public IReadOnlyList<BrandGetDto> Brands { get; private set; } = [];
-    public IReadOnlyList<UserGetDto> Sellers { get; private set; } = [];
+    private IStringLocalizer<SharedResource> L => localizer;
 
-    [BindProperty(SupportsGet = true)]
-    public string? Search { get; set; }
+    public IReadOnlyList<ListingGetDto> Listings        { get; private set; } = [];
+    public IReadOnlyList<ListingGetDto> PendingListings { get; private set; } = [];
+    public IReadOnlyList<CategoryGetDto> Categories     { get; private set; } = [];
 
-    [BindProperty(SupportsGet = true)]
-    public Guid? CategoryFilter { get; set; }
+    [BindProperty(SupportsGet = true)] public string? Search         { get; set; }
+    [BindProperty(SupportsGet = true)] public Guid?   CategoryFilter { get; set; }
+    [BindProperty(SupportsGet = true)] public string  StatusFilter   { get; set; } = "all";
+
+    public int CountAll     { get; private set; }
+    public int CountActive  { get; private set; }
+    public int CountPending { get; private set; }
+    public int CountClosed  { get; private set; }
 
     public async Task OnGetAsync(CancellationToken cancellationToken)
     {
-        var allProducts = await productService.GetAllAsync(cancellationToken);
-        var filtered = allProducts.AsEnumerable();
+        var (all, _) = await listingService.AdminSearchAsync(
+            new ListingSearchDto(Search, CategoryFilter, null, null, null, "newest", 1, 2000),
+            cancellationToken);
 
-        if (!string.IsNullOrWhiteSpace(Search))
-            filtered = filtered.Where(p => p.Name.Contains(Search, StringComparison.OrdinalIgnoreCase)
-                                        || p.Sku.Contains(Search, StringComparison.OrdinalIgnoreCase));
+        CountAll     = all.Count;
+        CountActive  = all.Count(l => l.Status == "Active");
+        CountPending = all.Count(l => l.Status == "Pending");
+        CountClosed  = all.Count(l => l.Status == "Closed");
 
-        if (CategoryFilter.HasValue)
-            filtered = filtered.Where(p => p.CategoryId == CategoryFilter.Value);
+        Listings = StatusFilter switch
+        {
+            "active"  => all.Where(l => l.Status == "Active").ToList(),
+            "pending" => all.Where(l => l.Status == "Pending").ToList(),
+            "closed"  => all.Where(l => l.Status == "Closed").ToList(),
+            _         => all
+        };
 
-        Products = filtered.OrderByDescending(p => p.CreatedDate).ToList();
+        PendingListings = StatusFilter == "all"
+            ? await listingService.GetPendingAsync(cancellationToken)
+            : [];
 
         Categories = await categoryService.GetAllAsync(cancellationToken);
-        Brands = await brandService.GetAllAsync(cancellationToken);
-
-        var allUsers = await userService.GetAllAsync(cancellationToken);
-        Sellers = allUsers.Where(u => u.Role == "Seller").ToList();
     }
 
-    public async Task<IActionResult> OnPostActivateAsync(Guid id, CancellationToken cancellationToken)
+    public async Task<IActionResult> OnPostApproveAsync(Guid id, CancellationToken cancellationToken)
     {
-        var p = await productService.GetByIdAsync(id, cancellationToken);
-        await productService.UpdateAsync(id,
-            new ProductUpdateDto(p.Name, p.Description, p.Price, p.StockQuantity, true, p.CategoryId, p.BrandId),
-            cancellationToken);
-        TempData["SuccessMessage"] = $"Товар «{p.Name}» активирован и опубликован.";
+        await listingService.ApproveAsync(id, cancellationToken);
+        TempData["SuccessMessage"] = L["Admin_ApprovedMsg"].Value;
         return RedirectToPage();
     }
 
-    public async Task<IActionResult> OnPostDeactivateAsync(Guid id, CancellationToken cancellationToken)
+    public async Task<IActionResult> OnPostRejectAsync(Guid id, CancellationToken cancellationToken)
     {
-        var p = await productService.GetByIdAsync(id, cancellationToken);
-        await productService.UpdateAsync(id,
-            new ProductUpdateDto(p.Name, p.Description, p.Price, p.StockQuantity, false, p.CategoryId, p.BrandId),
-            cancellationToken);
-        TempData["SuccessMessage"] = $"Товар «{p.Name}» деактивирован.";
+        await listingService.RejectAsync(id, cancellationToken);
+        TempData["SuccessMessage"] = L["Admin_RejectedMsg"].Value;
         return RedirectToPage();
     }
 
     public async Task<IActionResult> OnPostDeleteAsync(Guid id, CancellationToken cancellationToken)
     {
-        await productService.DeleteAsync(id, cancellationToken);
-        TempData["SuccessMessage"] = "Товар удалён.";
+        await listingService.DeleteAsync(id, cancellationToken);
+        TempData["SuccessMessage"] = L["Admin_DeletedListingMsg"].Value;
+        return RedirectToPage();
+    }
+
+    public async Task<IActionResult> OnPostCloseAsync(Guid id, CancellationToken cancellationToken)
+    {
+        await listingService.CloseAsync(id, cancellationToken);
+        TempData["SuccessMessage"] = L["Admin_ClosedListingMsg"].Value;
         return RedirectToPage();
     }
 }

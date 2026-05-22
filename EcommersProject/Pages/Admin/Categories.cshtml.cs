@@ -11,11 +11,9 @@ public class CategoriesModel(ICategoryService categoryService) : PageModel
 {
     public IReadOnlyList<CategoryGetDto> Categories { get; private set; } = [];
 
-    [BindProperty]
-    public string NewName { get; set; } = string.Empty;
-
-    [BindProperty]
-    public string NewDescription { get; set; } = string.Empty;
+    [BindProperty] public string NewName { get; set; } = string.Empty;
+    [BindProperty] public string NewDescription { get; set; } = string.Empty;
+    [BindProperty] public string NewIcon { get; set; } = "bi-tag";
 
     public async Task OnGetAsync(CancellationToken cancellationToken)
     {
@@ -29,8 +27,7 @@ public class CategoriesModel(ICategoryService categoryService) : PageModel
             TempData["ErrorMessage"] = "Название обязательно.";
             return RedirectToPage();
         }
-
-        await categoryService.CreateAsync(new CategoryCreateDto(NewName, NewDescription), cancellationToken);
+        await categoryService.CreateAsync(new CategoryCreateDto(NewName, NewDescription, NewIcon), cancellationToken);
         TempData["SuccessMessage"] = $"Категория «{NewName}» создана.";
         return RedirectToPage();
     }

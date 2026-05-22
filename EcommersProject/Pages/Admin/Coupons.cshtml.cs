@@ -6,44 +6,37 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace EcommersProject.Pages.Admin;
 
+// Repurposed: category management with icon
 [Authorize(Policy = "AdminOnly")]
-public class CouponsModel(ICouponService couponService) : PageModel
+public class CouponsModel(ICategoryService categoryService) : PageModel
 {
-    public IReadOnlyList<CouponGetDto> Coupons { get; private set; } = [];
+    public IReadOnlyList<CategoryGetDto> Categories { get; private set; } = [];
 
-    [BindProperty] public string NewCode { get; set; } = string.Empty;
-    [BindProperty] public decimal NewDiscountAmount { get; set; }
-    [BindProperty] public decimal NewDiscountPercent { get; set; }
-    [BindProperty] public DateTimeOffset NewValidFrom { get; set; } = DateTimeOffset.UtcNow;
-    [BindProperty] public DateTimeOffset NewValidTo { get; set; } = DateTimeOffset.UtcNow.AddMonths(1);
-    [BindProperty] public int NewUsageLimit { get; set; } = 100;
+    [BindProperty] public string NewName { get; set; } = string.Empty;
+    [BindProperty] public string NewDescription { get; set; } = string.Empty;
+    [BindProperty] public string NewIcon { get; set; } = "bi-tag";
 
     public async Task OnGetAsync(CancellationToken cancellationToken)
     {
-        Coupons = await couponService.GetAllAsync(cancellationToken);
+        Categories = await categoryService.GetAllAsync(cancellationToken);
     }
 
     public async Task<IActionResult> OnPostCreateAsync(CancellationToken cancellationToken)
     {
-        if (string.IsNullOrWhiteSpace(NewCode))
+        if (string.IsNullOrWhiteSpace(NewName))
         {
-            TempData["ErrorMessage"] = "Код купона обязателен.";
+            TempData["ErrorMessage"] = "Название обязательно.";
             return RedirectToPage();
         }
-
-        var code = NewCode.Trim().ToUpperInvariant();
-        await couponService.CreateAsync(new CouponCreateDto(
-            code, NewDiscountAmount, NewDiscountPercent,
-            NewValidFrom, NewValidTo, NewUsageLimit), cancellationToken);
-
-        TempData["SuccessMessage"] = $"Купон {code} создан.";
+        await categoryService.CreateAsync(new CategoryCreateDto(NewName, NewDescription, NewIcon), cancellationToken);
+        TempData["SuccessMessage"] = $"Категория «{NewName}» создана.";
         return RedirectToPage();
     }
 
     public async Task<IActionResult> OnPostDeleteAsync(Guid id, CancellationToken cancellationToken)
     {
-        await couponService.DeleteAsync(id, cancellationToken);
-        TempData["SuccessMessage"] = "Купон удалён.";
+        await categoryService.DeleteAsync(id, cancellationToken);
+        TempData["SuccessMessage"] = "Категория удалена.";
         return RedirectToPage();
     }
 }

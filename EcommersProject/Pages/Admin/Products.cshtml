@@ -1,27 +1,115 @@
 @page
 @model EcommersProject.Pages.Admin.ProductsModel
 @{
-    ViewData["Title"] = "Товары";
+    ViewData["Title"] = L["Admin_Listings"].Value;
 }
 
-<div class="d-flex justify-content-between align-items-center mb-4">
+<!-- ══ PENDING queue ═══════════════════════════════════════════════════════ -->
+@if (Model.PendingListings.Any())
+{
+    <div class="card border-warning mb-4">
+        <div class="card-header d-flex align-items-center gap-2 bg-warning bg-opacity-10 border-warning py-2">
+            <i class="bi bi-hourglass-split text-warning"></i>
+            <span class="fw-semibold">@L["Admin_PendingListings"]</span>
+            <span class="badge bg-warning text-dark ms-1">@Model.PendingListings.Count</span>
+        </div>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th>@L["Admin_ColTitle"]</th><th>@L["Admin_ColCategory"]</th>
+                            <th>@L["Admin_ColCity"]</th><th>@L["Admin_ColPrice"]</th>
+                            <th>@L["Admin_ColAuthor"]</th><th>@L["Admin_ColDate"]</th>
+                            <th>@L["Admin_ColActions"]</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var l in Model.PendingListings)
+                        {
+                            <tr>
+                                <td class="fw-medium">@l.Title</td>
+                                <td class="small text-muted">@(l.CategoryName ?? "—")</td>
+                                <td class="small">@l.City</td>
+                                <td class="fw-medium">@l.Price.ToString("N0") ₼</td>
+                                <td class="small">@(l.UserName ?? "—")</td>
+                                <td class="small text-muted">@l.CreatedDate.ToString("dd.MM.yy HH:mm")</td>
+                                <td>
+                                    <div class="d-flex gap-1 flex-wrap">
+                                        <a href="/Listing/Detail/@l.Id" target="_blank"
+                                           class="btn btn-sm btn-outline-secondary btn-action" title="@L["Admin_View"]">
+                                            <i class="bi bi-eye"></i>
+                                        </a>
+                                        <form method="post" asp-page-handler="Approve">
+                                            @Html.AntiForgeryToken()
+                                            <input type="hidden" name="id" value="@l.Id" />
+                                            <button class="btn btn-sm btn-success" title="@L["Admin_Approve"]">
+                                                <i class="bi bi-check-lg me-1"></i>@L["Admin_Approve"]
+                                            </button>
+                                        </form>
+                                        <form method="post" asp-page-handler="Reject"
+                                              onsubmit="return confirm('@L["Admin_RejectConfirm"]')">
+                                            @Html.AntiForgeryToken()
+                                            <input type="hidden" name="id" value="@l.Id" />
+                                            <button class="btn btn-sm btn-outline-danger" title="@L["Admin_Reject"]">
+                                                <i class="bi bi-x-lg me-1"></i>@L["Admin_Reject"]
+                                            </button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+}
+
+<!-- ══ Header ═══════════════════════════════════════════════════════════════ -->
+<div class="d-flex justify-content-between align-items-center mb-3">
     <div>
-        <h5 class="mb-0 fw-bold">Управление товарами</h5>
-        <small class="text-muted">Всего: @Model.Products.Count</small>
+        <h5 class="mb-0 fw-bold">@L["Admin_AllListings"]</h5>
+        <small class="text-muted">@L["Admin_Found"] @Model.Listings.Count</small>
     </div>
 </div>
 
-<!-- Filters -->
+<!-- ══ Filters ══════════════════════════════════════════════════════════════ -->
 <div class="card mb-3">
     <div class="card-body py-2">
         <form method="get" class="row g-2 align-items-center">
+
+            <!-- Status tabs -->
+            <div class="col-12 col-md-auto mb-1 mb-md-0">
+                <div class="btn-group btn-group-sm" role="group">
+                    <a href="?Search=@Model.Search&CategoryFilter=@Model.CategoryFilter&StatusFilter=all"
+                       class="btn @(Model.StatusFilter == "all" ? "btn-dark" : "btn-outline-secondary")">
+                        @L["Common_All"] <span class="badge @(Model.StatusFilter == "all" ? "bg-light text-dark" : "bg-secondary") ms-1">@Model.CountAll</span>
+                    </a>
+                    <a href="?Search=@Model.Search&CategoryFilter=@Model.CategoryFilter&StatusFilter=active"
+                       class="btn @(Model.StatusFilter == "active" ? "btn-success" : "btn-outline-secondary")">
+                        @L["Admin_ListingsActive"] <span class="badge @(Model.StatusFilter == "active" ? "bg-light text-success" : "bg-secondary") ms-1">@Model.CountActive</span>
+                    </a>
+                    <a href="?Search=@Model.Search&CategoryFilter=@Model.CategoryFilter&StatusFilter=pending"
+                       class="btn @(Model.StatusFilter == "pending" ? "btn-warning text-dark" : "btn-outline-secondary")">
+                        @L["Status_Pending"] <span class="badge @(Model.StatusFilter == "pending" ? "bg-light text-warning" : "bg-secondary") ms-1">@Model.CountPending</span>
+                    </a>
+                    <a href="?Search=@Model.Search&CategoryFilter=@Model.CategoryFilter&StatusFilter=closed"
+                       class="btn @(Model.StatusFilter == "closed" ? "btn-secondary" : "btn-outline-secondary")">
+                        @L["Admin_ListingsClosed"] <span class="badge @(Model.StatusFilter == "closed" ? "bg-light text-secondary" : "bg-secondary") ms-1">@Model.CountClosed</span>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Search + category -->
             <div class="col-auto">
+                <input type="hidden" name="StatusFilter" value="@Model.StatusFilter" />
                 <input asp-for="Search" type="text" class="form-control form-control-sm"
-                       placeholder="Поиск по названию / SKU..." style="min-width:220px" />
+                       placeholder="@L["Admin_SearchListings"]" style="min-width:200px" />
             </div>
             <div class="col-auto">
-                <select asp-for="CategoryFilter" class="form-select form-select-sm">
-                    <option value="">Все категории</option>
+                <select asp-for="CategoryFilter" class="form-select form-select-sm" style="min-width:150px">
+                    <option value="">@L["Admin_AllCategories"]</option>
                     @foreach (var c in Model.Categories)
                     {
                         <option value="@c.Id">@c.Name</option>
@@ -32,19 +120,20 @@
                 <button type="submit" class="btn btn-sm btn-outline-primary">
                     <i class="bi bi-search"></i>
                 </button>
-                <a href="/Admin/Products" class="btn btn-sm btn-outline-secondary ms-1">Сброс</a>
+                <a href="/Admin/Products" class="btn btn-sm btn-outline-secondary ms-1">@L["Admin_Reset"]</a>
             </div>
         </form>
     </div>
 </div>
 
+<!-- ══ Table ════════════════════════════════════════════════════════════════ -->
 <div class="card">
     <div class="card-body p-0">
-        @if (!Model.Products.Any())
+        @if (!Model.Listings.Any())
         {
             <div class="empty-state">
-                <i class="bi bi-box-seam"></i>
-                Товары не найдены.
+                <i class="bi bi-grid-3x3-gap"></i>
+                @L["Admin_NoListingsMsg"]
             </div>
         }
         else
@@ -53,83 +142,77 @@
                 <table class="table table-hover align-middle mb-0">
                     <thead class="table-light">
                         <tr>
-                            <th>Название</th>
-                            <th>SKU</th>
-                            <th>Категория</th>
-                            <th>Бренд</th>
-                            <th>Продавец</th>
-                            <th>Цена</th>
-                            <th>Склад</th>
-                            <th>Рейтинг</th>
-                            <th>Статус</th>
-                            <th>Действия</th>
+                            <th>@L["Admin_ColTitle"]</th><th>@L["Admin_ColCategory"]</th>
+                            <th>@L["Admin_ColCity"]</th><th>@L["Admin_ColPrice"]</th>
+                            <th>@L["Admin_ColAuthor"]</th><th>@L["Admin_ColStatus"]</th>
+                            <th>@L["Admin_ColDate"]</th><th>@L["Admin_ColActions"]</th>
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach (var p in Model.Products)
+                        @foreach (var l in Model.Listings)
                         {
                             <tr>
-                                <td class="fw-medium">@p.Name</td>
-                                <td><code class="small">@p.Sku</code></td>
-                                <td class="small">@(p.CategoryName ?? "—")</td>
-                                <td class="small">@(p.BrandName ?? "—")</td>
-                                <td class="small">@(p.SellerName ?? "—")</td>
-                                <td class="fw-medium">@p.Price.ToString("N2") ₼</td>
+                                <td class="fw-medium">
+                                    <a href="/Listing/Detail/@l.Id" class="text-decoration-none text-dark">@l.Title</a>
+                                </td>
+                                <td class="small text-muted">@(l.CategoryName ?? "—")</td>
+                                <td class="small">@l.City</td>
+                                <td class="fw-medium">@l.Price.ToString("N0") ₼</td>
+                                <td class="small">@(l.UserName ?? "—")</td>
                                 <td>
-                                    @if (p.StockQuantity <= 5)
+                                    @switch (l.Status)
                                     {
-                                        <span class="text-danger fw-bold">@p.StockQuantity</span>
-                                    }
-                                    else
-                                    {
-                                        <span>@p.StockQuantity</span>
+                                        case "Active":
+                                            <span class="badge bg-success-subtle text-success">@L["Status_Active"]</span>
+                                            break;
+                                        case "Pending":
+                                            <span class="badge bg-warning-subtle text-warning">@L["Status_Pending"]</span>
+                                            break;
+                                        default:
+                                            <span class="badge bg-secondary-subtle text-secondary">@L["Status_Closed"]</span>
+                                            break;
                                     }
                                 </td>
-                                <td>
-                                    <span class="text-warning">
-                                        @for (int i = 0; i < (int)Math.Round(p.RatingAverage); i++)
-                                        {
-                                            <i class="bi bi-star-fill" style="font-size:.7rem"></i>
-                                        }
-                                    </span>
-                                    <small class="text-muted">(@p.RatingAverage.ToString("F1"))</small>
-                                </td>
-                                <td>
-                                    @if (p.IsActive)
-                                    {
-                                        <span class="badge bg-success-subtle text-success">Активен</span>
-                                    }
-                                    else
-                                    {
-                                        <span class="badge bg-warning-subtle text-warning">
-                                            <i class="bi bi-hourglass-split me-1"></i>На проверке
-                                        </span>
-                                    }
-                                </td>
+                                <td class="small text-muted">@l.CreatedDate.ToString("dd.MM.yyyy")</td>
                                 <td>
                                     <div class="d-flex gap-1">
-                                        @if (!p.IsActive)
+                                        <a href="/Listing/Detail/@l.Id" target="_blank"
+                                           class="btn btn-sm btn-outline-secondary btn-action" title="@L["Admin_View"]">
+                                            <i class="bi bi-eye"></i>
+                                        </a>
+                                        @if (l.Status == "Active")
                                         {
-                                            <form method="post" asp-page-handler="Activate">
-                                                <input type="hidden" name="id" value="@p.Id" />
-                                                <button class="btn btn-sm btn-outline-success btn-action" title="Опубликовать">
-                                                    <i class="bi bi-check-circle"></i>
+                                            <form method="post" asp-page-handler="Close">
+                                                @Html.AntiForgeryToken()
+                                                <input type="hidden" name="id" value="@l.Id" />
+                                                <button class="btn btn-sm btn-outline-warning btn-action" title="@L["Admin_Close"]">
+                                                    <i class="bi bi-x-circle"></i>
                                                 </button>
                                             </form>
                                         }
-                                        else
+                                        @if (l.Status == "Pending")
                                         {
-                                            <form method="post" asp-page-handler="Deactivate">
-                                                <input type="hidden" name="id" value="@p.Id" />
-                                                <button class="btn btn-sm btn-outline-warning btn-action" title="Снять с публикации">
-                                                    <i class="bi bi-pause-circle"></i>
+                                            <form method="post" asp-page-handler="Approve">
+                                                @Html.AntiForgeryToken()
+                                                <input type="hidden" name="id" value="@l.Id" />
+                                                <button class="btn btn-sm btn-success btn-action" title="@L["Admin_Approve"]">
+                                                    <i class="bi bi-check-lg"></i>
+                                                </button>
+                                            </form>
+                                            <form method="post" asp-page-handler="Reject"
+                                                  onsubmit="return confirm('@L["Admin_RejectConfirm"]')">
+                                                @Html.AntiForgeryToken()
+                                                <input type="hidden" name="id" value="@l.Id" />
+                                                <button class="btn btn-sm btn-outline-danger btn-action" title="@L["Admin_Reject"]">
+                                                    <i class="bi bi-x-lg"></i>
                                                 </button>
                                             </form>
                                         }
                                         <form method="post" asp-page-handler="Delete"
-                                              onsubmit="return confirm('Удалить товар «@p.Name»?')">
-                                            <input type="hidden" name="id" value="@p.Id" />
-                                            <button class="btn btn-sm btn-outline-danger btn-action" title="Удалить">
+                                              onsubmit="return confirm('@L["Admin_DeleteListingConfirm"]')">
+                                            @Html.AntiForgeryToken()
+                                            <input type="hidden" name="id" value="@l.Id" />
+                                            <button class="btn btn-sm btn-outline-danger btn-action" title="@L["Common_Delete"]">
                                                 <i class="bi bi-trash"></i>
                                             </button>
                                         </form>
