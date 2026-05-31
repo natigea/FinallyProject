@@ -13,6 +13,8 @@ public interface IUnitOfWork
     IGenericRepository<Conversation> Conversations { get; }
     IGenericRepository<Message> Messages { get; }
     IGenericRepository<Review> Reviews { get; }
+    IGenericRepository<Purchase> Purchases { get; }
+    IGenericRepository<Notification> Notifications { get; }
 
     Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
 }

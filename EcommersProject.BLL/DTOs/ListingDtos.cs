@@ -17,7 +17,9 @@ public record ListingGetDto(
     string? UserName,
     string? UserPhone,
     List<ListingImageDto> Images,
-    DateTimeOffset CreatedDate);
+    DateTimeOffset CreatedDate,
+    bool IsVip,
+    DateTimeOffset? VipExpiresAt);
 
 public record ListingCreateDto(
     string Title,

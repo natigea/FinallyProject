@@ -15,6 +15,8 @@ public class UnitOfWork(AppDbContext context) : IUnitOfWork
     private IGenericRepository<Conversation>? _conversations;
     private IGenericRepository<Message>? _messages;
     private IGenericRepository<Review>? _reviews;
+    private IGenericRepository<Purchase>? _purchases;
+    private IGenericRepository<Notification>? _notifications;
 
     public IGenericRepository<User> Users => _users ??= new GenericRepository<User>(context);
     public IGenericRepository<Category> Categories => _categories ??= new GenericRepository<Category>(context);
@@ -24,6 +26,8 @@ public class UnitOfWork(AppDbContext context) : IUnitOfWork
     public IGenericRepository<Conversation> Conversations => _conversations ??= new GenericRepository<Conversation>(context);
     public IGenericRepository<Message> Messages => _messages ??= new GenericRepository<Message>(context);
     public IGenericRepository<Review> Reviews => _reviews ??= new GenericRepository<Review>(context);
+    public IGenericRepository<Purchase> Purchases => _purchases ??= new GenericRepository<Purchase>(context);
+    public IGenericRepository<Notification> Notifications => _notifications ??= new GenericRepository<Notification>(context);
 
     public Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
         => context.SaveChangesAsync(cancellationToken);

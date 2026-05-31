@@ -10,7 +10,7 @@ public interface IListingService
     Task<IReadOnlyList<ListingGetDto>> GetByUserAsync(Guid userId, CancellationToken ct = default);
     Task<IReadOnlyList<ListingGetDto>> GetPendingAsync(CancellationToken ct = default);
     Task<ListingGetDto> CreateAsync(ListingCreateDto dto, CancellationToken ct = default);
-    Task<ListingGetDto> UpdateAsync(Guid id, ListingUpdateDto dto, CancellationToken ct = default);
+    Task<ListingGetDto> UpdateAsync(Guid id, ListingUpdateDto dto, bool isAdminEdit = false, CancellationToken ct = default);
     Task SubmitForReviewAsync(Guid id, CancellationToken ct = default);
     Task ApproveAsync(Guid id, CancellationToken ct = default);
     Task RejectAsync(Guid id, CancellationToken ct = default);

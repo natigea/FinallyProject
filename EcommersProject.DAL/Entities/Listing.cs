@@ -15,6 +15,9 @@ public class Listing : BaseEntity
     public Guid UserId { get; set; }
     public User? User { get; set; }
 
+    public bool IsVip { get; set; }
+    public DateTimeOffset? VipExpiresAt { get; set; }
+
     public ICollection<ListingImage> Images { get; set; } = new List<ListingImage>();
     public ICollection<Favorite> Favorites { get; set; } = new List<Favorite>();
     public ICollection<Conversation> Conversations { get; set; } = new List<Conversation>();

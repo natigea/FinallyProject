@@ -1,0 +1,194 @@
+@model EcommersProject.Models.DeliveryViewModel
+@{
+    ViewData["Title"] = L["Checkout_DeliveryTitle"];
+    var l = Model.Listing;
+    var deliveryFee = Math.Max(Math.Round(l.Price * 0.05m, 2), 1m);
+    var total = l.Price + deliveryFee;
+    var stripeKey = ViewBag.StripePublishableKey as string ?? "";
+}
+
+<div class="container py-4" style="max-width:980px;">
+    <nav class="mb-4"><ol class="breadcrumb" style="font-size:.78rem;">
+        <li class="breadcrumb-item"><a href="/" style="color:var(--accent);">@L["Common_Home"]</a></li>
+        <li class="breadcrumb-item"><a href="/Listing/Detail/@l.Id" style="color:var(--accent);">@l.Title</a></li>
+        <li class="breadcrumb-item active">@L["Checkout_DeliveryTitle"]</li>
+    </ol></nav>
+
+    <div class="row g-4">
+        <!-- Form -->
+        <div class="col-lg-7">
+            <form asp-action="Delivery" asp-route-listingId="@l.Id" method="post" id="payForm">
+                @Html.AntiForgeryToken()
+                <input type="hidden" asp-for="StripePaymentIntentId" id="stripePaymentIntentId" />
+
+                <!-- Delivery -->
+                <div class="form-block mb-3">
+                    <h6 class="block-title"><i class="bi bi-truck me-2"></i>@L["Checkout_DeliveryAddrSection"]</h6>
+                    <div class="mb-3">
+                        <label class="form-label-sm">@L["Checkout_AddressLabel"]</label>
+                        <input asp-for="DeliveryAddress" class="form-ctrl" placeholder="@L["Checkout_AddressLabel"]" />
+                        <span asp-validation-for="DeliveryAddress" class="val-msg"></span>
+                    </div>
+                    <div class="row g-3">
+                        <div class="col-6">
+                            <label class="form-label-sm">@L["Checkout_CityLabel"]</label>
+                            <input asp-for="DeliveryCity" class="form-ctrl" placeholder="@L["Checkout_CityLabel"]" />
+                            <span asp-validation-for="DeliveryCity" class="val-msg"></span>
+                        </div>
+                        <div class="col-6">
+                            <label class="form-label-sm">@L["Checkout_PhoneLabel"]</label>
+                            <input asp-for="DeliveryPhone" class="form-ctrl" placeholder="+994 50 000 00 00" />
+                            <span asp-validation-for="DeliveryPhone" class="val-msg"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Stripe Card -->
+                <div class="form-block mb-4">
+                    <h6 class="block-title"><i class="bi bi-credit-card me-2"></i>@L["Checkout_CardSection"]</h6>
+                    <div id="stripe-card-element" class="stripe-card-wrap"></div>
+                    <div id="stripe-error" class="val-msg mt-2" role="alert"></div>
+                    <div class="stripe-secure mt-2">
+                        <i class="bi bi-shield-lock-fill me-1 text-success"></i>
+                        <span>@L["Checkout_CardProtected"]</span>
+                    </div>
+                </div>
+
+                <div asp-validation-summary="ModelOnly" class="alert alert-danger mb-3"></div>
+
+                <div id="pay-error-global" class="alert alert-danger d-none mb-3"></div>
+
+                <button type="button" class="btn-pay" id="payBtn" onclick="handlePay()">
+                    <i class="bi bi-shield-lock-fill me-2"></i>@L["Checkout_PayBtn"] @total.ToString("N2") ₼
+                </button>
+                <p class="text-center text-muted mt-2" style="font-size:.72rem;">
+                    <i class="bi bi-stripe me-1"></i>@L["Checkout_StripeSSL"]
+                </p>
+            </form>
+        </div>
+
+        <!-- Summary -->
+        <div class="col-lg-5">
+            <div class="form-block mb-3">
+                <h6 class="block-title">@L["Checkout_OrderSummary"]</h6>
+                <div class="d-flex gap-3 align-items-start mb-3">
+                    @if (l.Images.Any())
+                    { <img src="@l.Images[0].Url" class="rounded" style="width:72px;height:60px;object-fit:cover;flex-shrink:0;" /> }
+                    else
+                    { <div style="width:72px;height:60px;background:#f4f5f7;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;"><i class="bi bi-image text-muted"></i></div> }
+                    <div>
+                        <div class="fw-semibold" style="font-size:.875rem;">@l.Title</div>
+                        <div class="text-muted" style="font-size:.78rem;"><i class="bi bi-geo-alt me-1"></i>@l.City</div>
+                    </div>
+                </div>
+                <div class="price-row"><span>@L["Checkout_ItemPrice"]</span><span>@l.Price.ToString("N2") ₼</span></div>
+                <div class="price-row text-success"><span>@L["Checkout_DeliveryFeeLabel"]</span><span>+@deliveryFee.ToString("N2") ₼</span></div>
+                <div class="price-row fw-bold border-top pt-2 mt-1"><span>@L["Checkout_TotalLabel"]</span><span style="font-size:1.05rem;">@total.ToString("N2") ₼</span></div>
+            </div>
+
+            <div class="form-block" style="background:#fafafa;">
+                <p class="fw-semibold mb-2" style="font-size:.8rem;">@L["Checkout_TestCards"]</p>
+                <div class="d-flex gap-2 mb-1 align-items-center" style="font-size:.75rem;">
+                    <span class="test-badge ok">@L["Checkout_TestSuccess"]</span> 4242 4242 4242 4242
+                </div>
+                <div class="d-flex gap-2 mb-1 align-items-center" style="font-size:.75rem;">
+                    <span class="test-badge fail">3D-Secure</span> 4000 0027 6000 3184
+                </div>
+                <div class="d-flex gap-2 align-items-center" style="font-size:.75rem;">
+                    <span class="test-badge fail">@L["Checkout_TestDeclined"]</span> 4000 0000 0000 9995
+                </div>
+                <p class="text-muted mt-2 mb-0" style="font-size:.72rem;">@L["Checkout_TestCardHint"]</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Styles {
+<style>
+    .form-block { background:#fff; border:1px solid var(--border); border-radius:12px; padding:20px 22px; }
+    .block-title { font-size:.83rem; font-weight:700; text-transform:uppercase; letter-spacing:.5px; color:var(--muted); margin-bottom:16px; }
+    .form-label-sm { font-size:.83rem; font-weight:600; margin-bottom:5px; display:block; }
+    .form-ctrl { width:100%; border:1.5px solid var(--border); border-radius:8px; padding:9px 12px; font-size:.875rem; font-family:inherit; outline:none; transition:border-color .2s; }
+    .form-ctrl:focus { border-color:#6366f1; box-shadow:0 0 0 3px rgba(99,102,241,.1); }
+    .val-msg { font-size:.73rem; color:#dc2626; }
+    .price-row { display:flex; justify-content:space-between; font-size:.875rem; padding:5px 0; }
+    .btn-pay { width:100%; padding:13px; background:linear-gradient(135deg,#2563eb,#4f46e5); color:#fff; border:none; border-radius:10px; font-size:.95rem; font-weight:700; font-family:inherit; cursor:pointer; transition:all .2s; display:flex; align-items:center; justify-content:center; box-shadow:0 4px 14px rgba(37,99,235,.3); }
+    .btn-pay:hover:not(:disabled) { transform:translateY(-1px); box-shadow:0 6px 20px rgba(37,99,235,.4); }
+    .btn-pay:disabled { opacity:.65; cursor:not-allowed; }
+    .test-badge { display:inline-block; padding:2px 8px; border-radius:20px; font-size:.68rem; font-weight:600; }
+    .test-badge.ok { background:#dcfce7; color:#166534; }
+    .test-badge.fail { background:#fee2e2; color:#991b1b; }
+    .stripe-card-wrap { border:1.5px solid var(--border); border-radius:8px; padding:11px 13px; transition:border-color .2s; }
+    .stripe-card-wrap.StripeElement--focus { border-color:#6366f1; box-shadow:0 0 0 3px rgba(99,102,241,.1); }
+    .stripe-card-wrap.StripeElement--invalid { border-color:#dc2626; }
+    .stripe-secure { font-size:.72rem; color:var(--muted); display:flex; align-items:center; }
+</style>
+}
+@section Scripts {
+<script src="https://js.stripe.com/v3/"></script>
+<script>
+    const stripe = Stripe('@stripeKey');
+    const elements = stripe.elements();
+    const cardElement = elements.create('card', {
+        style: {
+            base: { fontSize: '15px', color: '#1a1a1a', fontFamily: 'inherit', '::placeholder': { color: '#9ca3af' } },
+            invalid: { color: '#dc2626' }
+        },
+        hidePostalCode: true
+    });
+    cardElement.mount('#stripe-card-element');
+
+    async function handlePay() {
+        const btn = document.getElementById('payBtn');
+        const errGlobal = document.getElementById('pay-error-global');
+        const errStripe = document.getElementById('stripe-error');
+        errGlobal.classList.add('d-none');
+        errStripe.textContent = '';
+
+        const address = document.querySelector('[name="DeliveryAddress"]')?.value.trim();
+        const city    = document.querySelector('[name="DeliveryCity"]')?.value.trim();
+        const phone   = document.querySelector('[name="DeliveryPhone"]')?.value.trim();
+        if (!address || !city || !phone) {
+            errGlobal.textContent = 'Пожалуйста, заполните все поля доставки перед оплатой.';
+            errGlobal.classList.remove('d-none');
+            return;
+        }
+
+        btn.disabled = true;
+        btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Обработка...';
+
+        try {
+            // Step 1: create payment intent
+            const piResp = await fetch('/Checkout/CreatePaymentIntent', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ type: 'delivery', listingId: '@l.Id' })
+            });
+            if (!piResp.ok) throw new Error('Ошибка создания платежа');
+            const { clientSecret } = await piResp.json();
+
+            // Step 2: confirm card payment
+            const { paymentIntent, error } = await stripe.confirmCardPayment(clientSecret, {
+                payment_method: { card: cardElement }
+            });
+
+            if (error) {
+                errStripe.textContent = error.message;
+                btn.disabled = false;
+                btn.innerHTML = '<i class="bi bi-shield-lock-fill me-2"></i>Оплатить @total.ToString("N2") ₼';
+                return;
+            }
+
+            // Step 3: submit form with paymentIntentId
+            document.getElementById('stripePaymentIntentId').value = paymentIntent.id;
+            document.getElementById('payForm').submit();
+
+        } catch (e) {
+            errGlobal.textContent = e.message || 'Неизвестная ошибка. Попробуйте снова.';
+            errGlobal.classList.remove('d-none');
+            btn.disabled = false;
+            btn.innerHTML = '<i class="bi bi-shield-lock-fill me-2"></i>Оплатить @total.ToString("N2") ₼';
+        }
+    }
+</script>
+}

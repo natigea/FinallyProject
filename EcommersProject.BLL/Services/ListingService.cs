@@ -34,11 +34,12 @@ public class ListingService(IUnitOfWork uow) : IListingService
             ct,
             l => l.Category!, l => l.User!, l => l.Images);
 
+        var now = DateTimeOffset.UtcNow;
         var sorted = dto.SortBy switch
         {
-            "price_asc"  => all.OrderBy(l => l.Price),
-            "price_desc" => all.OrderByDescending(l => l.Price),
-            _            => all.OrderByDescending(l => l.CreatedDate)
+            "price_asc"  => all.OrderByDescending(l => l.IsVip && l.VipExpiresAt > now).ThenBy(l => l.Price),
+            "price_desc" => all.OrderByDescending(l => l.IsVip && l.VipExpiresAt > now).ThenByDescending(l => l.Price),
+            _            => all.OrderByDescending(l => l.IsVip && l.VipExpiresAt > now).ThenByDescending(l => l.CreatedDate)
         };
 
         var total = sorted.Count();
@@ -118,7 +119,7 @@ public class ListingService(IUnitOfWork uow) : IListingService
         return Map(result.First());
     }
 
-    public async Task<ListingGetDto> UpdateAsync(Guid id, ListingUpdateDto dto, CancellationToken ct = default)
+    public async Task<ListingGetDto> UpdateAsync(Guid id, ListingUpdateDto dto, bool isAdminEdit = false, CancellationToken ct = default)
     {
         var entities = await uow.Listings.FindAsync(l => l.Id == id, ct);
         var listing = entities.FirstOrDefault()
@@ -130,6 +131,9 @@ public class ListingService(IUnitOfWork uow) : IListingService
         listing.City         = dto.City;
         listing.ContactPhone = dto.ContactPhone;
         listing.CategoryId   = dto.CategoryId;
+
+        if (!isAdminEdit)
+            listing.Status = ListingStatus.Pending;
 
         await uow.Listings.UpdateAsync(listing, ct);
         await uow.SaveChangesAsync(ct);
@@ -207,12 +211,19 @@ public class ListingService(IUnitOfWork uow) : IListingService
         await uow.SaveChangesAsync(ct);
     }
 
-    private static ListingGetDto Map(Listing l) => new(
-        l.Id, l.Title, l.Description, l.Price, l.City, l.ContactPhone,
-        l.Status.ToString(),
-        l.CategoryId, l.Category?.Name, l.Category?.Icon,
-        l.UserId, l.User != null ? l.User.FirstName + " " + l.User.LastName : null,
-        l.User?.PhoneNumber,
-        l.Images.OrderBy(i => i.SortOrder).Select(i => new ListingImageDto(i.Id, i.Url, i.SortOrder)).ToList(),
-        l.CreatedDate);
+    private static ListingGetDto Map(Listing l)
+    {
+        var now = DateTimeOffset.UtcNow;
+        var isVipActive = l.IsVip && l.VipExpiresAt.HasValue && l.VipExpiresAt.Value > now;
+        return new(
+            l.Id, l.Title, l.Description, l.Price, l.City, l.ContactPhone,
+            l.Status.ToString(),
+            l.CategoryId, l.Category?.Name, l.Category?.Icon,
+            l.UserId, l.User != null ? l.User.FirstName + " " + l.User.LastName : null,
+            l.User?.PhoneNumber,
+            l.Images.OrderBy(i => i.SortOrder).Select(i => new ListingImageDto(i.Id, i.Url, i.SortOrder)).ToList(),
+            l.CreatedDate,
+            isVipActive,
+            l.VipExpiresAt);
+    }
 }

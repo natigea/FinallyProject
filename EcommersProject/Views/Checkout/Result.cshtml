@@ -1,0 +1,401 @@
+@model EcommersProject.BLL.DTOs.PurchaseGetDto
+@{
+    bool ok     = Model.Status == "Completed";
+    bool isVip  = Model.Type == "Vip";
+    bool isDelivery = !isVip;
+    ViewData["Title"] = isVip ? L["Checkout_Result_VipTitle"].Value
+                               : (ok ? L["Checkout_Result_DeliveryTitle"].Value : L["Checkout_Result_FailTitle"].Value);
+}
+
+@if (ok && isDelivery)
+{
+    <!-- ══ DELIVERY SUCCESS ══════════════════════════════════════════ -->
+    <div class="del-result-bg">
+        <div class="del-result-wrap">
+
+            <!-- Top success banner -->
+            <div class="del-banner">
+                <div class="del-check-wrap">
+                    <div class="del-check-ring"></div>
+                    <div class="del-check-icon"><i class="bi bi-check-lg"></i></div>
+                </div>
+                <div class="del-banner-text">
+                    <h2 class="del-banner-title">@L["Checkout_Result_SuccessTitle"]</h2>
+                    <p class="del-banner-sub">@L["Checkout_Result_SellerNotified"]</p>
+                </div>
+            </div>
+
+            <div class="del-body">
+
+                <!-- Order number -->
+                <div class="del-order-card">
+                    <div class="del-order-label">@L["Checkout_Result_OrderNumber"]</div>
+                    <div class="del-order-num" id="orderNum">@Model.OrderNumber</div>
+                    <button class="del-copy-btn" onclick="copyOrder()" title="@L["Checkout_Result_Copy"]">
+                        <i class="bi bi-copy" id="copyIcon"></i>
+                    </button>
+                </div>
+
+                <!-- Two-column grid -->
+                <div class="del-grid">
+
+                    <!-- Delivery info -->
+                    <div class="del-section">
+                        <div class="del-section-head">
+                            <i class="bi bi-truck"></i> @L["Checkout_Result_DeliverySection"]
+                        </div>
+                        <div class="del-rows">
+                            <div class="del-row">
+                                <span class="del-rl">@L["Checkout_Result_Item"]</span>
+                                <span class="del-rv fw-semibold">@Model.ListingTitle</span>
+                            </div>
+                            @if (Model.DeliveryAddress != null)
+                            {
+                                <div class="del-row">
+                                    <span class="del-rl">@L["Checkout_Result_DeliveryAddress"]</span>
+                                    <span class="del-rv">@Model.DeliveryAddress</span>
+                                </div>
+                            }
+                            @if (Model.DeliveryCity != null)
+                            {
+                                <div class="del-row">
+                                    <span class="del-rl">@L["Checkout_Result_DeliveryCity"]</span>
+                                    <span class="del-rv">@Model.DeliveryCity</span>
+                                </div>
+                            }
+                        </div>
+                    </div>
+
+                    <!-- Payment info -->
+                    <div class="del-section">
+                        <div class="del-section-head">
+                            <i class="bi bi-credit-card"></i> @L["Checkout_Result_PaymentSection"]
+                        </div>
+                        <div class="del-rows">
+                            <div class="del-row">
+                                <span class="del-rl">@L["Checkout_Result_Item"]</span>
+                                <span class="del-rv">@Model.ListingPrice.ToString("N2") ₼</span>
+                            </div>
+                            <div class="del-row">
+                                <span class="del-rl">@L["Checkout_Result_DeliveryFee"]</span>
+                                <span class="del-rv text-success">+@Model.DeliveryFee.ToString("N2") ₼</span>
+                            </div>
+                            <div class="del-row del-row-total">
+                                <span class="del-rl fw-bold">@L["Checkout_Result_Total"]</span>
+                                <span class="del-rv fw-bold del-total-val">@Model.TotalAmount.ToString("N2") ₼</span>
+                            </div>
+                            @if (Model.CardLast4 != null)
+                            {
+                                <div class="del-row">
+                                    <span class="del-rl">@L["Checkout_Result_Card"]</span>
+                                    <span class="del-rv">
+                                        <i class="bi bi-credit-card-2-front me-1" style="font-size:.8rem;"></i>
+                                        •••• @Model.CardLast4
+                                    </span>
+                                </div>
+                            }
+                            @if (Model.PaidAt.HasValue)
+                            {
+                                <div class="del-row">
+                                    <span class="del-rl">@L["Checkout_Result_Paid"]</span>
+                                    <span class="del-rv">@Model.PaidAt.Value.ToString("dd.MM.yyyy HH:mm")</span>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Timeline -->
+                <div class="del-timeline-wrap">
+                    <div class="del-timeline-title">@L["Checkout_Result_WhatNext"]</div>
+                    <div class="del-timeline">
+                        <div class="del-step done">
+                            <div class="ds-dot"><i class="bi bi-check"></i></div>
+                            <div class="ds-body">
+                                <div class="ds-label">@L["Checkout_Result_Step1Label"]</div>
+                                <div class="ds-sub">@L["Checkout_Result_Step1Sub"]</div>
+                            </div>
+                        </div>
+                        <div class="del-step done">
+                            <div class="ds-dot"><i class="bi bi-check"></i></div>
+                            <div class="ds-body">
+                                <div class="ds-label">@L["Checkout_Result_Step2Label"]</div>
+                                <div class="ds-sub">@L["Checkout_Result_Step2Sub"]</div>
+                            </div>
+                        </div>
+                        <div class="del-step active">
+                            <div class="ds-dot"><i class="bi bi-hourglass-split"></i></div>
+                            <div class="ds-body">
+                                <div class="ds-label">@L["Checkout_Result_Step3Label"]</div>
+                                <div class="ds-sub">@L["Checkout_Result_Step3Sub"]</div>
+                            </div>
+                        </div>
+                        <div class="del-step">
+                            <div class="ds-dot"><i class="bi bi-truck"></i></div>
+                            <div class="ds-body">
+                                <div class="ds-label">@L["Checkout_Result_Step4Label"]</div>
+                                <div class="ds-sub">@L["Checkout_Result_Step4Sub"]</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Actions -->
+                <div class="del-actions">
+                    <a href="/Checkout/History" class="del-btn-primary">
+                        <i class="bi bi-bag-check me-2"></i>@L["Checkout_Result_History"]
+                    </a>
+                    <a href="/Listing" class="del-btn-ghost">
+                        <i class="bi bi-grid me-2"></i>@L["Checkout_Result_Continue"]
+                    </a>
+                </div>
+
+            </div>
+        </div>
+    </div>
+}
+else if (ok && isVip)
+{
+    <!-- ══ VIP SUCCESS ════════════════════════════════════════════════ -->
+    <div class="container py-5" style="max-width:520px;">
+        <div class="res-card text-center">
+            <div class="res-icon vip-icon"><i class="bi bi-star-fill"></i></div>
+            <h3 class="fw-bold mt-4 mb-1">@L["Checkout_Result_VipTitle"]</h3>
+            <p class="text-muted">@string.Format(L["Checkout_Result_VipDesc"], Model.VipDays)</p>
+            <div class="info-block mt-4 mb-4">
+                <div class="info-row"><span class="il">@L["Checkout_Result_OrderNumber"]</span><span class="iv fw-bold">@Model.OrderNumber</span></div>
+                <div class="info-row"><span class="il">@L["Checkout_Result_Listing"]</span><span class="iv">@Model.ListingTitle</span></div>
+                <div class="info-row"><span class="il">@L["Checkout_Result_Duration"]</span><span class="iv">@string.Format(L["Checkout_Result_Days"], Model.VipDays)</span></div>
+                <div class="info-row"><span class="il">@L["Checkout_Result_Amount"]</span><span class="iv fw-bold">@Model.TotalAmount.ToString("N2") ₼</span></div>
+                @if (Model.CardLast4 != null)
+                {
+                    <div class="info-row"><span class="il">@L["Checkout_Result_Card"]</span><span class="iv">•••• @Model.CardLast4</span></div>
+                }
+            </div>
+            <div class="d-flex flex-column gap-2">
+                <a href="/Checkout/History" class="btn-main"><i class="bi bi-bag-check me-2"></i>@L["Checkout_Result_History"]</a>
+                <a href="/Listing/Detail/@Model.ListingId" class="btn btn-outline-secondary btn-sm">@L["Checkout_Result_GoListing"]</a>
+            </div>
+        </div>
+    </div>
+}
+else
+{
+    <!-- ══ FAILURE ════════════════════════════════════════════════════ -->
+    <div class="container py-5" style="max-width:520px;">
+        <div class="res-card text-center">
+            <div class="res-icon fail-icon"><i class="bi bi-x-lg"></i></div>
+            <h3 class="fw-bold mt-4 mb-1">@L["Checkout_Result_FailTitle"]</h3>
+            <p class="text-muted">@L["Checkout_Result_FailDesc"]</p>
+            <div class="info-block mt-4 mb-4">
+                <div class="info-row"><span class="il">@L["Checkout_Result_OrderNumber"]</span><span class="iv fw-bold">@Model.OrderNumber</span></div>
+                <div class="info-row"><span class="il">@L["Checkout_Result_Item"]</span><span class="iv">@Model.ListingTitle</span></div>
+            </div>
+            <div class="d-flex flex-column gap-2">
+                <a href="/Checkout/Delivery?listingId=@Model.ListingId" class="btn-main">
+                    <i class="bi bi-arrow-counterclockwise me-2"></i>@L["Checkout_Result_TryAgain"]
+                </a>
+                <a href="/Listing/Detail/@Model.ListingId" class="btn btn-outline-secondary btn-sm">@L["Checkout_Result_BackListing"]</a>
+            </div>
+        </div>
+    </div>
+}
+
+@section Styles {
+<style>
+/* ── Delivery result ─────────────────────────────────────────── */
+.del-result-bg {
+    min-height: calc(100vh - 80px);
+    background: linear-gradient(160deg, #f0f9ff 0%, #e0f2fe 40%, #f8faff 100%);
+    display: flex; align-items: flex-start; justify-content: center;
+    padding: 32px 16px 48px;
+}
+.del-result-wrap {
+    width: 100%; max-width: 700px;
+    background: #fff;
+    border-radius: 20px;
+    box-shadow: 0 4px 32px rgba(37,99,235,.10);
+    overflow: hidden;
+}
+
+/* Banner */
+.del-banner {
+    background: linear-gradient(135deg, #1d4ed8 0%, #2563eb 60%, #4f46e5 100%);
+    padding: 32px 36px;
+    display: flex; gap: 24px; align-items: center;
+    color: #fff;
+}
+.del-check-wrap { position: relative; flex-shrink: 0; width: 72px; height: 72px; }
+.del-check-ring {
+    position: absolute; inset: 0;
+    border-radius: 50%;
+    border: 3px solid rgba(255,255,255,.4);
+    animation: ring-pop .5s ease-out forwards;
+}
+@@keyframes ring-pop {
+    0%  { transform: scale(.6); opacity: 0; }
+    60% { transform: scale(1.15); opacity: 1; }
+    100%{ transform: scale(1); }
+}
+.del-check-icon {
+    position: absolute; inset: 0;
+    background: rgba(255,255,255,.2);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 2rem;
+    animation: check-pop .45s .1s ease-out both;
+}
+@@keyframes check-pop {
+    0%  { transform: scale(0); opacity: 0; }
+    70% { transform: scale(1.2); }
+    100%{ transform: scale(1); opacity: 1; }
+}
+.del-banner-title { font-size: 1.4rem; font-weight: 800; margin: 0 0 4px; }
+.del-banner-sub   { font-size: .875rem; opacity: .85; margin: 0; }
+
+/* Body */
+.del-body { padding: 28px 32px 32px; }
+
+/* Order number */
+.del-order-card {
+    background: #f8faff;
+    border: 1.5px dashed #bfdbfe;
+    border-radius: 12px;
+    padding: 14px 20px;
+    display: flex; align-items: center; gap: 12px;
+    margin-bottom: 24px;
+}
+.del-order-label { font-size: .72rem; font-weight: 700; text-transform: uppercase; letter-spacing: .8px; color: #6b7280; white-space: nowrap; }
+.del-order-num   { flex: 1; font-size: 1rem; font-weight: 800; color: #1d4ed8; letter-spacing: .5px; font-family: monospace; }
+.del-copy-btn {
+    background: none; border: 1.5px solid #bfdbfe; border-radius: 8px;
+    padding: 5px 10px; cursor: pointer; color: #2563eb; font-size: .9rem;
+    transition: all .15s;
+}
+.del-copy-btn:hover { background: #dbeafe; }
+
+/* Two-column grid */
+.del-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 24px; }
+@@media (max-width: 560px) { .del-grid { grid-template-columns: 1fr; } }
+
+.del-section {
+    background: #f9fafb;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    padding: 16px 18px;
+}
+.del-section-head {
+    font-size: .78rem; font-weight: 700; text-transform: uppercase;
+    letter-spacing: .6px; color: #6b7280;
+    margin-bottom: 12px;
+    display: flex; align-items: center; gap: 6px;
+}
+.del-rows { display: flex; flex-direction: column; gap: 0; }
+.del-row {
+    display: flex; justify-content: space-between; align-items: flex-start;
+    gap: 8px; padding: 7px 0;
+    border-bottom: 1px solid #e5e7eb; font-size: .835rem;
+}
+.del-row:last-child { border-bottom: none; padding-bottom: 0; }
+.del-rl { color: #6b7280; flex-shrink: 0; }
+.del-rv { text-align: right; word-break: break-word; max-width: 55%; color: #111827; }
+.del-row-total { margin-top: 4px; }
+.del-total-val { font-size: 1rem; color: #2563eb; }
+
+/* Timeline */
+.del-timeline-wrap {
+    background: #f8faff;
+    border: 1px solid #dbeafe;
+    border-radius: 12px;
+    padding: 20px 22px;
+    margin-bottom: 24px;
+}
+.del-timeline-title {
+    font-size: .78rem; font-weight: 700; text-transform: uppercase;
+    letter-spacing: .6px; color: #6b7280; margin-bottom: 16px;
+}
+.del-timeline { display: flex; flex-direction: column; gap: 0; }
+.del-step {
+    display: flex; gap: 14px; align-items: flex-start;
+    position: relative; padding-bottom: 18px;
+}
+.del-step:last-child { padding-bottom: 0; }
+.del-step:not(:last-child)::before {
+    content: '';
+    position: absolute; left: 13px; top: 28px;
+    width: 2px; bottom: 0;
+    background: #e5e7eb;
+}
+.del-step.done::before { background: #2563eb; }
+
+.ds-dot {
+    width: 28px; height: 28px; border-radius: 50%; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    font-size: .8rem; z-index: 1;
+    background: #e5e7eb; color: #6b7280;
+}
+.del-step.done  .ds-dot { background: #2563eb; color: #fff; }
+.del-step.active .ds-dot {
+    background: #eff6ff; color: #2563eb;
+    border: 2px solid #2563eb;
+    animation: pulse-dot 1.6s ease-in-out infinite;
+}
+@@keyframes pulse-dot {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(37,99,235,.35); }
+    50%       { box-shadow: 0 0 0 6px rgba(37,99,235,.0); }
+}
+.ds-label { font-size: .875rem; font-weight: 600; color: #111827; }
+.del-step.active .ds-label { color: #2563eb; }
+.del-step:not(.done):not(.active) .ds-label { color: #9ca3af; }
+.ds-sub { font-size: .78rem; color: #6b7280; margin-top: 2px; line-height: 1.5; }
+.del-step:not(.done):not(.active) .ds-sub { color: #d1d5db; }
+
+/* Actions */
+.del-actions { display: flex; gap: 12px; }
+@@media (max-width: 480px) { .del-actions { flex-direction: column; } }
+.del-btn-primary {
+    flex: 1; display: flex; align-items: center; justify-content: center;
+    background: linear-gradient(135deg, #1d4ed8, #4f46e5);
+    color: #fff; border-radius: 10px;
+    padding: 12px 20px; font-weight: 700; font-size: .9rem;
+    text-decoration: none; transition: all .2s;
+    box-shadow: 0 4px 14px rgba(37,99,235,.3);
+}
+.del-btn-primary:hover { opacity:.9; color:#fff; transform:translateY(-1px); }
+.del-btn-ghost {
+    flex: 1; display: flex; align-items: center; justify-content: center;
+    background: #f3f4f6; color: #374151;
+    border-radius: 10px; padding: 12px 20px;
+    font-weight: 600; font-size: .9rem;
+    text-decoration: none; transition: background .15s;
+}
+.del-btn-ghost:hover { background: #e5e7eb; color: #111827; }
+
+/* ── Generic result (VIP / fail) ─────────────────────────────── */
+.res-card { background:#fff; border:1px solid var(--border); border-radius:16px; padding:36px 32px; }
+.res-icon { width:80px; height:80px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:2rem; margin:0 auto; }
+.vip-icon  { background:#fef9c3; color:#d97706; }
+.fail-icon { background:#fee2e2; color:#dc2626; }
+.info-block { background:var(--bg); border-radius:10px; padding:14px 18px; text-align:left; }
+.info-row { display:flex; justify-content:space-between; padding:6px 0; border-bottom:1px solid var(--border); font-size:.875rem; }
+.info-row:last-child { border-bottom:none; }
+.il { color:var(--muted); flex-shrink:0; }
+.iv { max-width:230px; text-align:right; word-break:break-word; }
+.btn-main { display:flex; align-items:center; justify-content:center; background:var(--text); color:#fff; border-radius:9px; padding:11px 20px; font-weight:600; font-size:.875rem; text-decoration:none; transition:opacity .15s; }
+.btn-main:hover { opacity:.85; color:#fff; }
+</style>
+}
+@section Scripts {
+<script>
+function copyOrder() {
+    const num = document.getElementById('orderNum')?.textContent?.trim();
+    if (!num) return;
+    navigator.clipboard.writeText(num).then(() => {
+        const icon = document.getElementById('copyIcon');
+        icon.className = 'bi bi-check-lg';
+        icon.style.color = '#16a34a';
+        setTimeout(() => { icon.className = 'bi bi-copy'; icon.style.color = ''; }, 1800);
+    });
+}
+</script>
+}

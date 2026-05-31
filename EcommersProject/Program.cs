@@ -6,8 +6,11 @@ using EcommersProject.DAL.Extensions;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.EntityFrameworkCore;
+using Stripe;
 
 var builder = WebApplication.CreateBuilder(args);
+
+StripeConfiguration.ApiKey = builder.Configuration["Stripe:SecretKey"];
 
 builder.Services.AddLocalization(o => o.ResourcesPath = "");
 
@@ -76,10 +79,11 @@ using (var scope = app.Services.CreateScope())
         await db.Database.EnsureCreatedAsync();
     }
 
-    // Ensure Reviews table exists (added after initial schema)
+    // Idempotent schema migrations (safe to run on existing DB)
     try
     {
         await db.Database.ExecuteSqlRawAsync(@"
+            -- Reviews table
             IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='Reviews' AND xtype='U')
             CREATE TABLE [Reviews] (
                 [Id]          UNIQUEIDENTIFIER NOT NULL PRIMARY KEY DEFAULT NEWID(),
@@ -94,9 +98,71 @@ using (var scope = app.Services.CreateScope())
                 CONSTRAINT [FK_Reviews_Listings] FOREIGN KEY ([ListingId]) REFERENCES [Listings]([Id]),
                 CONSTRAINT [FK_Reviews_Reviewer] FOREIGN KEY ([ReviewerId]) REFERENCES [Users]([Id]),
                 CONSTRAINT [FK_Reviews_Seller]   FOREIGN KEY ([SellerId])   REFERENCES [Users]([Id])
-            )");
+            );
+
+            -- VIP columns on Listings
+            IF NOT EXISTS (SELECT * FROM sys.columns WHERE Name = N'IsVip' AND Object_ID = OBJECT_ID(N'Listings'))
+                ALTER TABLE [Listings] ADD [IsVip] BIT NOT NULL DEFAULT 0;
+            IF NOT EXISTS (SELECT * FROM sys.columns WHERE Name = N'VipExpiresAt' AND Object_ID = OBJECT_ID(N'Listings'))
+                ALTER TABLE [Listings] ADD [VipExpiresAt] DATETIMEOFFSET NULL;
+
+            -- Purchases table
+            IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='Purchases' AND xtype='U')
+            CREATE TABLE [Purchases] (
+                [Id]             UNIQUEIDENTIFIER NOT NULL PRIMARY KEY DEFAULT NEWID(),
+                [OrderNumber]    NVARCHAR(50)     NOT NULL DEFAULT '',
+                [Type]           NVARCHAR(20)     NOT NULL DEFAULT 'Delivery',
+                [UserId]         UNIQUEIDENTIFIER NOT NULL,
+                [ListingId]      UNIQUEIDENTIFIER NOT NULL,
+                [ListingTitle]   NVARCHAR(500)    NOT NULL DEFAULT '',
+                [ListingPrice]   DECIMAL(18,2)    NOT NULL DEFAULT 0,
+                [DeliveryFee]    DECIMAL(18,2)    NOT NULL DEFAULT 0,
+                [TotalAmount]    DECIMAL(18,2)    NOT NULL DEFAULT 0,
+                [VipDays]        INT              NULL,
+                [DeliveryAddress] NVARCHAR(500)   NULL,
+                [DeliveryCity]   NVARCHAR(200)    NULL,
+                [DeliveryPhone]  NVARCHAR(50)     NULL,
+                [Status]         NVARCHAR(20)     NOT NULL DEFAULT 'Pending',
+                [CardLast4]      NVARCHAR(4)      NULL,
+                [CardHolder]     NVARCHAR(200)    NULL,
+                [PaidAt]         DATETIMEOFFSET   NULL,
+                [CreatedDate]    DATETIMEOFFSET   NOT NULL DEFAULT GETUTCDATE(),
+                [UpdatedDate]    DATETIMEOFFSET   NOT NULL DEFAULT GETUTCDATE(),
+                [IsDeleted]      BIT              NOT NULL DEFAULT 0,
+                CONSTRAINT [FK_Purchases_Users]    FOREIGN KEY ([UserId])    REFERENCES [Users]([Id]),
+                CONSTRAINT [FK_Purchases_Listings] FOREIGN KEY ([ListingId]) REFERENCES [Listings]([Id])
+            );
+
+            -- Seller approval columns on Purchases
+            IF NOT EXISTS (SELECT * FROM sys.columns WHERE Name = N'SellerId' AND Object_ID = OBJECT_ID(N'Purchases'))
+                ALTER TABLE [Purchases] ADD [SellerId] UNIQUEIDENTIFIER NULL;
+            IF NOT EXISTS (SELECT * FROM sys.columns WHERE Name = N'SellerApprovalStatus' AND Object_ID = OBJECT_ID(N'Purchases'))
+                ALTER TABLE [Purchases] ADD [SellerApprovalStatus] NVARCHAR(20) NULL;
+
+            -- Password reset columns on Users
+            IF NOT EXISTS (SELECT * FROM sys.columns WHERE Name = N'ResetToken' AND Object_ID = OBJECT_ID(N'Users'))
+                ALTER TABLE [Users] ADD [ResetToken] NVARCHAR(20) NULL;
+            IF NOT EXISTS (SELECT * FROM sys.columns WHERE Name = N'ResetTokenExpiry' AND Object_ID = OBJECT_ID(N'Users'))
+                ALTER TABLE [Users] ADD [ResetTokenExpiry] DATETIMEOFFSET NULL;
+
+            -- Notifications table
+            IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='Notifications' AND xtype='U')
+            CREATE TABLE [Notifications] (
+                [Id]          UNIQUEIDENTIFIER NOT NULL PRIMARY KEY DEFAULT NEWID(),
+                [UserId]      UNIQUEIDENTIFIER NOT NULL,
+                [Title]       NVARCHAR(500)    NOT NULL DEFAULT '',
+                [Body]        NVARCHAR(MAX)    NOT NULL DEFAULT '',
+                [Link]        NVARCHAR(500)    NULL,
+                [IsRead]      BIT              NOT NULL DEFAULT 0,
+                [PurchaseId]  UNIQUEIDENTIFIER NULL,
+                [CreatedDate] DATETIMEOFFSET   NOT NULL DEFAULT GETUTCDATE(),
+                [UpdatedDate] DATETIMEOFFSET   NOT NULL DEFAULT GETUTCDATE(),
+                [IsDeleted]   BIT              NOT NULL DEFAULT 0,
+                CONSTRAINT [FK_Notifications_Users] FOREIGN KEY ([UserId]) REFERENCES [Users]([Id])
+            );
+        ");
     }
-    catch { /* table already exists or schema issue — ignore */ }
+    catch { /* already applied or schema issue — ignore */ }
 
     // Create default admin
     var authService = scope.ServiceProvider.GetRequiredService<IAuthService>();

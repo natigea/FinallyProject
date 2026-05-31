@@ -20,6 +20,8 @@ public static class BllServiceRegistration
         services.AddScoped<IMessageService, MessageService>();
         services.AddScoped<IAuthService, AuthService>();
         services.AddScoped<IReviewService, ReviewService>();
+        services.AddScoped<IPurchaseService, PurchaseService>();
+        services.AddScoped<INotificationService, NotificationService>();
 
         return services;
     }

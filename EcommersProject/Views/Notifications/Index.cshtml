@@ -1,0 +1,95 @@
+@model IReadOnlyList<EcommersProject.BLL.DTOs.NotificationGetDto>
+@{
+    ViewData["Title"] = L["Nav_Notifications"];
+}
+
+<div class="container py-4" style="max-width:720px;">
+    <h2 class="fw-bold mb-4"><i class="bi bi-bell me-2"></i>@L["Nav_Notifications"]</h2>
+
+    @if (!Model.Any())
+    {
+        <div class="text-center py-5">
+            <i class="bi bi-bell-slash fs-1 text-muted"></i>
+            <h5 class="mt-3 text-muted">@L["Notifications_Empty"]</h5>
+        </div>
+    }
+    else
+    {
+        <div class="d-flex flex-column gap-3">
+            @foreach (var n in Model)
+            {
+                <div class="notif-card @(n.IsRead ? "" : "notif-unread")">
+                    <div class="d-flex align-items-start gap-3">
+                        <div class="notif-dot @(n.IsRead ? "dot-read" : "dot-unread")"></div>
+                        <div class="flex-grow-1 min-w-0">
+                            <div class="fw-semibold" style="font-size:.9rem;">@n.Title</div>
+                            <div class="text-muted mt-1" style="font-size:.84rem;">@n.Body</div>
+                            <div class="text-muted mt-2" style="font-size:.74rem;">
+                                <i class="bi bi-clock me-1"></i>@n.CreatedDate.ToString("dd.MM.yyyy HH:mm")
+                            </div>
+
+                            @if (n.PurchaseId.HasValue)
+                            {
+                                <div class="d-flex gap-2 mt-3">
+                                    <form asp-action="Approve" method="post">
+                                        @Html.AntiForgeryToken()
+                                        <input type="hidden" name="purchaseId" value="@n.PurchaseId" />
+                                        <button type="submit" class="btn-approve">
+                                            <i class="bi bi-check-lg me-1"></i>@L["Notifications_Approve"]
+                                        </button>
+                                    </form>
+                                    <form asp-action="Reject" method="post">
+                                        @Html.AntiForgeryToken()
+                                        <input type="hidden" name="purchaseId" value="@n.PurchaseId" />
+                                        <button type="submit" class="btn-reject">
+                                            <i class="bi bi-x-lg me-1"></i>@L["Notifications_Reject"]
+                                        </button>
+                                    </form>
+                                </div>
+                            }
+                            else if (!string.IsNullOrEmpty(n.Link))
+                            {
+                                <a href="@n.Link" class="notif-link mt-2 d-inline-block">
+                                    @L["Notifications_ViewDetails"] <i class="bi bi-arrow-right ms-1"></i>
+                                </a>
+                            }
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+</div>
+
+@section Styles {
+<style>
+    .notif-card {
+        background: #fff;
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 16px 18px;
+        transition: transform .15s, box-shadow .15s;
+    }
+    .notif-card:hover { transform: translateY(-1px); box-shadow: 0 4px 14px rgba(0,0,0,.06); }
+    .notif-unread { border-left: 3px solid var(--accent); background: #f8faff; }
+    .notif-dot { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; margin-top: 5px; }
+    .dot-unread { background: var(--accent); }
+    .dot-read   { background: #d1d5db; }
+    .notif-link { font-size: .82rem; color: var(--accent); font-weight: 600; text-decoration: none; }
+    .notif-link:hover { text-decoration: underline; }
+    .btn-approve {
+        display: inline-flex; align-items: center; padding: 6px 14px;
+        background: #16a34a; color: #fff; border: none; border-radius: 7px;
+        font-size: .8rem; font-weight: 600; font-family: inherit; cursor: pointer;
+        transition: opacity .15s;
+    }
+    .btn-approve:hover { opacity: .85; }
+    .btn-reject {
+        display: inline-flex; align-items: center; padding: 6px 14px;
+        background: transparent; color: #dc2626; border: 1.5px solid #dc2626; border-radius: 7px;
+        font-size: .8rem; font-weight: 600; font-family: inherit; cursor: pointer;
+        transition: all .15s;
+    }
+    .btn-reject:hover { background: #fee2e2; }
+</style>
+}
