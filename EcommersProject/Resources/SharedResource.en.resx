@@ -99,6 +99,10 @@
   <data name="Browse_Sort"           xml:space="preserve"><value>Sort</value></data>
   <data name="Browse_Apply"          xml:space="preserve"><value>Apply</value></data>
   <data name="Browse_From"           xml:space="preserve"><value>from</value></data>
+  <data name="Browse_City"           xml:space="preserve"><value>City</value></data>
+  <data name="Browse_Extra"          xml:space="preserve"><value>Additional</value></data>
+  <data name="Browse_WithPhoto"      xml:space="preserve"><value>With photo only</value></data>
+  <data name="Browse_VipOnly"        xml:space="preserve"><value>VIP only</value></data>
 
   <!-- ── LISTING DETAIL ────────────────────────────────── -->
   <data name="Detail_Description"       xml:space="preserve"><value>Description</value></data>

@@ -13,6 +13,7 @@ public record ListingGetDto(
     Guid CategoryId,
     string? CategoryName,
     string? CategoryIcon,
+    string? CategorySlug,
     Guid UserId,
     string? UserName,
     string? UserPhone,
@@ -46,4 +47,6 @@ public record ListingSearchDto(
     decimal? PriceMax,
     string? SortBy,
     int Page,
-    int PageSize);
+    int PageSize,
+    bool OnlyVip = false,
+    bool OnlyWithPhoto = false);

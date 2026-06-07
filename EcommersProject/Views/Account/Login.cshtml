@@ -31,7 +31,7 @@
         .auth-left {
             width: 420px;
             flex-shrink: 0;
-            background: #111;
+            background: linear-gradient(145deg, #0f172a 0%, #1e1b4b 60%, #0c1445 100%);
             display: flex;
             flex-direction: column;
             padding: 48px 44px;
@@ -39,23 +39,23 @@
             overflow: hidden;
         }
 
-        /* Декоративные круги */
+        /* Декоративные блобы */
         .auth-left::before {
             content: '';
             position: absolute;
-            width: 340px; height: 340px;
+            width: 350px; height: 350px;
             border-radius: 50%;
-            border: 60px solid rgba(255,255,255,.04);
-            top: -80px; right: -100px;
+            background: radial-gradient(ellipse, rgba(99,102,241,.18) 0%, transparent 70%);
+            top: -60px; right: -80px;
             pointer-events: none;
         }
         .auth-left::after {
             content: '';
             position: absolute;
-            width: 220px; height: 220px;
+            width: 260px; height: 260px;
             border-radius: 50%;
-            border: 40px solid rgba(255,255,255,.04);
-            bottom: 60px; left: -60px;
+            background: radial-gradient(ellipse, rgba(37,99,235,.14) 0%, transparent 70%);
+            bottom: 40px; left: -60px;
             pointer-events: none;
         }
 
@@ -158,8 +158,8 @@
             text-decoration: none;
             transition: all .15s;
         }
-        .lang-btn:hover { border-color: #aaa; color: #333; }
-        .lang-btn.active { border-color: #111; color: #111; font-weight: 700; }
+        .lang-btn:hover { border-color: #2563eb; color: #2563eb; }
+        .lang-btn.active { border-color: #2563eb; color: #2563eb; background: #eff6ff; font-weight: 700; }
 
         /* Form card */
         .auth-form-wrap {
@@ -199,8 +199,8 @@
             overflow: hidden;
         }
         .input-shell:focus-within {
-            border-color: #111;
-            box-shadow: 0 0 0 3px rgba(17,17,17,.07);
+            border-color: #2563eb;
+            box-shadow: 0 0 0 3px rgba(37,99,235,.1);
         }
         .input-shell .ico {
             padding: 0 12px;
@@ -251,23 +251,24 @@
         /* Submit button */
         .auth-submit {
             width: 100%;
-            padding: 12px;
-            background: #111;
+            padding: 13px;
+            background: linear-gradient(135deg, #2563eb, #6366f1);
             color: #fff;
             border: none;
-            border-radius: 9px;
+            border-radius: 12px;
             font-size: .9rem;
-            font-weight: 600;
+            font-weight: 700;
             font-family: inherit;
             cursor: pointer;
-            transition: opacity .15s;
+            transition: opacity .15s, box-shadow .15s;
             display: flex;
             align-items: center;
             justify-content: center;
             gap: 8px;
             margin-top: 8px;
+            box-shadow: 0 4px 16px rgba(37,99,235,.3);
         }
-        .auth-submit:hover { opacity: .85; }
+        .auth-submit:hover { opacity: .9; box-shadow: 0 6px 20px rgba(37,99,235,.4); }
 
         /* Divider */
         .auth-divider {
@@ -291,7 +292,7 @@
             font-size: .82rem;
             color: #888;
         }
-        .auth-link-row a { color: #111; font-weight: 600; text-decoration: none; }
+        .auth-link-row a { color: #2563eb; font-weight: 600; text-decoration: none; }
         .auth-link-row a:hover { text-decoration: underline; }
 
         /* Mobile */
@@ -400,6 +401,10 @@
                 <button type="submit" class="auth-submit">
                     <i class="bi bi-box-arrow-in-right"></i>@L["Login_Submit"]
                 </button>
+
+                <div style="text-align:center;margin-top:16px;font-size:.82rem;color:#888;">
+                    <a href="/Account/ForgotPassword" style="color:#111;font-weight:600;text-decoration:none;">@L["Login_ForgotPassword"]</a>
+                </div>
             </form>
         </div>
     </div>

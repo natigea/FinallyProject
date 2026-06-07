@@ -99,6 +99,10 @@
   <data name="Browse_Sort"           xml:space="preserve"><value>Sıralama</value></data>
   <data name="Browse_Apply"          xml:space="preserve"><value>Tətbiq et</value></data>
   <data name="Browse_From"           xml:space="preserve"><value>dan</value></data>
+  <data name="Browse_City"           xml:space="preserve"><value>Şəhər</value></data>
+  <data name="Browse_Extra"          xml:space="preserve"><value>Əlavə</value></data>
+  <data name="Browse_WithPhoto"      xml:space="preserve"><value>Yalnız şəkilli</value></data>
+  <data name="Browse_VipOnly"        xml:space="preserve"><value>Yalnız VIP</value></data>
 
   <!-- ── LISTING DETAIL ────────────────────────────────── -->
   <data name="Detail_Description"       xml:space="preserve"><value>Təsvir</value></data>

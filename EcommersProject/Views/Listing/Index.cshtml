@@ -15,12 +15,8 @@
                 <div class="browse-form-sep"></div>
                 <select name="city" class="browse-city-sel">
                     <option value="">@L["Home_AllCities"]</option>
-                    @{ var cities = new[]{"Bakı","Sumqayıt","Gəncə","Mingəçevir","Naxçıvan","Lənkəran","Şəki","Quba","Şirvan","Masallı"}; }
-                    @foreach (var c in cities)
-                    {
-                        if (c == Model.City) { <option selected="selected">@c</option> }
-                        else { <option>@c</option> }
-                    }
+                    @{ ViewData["SelectedCity"] = Model.City; }
+                    @await Html.PartialAsync("_CityOptions")
                 </select>
                 <button type="submit" class="browse-find-btn">@L["Browse_Find"]</button>
                 @if (!string.IsNullOrEmpty(Model.Query) || Model.CategoryId.HasValue || !string.IsNullOrEmpty(Model.City) || Model.PriceMin.HasValue || Model.PriceMax.HasValue)
@@ -59,13 +55,28 @@
         <!-- Sidebar -->
         <aside class="browse-sidebar d-none d-lg-block">
             <div class="surface p-3">
-                <h6 class="filter-head">@L["Browse_Filters"]</h6>
+                <div class="d-flex align-items-center justify-content-between mb-3">
+                    <h6 class="filter-head mb-0">@L["Browse_Filters"]</h6>
+                    <a href="/Listing@(!string.IsNullOrEmpty(Model.Query) ? "?q=" + Model.Query : "")" class="filter-reset-link">
+                        <i class="bi bi-x-circle me-1"></i>@L["Browse_Clear"]
+                    </a>
+                </div>
                 <form method="get" action="/Listing">
                     <input type="hidden" name="q" value="@Model.Query" />
                     <input type="hidden" name="categoryId" value="@Model.CategoryId" />
-                    <input type="hidden" name="city" value="@Model.City" />
 
-                    <div class="mb-3">
+                    <!-- City -->
+                    <div class="filter-section">
+                        <label class="filter-lbl">@L["Browse_City"]</label>
+                        <select name="city" class="form-select form-select-sm filter-select">
+                            <option value="">@L["Home_AllCities"]</option>
+                            @{ ViewData["SelectedCity"] = Model.City; }
+                            @await Html.PartialAsync("_CityOptions")
+                        </select>
+                    </div>
+
+                    <!-- Price -->
+                    <div class="filter-section">
                         <label class="filter-lbl">@L["Browse_Price"]</label>
                         <div class="d-flex gap-2">
                             <input type="number" name="priceMin" value="@Model.PriceMin"
@@ -75,17 +86,32 @@
                         </div>
                     </div>
 
-                    <div class="mb-3">
+                    <!-- Sort -->
+                    <div class="filter-section">
                         <label class="filter-lbl">@L["Browse_Sort"]</label>
-                        <select name="sortBy" class="form-select form-select-sm">
+                        <select name="sortBy" class="form-select form-select-sm filter-select">
                             <option value="newest" selected="@(Model.SortBy == "newest" || Model.SortBy == null)">@L["Browse_SortNewest"]</option>
                             <option value="price_asc" selected="@(Model.SortBy == "price_asc")">@L["Browse_SortCheapest"]</option>
                             <option value="price_desc" selected="@(Model.SortBy == "price_desc")">@L["Browse_SortExpensive"]</option>
                         </select>
                     </div>
 
-                    <button type="submit" class="btn-dark-custom w-100 py-2">@L["Browse_Apply"]</button>
-                    <a href="/Listing" class="btn btn-outline-secondary w-100 mt-2 py-2" style="font-size:.85rem;">@L["Browse_Clear"]</a>
+                    <!-- Extra -->
+                    <div class="filter-section">
+                        <label class="filter-lbl">@L["Browse_Extra"]</label>
+                        <div class="filter-checks">
+                            <label class="filter-check-item">
+                                <input type="checkbox" name="onlyWithPhoto" value="true" @(Model.OnlyWithPhoto ? "checked" : "") />
+                                <span><i class="bi bi-image me-1 text-muted"></i>@L["Browse_WithPhoto"]</span>
+                            </label>
+                            <label class="filter-check-item">
+                                <input type="checkbox" name="onlyVip" value="true" @(Model.OnlyVip ? "checked" : "") />
+                                <span><i class="bi bi-star-fill me-1" style="color:#f59e0b;"></i>@L["Browse_VipOnly"]</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn-dark-custom w-100 mt-1">@L["Browse_Apply"]</button>
                 </form>
             </div>
         </aside>
@@ -171,31 +197,34 @@
 @section Styles {
 <style>
     /* Search bar */
-    .browse-bar { background: #fff; border-bottom: 1px solid var(--border); padding: 12px 0; }
+    .browse-bar { background: rgba(255,255,255,.92); backdrop-filter: blur(12px); border-bottom: 1px solid var(--border); padding: 12px 0; position: sticky; top: 64px; z-index: 900; }
     .browse-form {
         display: flex; align-items: center;
-        border: 1.5px solid var(--border); border-radius: var(--radius);
+        border: 1.5px solid var(--border); border-radius: 24px;
         overflow: hidden; background: var(--bg);
+        transition: border-color .2s, box-shadow .2s;
     }
-    .browse-form:focus-within { border-color: #aaa; }
+    .browse-form:focus-within { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(37,99,235,.08); }
     .browse-input-box { flex: 1; display: flex; align-items: center; min-width: 0; }
     .browse-input {
         flex: 1; border: none; outline: none; background: transparent;
-        padding: 10px 8px; font-size: .875rem; font-family: inherit; color: var(--text); min-width: 0;
+        padding: 11px 10px; font-size: .875rem; font-family: inherit; color: var(--text); min-width: 0;
     }
     .browse-form-sep { width: 1px; height: 20px; background: var(--border); flex-shrink: 0; }
     .browse-city-sel {
         border: none; outline: none; background: transparent;
-        padding: 10px 10px; font-size: .85rem; font-family: inherit;
+        padding: 11px 10px; font-size: .85rem; font-family: inherit;
         color: var(--sub); cursor: pointer; max-width: 130px; flex-shrink: 0;
     }
     .browse-find-btn {
-        background: var(--text); color: #fff;
-        border: none; padding: 10px 18px;
+        background: var(--accent); color: #fff;
+        border: none; margin: 5px; border-radius: 19px;
+        padding: 8px 18px;
         font-size: .875rem; font-weight: 600; font-family: inherit;
-        cursor: pointer; white-space: nowrap; flex-shrink: 0; transition: opacity .15s;
+        cursor: pointer; white-space: nowrap; flex-shrink: 0;
+        transition: background .15s;
     }
-    .browse-find-btn:hover { opacity: .85; }
+    .browse-find-btn:hover { background: var(--accent-h); }
     .browse-clear {
         width: 38px; height: 38px; display: flex; align-items: center; justify-content: center;
         color: var(--muted); flex-shrink: 0; border-left: 1px solid var(--border); transition: all .15s;
@@ -203,26 +232,41 @@
     .browse-clear:hover { color: #dc2626; background: #fff5f5; }
 
     /* Cats bar */
-    .browse-cats-bar { background: #fff; border-bottom: 1px solid var(--border); padding: 10px 0; }
+    .browse-cats-bar { background: var(--bg); border-bottom: 1px solid var(--border); padding: 10px 0; }
     .cats-scroll { display: flex; gap: 6px; overflow-x: auto; scrollbar-width: none; padding-bottom: 2px; }
     .cats-scroll::-webkit-scrollbar { display: none; }
 
     /* Layout */
-    .browse-layout { display: grid; grid-template-columns: 220px 1fr; gap: 16px; align-items: start; }
+    .browse-layout { display: grid; grid-template-columns: 262px 1fr; gap: 20px; align-items: start; }
     @@media (max-width: 991px) { .browse-layout { grid-template-columns: 1fr; } }
 
     /* Sidebar */
-    .browse-sidebar { position: sticky; top: 72px; }
-    .filter-head { font-size: .75rem; font-weight: 700; text-transform: uppercase; letter-spacing: .6px; color: var(--muted); margin-bottom: .75rem; }
-    .filter-lbl { display: block; font-size: .78rem; font-weight: 600; color: var(--sub); margin-bottom: 5px; }
-    .form-control-sm, .form-select-sm { border-color: var(--border); border-radius: 6px; font-size: .85rem; }
-    .form-control-sm:focus, .form-select-sm:focus { border-color: #aaa; box-shadow: none; }
+    .browse-sidebar { position: sticky; top: 130px; }
+    .filter-head { font-size: .72rem; font-weight: 700; text-transform: uppercase; letter-spacing: .7px; color: var(--muted); }
+    .filter-reset-link { font-size: .76rem; color: var(--muted); text-decoration: none; transition: color .15s; }
+    .filter-reset-link:hover { color: #dc2626; }
+    .filter-section { border-top: 1px solid var(--border); padding: 14px 0; }
+    .filter-section:last-of-type { border-bottom: 1px solid var(--border); }
+    .filter-lbl { display: block; font-size: .78rem; font-weight: 600; color: var(--sub); margin-bottom: 7px; }
+    .filter-select { cursor: pointer; }
+    .form-control-sm, .form-select-sm { border-color: var(--border); border-radius: 10px; font-size: .85rem; }
+    .form-control-sm:focus, .form-select-sm:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(37,99,235,.08); }
+    .filter-checks { display: flex; flex-direction: column; gap: 8px; }
+    .filter-check-item {
+        display: flex; align-items: center; gap: 9px;
+        font-size: .84rem; color: var(--sub); cursor: pointer; user-select: none;
+        padding: 6px 8px; border-radius: 8px; transition: background .15s;
+    }
+    .filter-check-item:hover { background: var(--accent-soft); color: var(--accent); }
+    .filter-check-item input[type="checkbox"] {
+        width: 15px; height: 15px; accent-color: var(--accent); flex-shrink: 0; cursor: pointer;
+    }
 
     /* Toolbar */
-    .browse-toolbar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; flex-wrap: wrap; gap: 8px; }
+    .browse-toolbar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; flex-wrap: wrap; gap: 8px; }
 
     /* Grid */
-    .browse-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: 10px; }
-    @@media (max-width: 576px) { .browse-grid { grid-template-columns: repeat(2, 1fr); gap: 8px; } }
+    .browse-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(175px, 1fr)); gap: 14px; }
+    @@media (max-width: 576px) { .browse-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; } }
 </style>
 }

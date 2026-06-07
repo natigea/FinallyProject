@@ -10,12 +10,16 @@
                 ? string.Format(L["Time_DayAgo"].Value, (int)diff.TotalDays)
                 : Model.CreatedDate.ToString("dd.MM.yyyy");
 }
-<a href="/Listing/Detail/@Model.Id" class="listing-card d-block text-decoration-none">
-    <div class="card-img-wrap">
+<a href="/Listing/Detail/@Model.Id" class="listing-card d-block text-decoration-none @(Model.IsVip ? "listing-card-vip" : "")">
+    <div class="card-img-wrap" style="position:relative;">
         @if (img != null)
         { <img src="@img" alt="@Model.Title" loading="lazy" /> }
         else
         { <div class="card-img-placeholder"><i class="bi bi-image"></i></div> }
+        @if (Model.IsVip)
+        {
+            <span class="vip-badge"><i class="bi bi-star-fill me-1"></i>ВИП</span>
+        }
     </div>
     <div class="card-body-custom">
         <div class="card-price">@Model.Price.ToString("N0") ₼</div>
@@ -26,3 +30,7 @@
         </div>
     </div>
 </a>
+<style>
+    .listing-card-vip { box-shadow: 0 0 0 2px #f59e0b, 0 8px 24px rgba(245,158,11,.15) !important; }
+    .vip-badge { position:absolute; top:8px; left:8px; background:linear-gradient(135deg,#f59e0b,#d97706); color:#fff; font-size:.65rem; font-weight:800; padding:4px 10px; border-radius:20px; letter-spacing:.3px; box-shadow:0 2px 8px rgba(245,158,11,.4); }
+</style>

@@ -2,11 +2,13 @@ using EcommersProject.DAL.Context;
 using EcommersProject.DAL.Entities;
 using EcommersProject.DAL.Interfaces;
 using EcommersProject.DAL.Repositories;
+using Microsoft.EntityFrameworkCore;
 
 namespace EcommersProject.DAL.UnitOfWork;
 
 public class UnitOfWork(AppDbContext context) : IUnitOfWork
 {
+    public DbContext Context => context;
     private IGenericRepository<User>? _users;
     private IGenericRepository<Category>? _categories;
     private IGenericRepository<Listing>? _listings;

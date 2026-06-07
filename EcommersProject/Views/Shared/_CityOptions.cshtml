@@ -62,7 +62,17 @@
         _    => c.ru
     };
 }
+@{
+    var _selCity = ViewData["SelectedCity"] as string ?? "";
+}
 @foreach (var c in cities)
 {
-    <option value="@c.Item1">@Label(c)</option>
+    if (c.Item1 == _selCity)
+    {
+        <option value="@c.Item1" selected>@Label(c)</option>
+    }
+    else
+    {
+        <option value="@c.Item1">@Label(c)</option>
+    }
 }

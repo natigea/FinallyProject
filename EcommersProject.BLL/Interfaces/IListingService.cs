@@ -15,6 +15,7 @@ public interface IListingService
     Task ApproveAsync(Guid id, CancellationToken ct = default);
     Task RejectAsync(Guid id, CancellationToken ct = default);
     Task CloseAsync(Guid id, CancellationToken ct = default);
+    Task ReopenAsync(Guid id, CancellationToken ct = default);
     Task DeleteAsync(Guid id, CancellationToken ct = default);
     Task AddImageAsync(Guid listingId, string imageUrl, CancellationToken ct = default);
     Task DeleteImageAsync(Guid imageId, CancellationToken ct = default);

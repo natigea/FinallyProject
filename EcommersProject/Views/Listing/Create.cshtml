@@ -3,129 +3,591 @@
     ViewData["Title"] = L["Create_PageTitle"].Value;
 }
 
-<div class="container py-4" style="max-width:700px;">
-    <h1 class="h3 fw-bold mb-4">@L["Create_PageTitle"]</h1>
+<!-- Hero header -->
+<div class="cl-hero">
+    <div class="container" style="max-width:780px;">
+        <div class="cl-hero-inner">
+            <div class="cl-hero-icon"><i class="bi bi-plus-lg"></i></div>
+            <div>
+                <h1 class="cl-hero-title">@L["Create_PageTitle"]</h1>
+                <p class="cl-hero-sub">@L["Create_HeroSub"]</p>
+            </div>
+        </div>
 
-    <form asp-action="Create" method="post" enctype="multipart/form-data">
+        <!-- Steps -->
+        <div class="cl-steps">
+            <div class="cl-step active" id="step-indicator-1">
+                <div class="cl-step-dot">1</div>
+                <span>@L["Create_StepMain"]</span>
+            </div>
+            <div class="cl-step-line"></div>
+            <div class="cl-step" id="step-indicator-2">
+                <div class="cl-step-dot">2</div>
+                <span>@L["Create_StepPrice"]</span>
+            </div>
+            <div class="cl-step-line"></div>
+            <div class="cl-step" id="step-indicator-3">
+                <div class="cl-step-dot">3</div>
+                <span>@L["Create_StepPhotos"]</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container py-4" style="max-width:780px;">
+    <form asp-action="Create" method="post" enctype="multipart/form-data" id="createForm">
         @Html.AntiForgeryToken()
 
-        <div class="bg-white rounded-3 border p-4 mb-3">
-            <h6 class="fw-bold mb-3 text-muted text-uppercase" style="font-size:.75rem; letter-spacing:.5px;">@L["Create_SectionMain"]</h6>
+        <!-- ── SECTION 1: Main info ── -->
+        <div class="cl-card" id="section-1">
+            <div class="cl-card-head">
+                <div class="cl-card-icon bg-primary-soft"><i class="bi bi-file-text text-primary"></i></div>
+                <div>
+                    <div class="cl-card-title">@L["Create_SectionMain"]</div>
+                    <div class="cl-card-sub">@L["Create_SectionMainSub"]</div>
+                </div>
+                <span class="cl-badge">1 / 3</span>
+            </div>
 
-            <div class="mb-3">
-                <label class="form-label fw-semibold">@L["Create_Category"] <span class="text-danger">*</span></label>
-                <select asp-for="CategoryId" class="form-select" required>
-                    <option value="">@L["Create_SelectCategory"]</option>
+            <!-- Category grid -->
+            <div class="mb-4">
+                <label class="cl-label">@L["Create_Category"] <span class="text-danger">*</span></label>
+                <div class="cl-cat-grid" id="catGrid">
                     @foreach (var cat in Model.Categories)
                     {
-                        <option value="@cat.Id">@(L["Cat_" + cat.Slug] is { ResourceNotFound: false } ck ? ck.Value : cat.Name)</option>
+                        var catName = L["Cat_" + cat.Slug] is { ResourceNotFound: false } ck ? ck.Value : cat.Name;
+                        <label class="cl-cat-item">
+                            <input type="radio" name="CategoryId" value="@cat.Id"
+                                   @(Model.CategoryId == cat.Id ? "checked" : "")
+                                   required class="cl-cat-radio" />
+                            <span class="cl-cat-box">
+                                <i class="bi @cat.Icon cl-cat-icon"></i>
+                                <span class="cl-cat-name">@catName</span>
+                            </span>
+                        </label>
                     }
-                </select>
+                </div>
                 <span asp-validation-for="CategoryId" class="text-danger small"></span>
             </div>
 
-            <div class="mb-3">
-                <label class="form-label fw-semibold">@L["Create_ListingTitle"] <span class="text-danger">*</span></label>
-                <input asp-for="Title" class="form-control" placeholder="@L["Create_TitlePlaceholder"]" />
+            <!-- Title -->
+            <div class="mb-4">
+                <label class="cl-label">@L["Create_ListingTitle"] <span class="text-danger">*</span></label>
+                <div class="cl-input-wrap">
+                    <i class="bi bi-pencil cl-input-icon"></i>
+                    <input asp-for="Title" class="cl-input" placeholder="@L["Create_TitlePlaceholder"]"
+                           maxlength="120" id="titleInput" />
+                </div>
+                <div class="cl-counter"><span id="titleCount">0</span> / 120</div>
                 <span asp-validation-for="Title" class="text-danger small"></span>
             </div>
 
-            <div class="mb-3">
-                <label class="form-label fw-semibold">@L["Create_Description"] <span class="text-danger">*</span></label>
-                <textarea asp-for="Description" class="form-control" rows="6"
-                          placeholder="@L["Create_DescPlaceholder"]"></textarea>
+            <!-- Description -->
+            <div class="mb-2">
+                <label class="cl-label">@L["Create_Description"] <span class="text-danger">*</span></label>
+                <textarea asp-for="Description" class="cl-textarea" rows="6"
+                          placeholder="@L["Create_DescPlaceholder"]"
+                          maxlength="3000" id="descInput"></textarea>
+                <div class="cl-counter"><span id="descCount">0</span> / 3000</div>
                 <span asp-validation-for="Description" class="text-danger small"></span>
             </div>
         </div>
 
-        <div class="bg-white rounded-3 border p-4 mb-3">
-            <h6 class="fw-bold mb-3 text-muted text-uppercase" style="font-size:.75rem; letter-spacing:.5px;">@L["Create_SectionPrice"]</h6>
+        <!-- ── SECTION 2: Price & contacts ── -->
+        <div class="cl-card" id="section-2">
+            <div class="cl-card-head">
+                <div class="cl-card-icon bg-success-soft"><i class="bi bi-currency-dollar text-success"></i></div>
+                <div>
+                    <div class="cl-card-title">@L["Create_SectionPrice"]</div>
+                    <div class="cl-card-sub">@L["Create_SectionPriceSub"]</div>
+                </div>
+                <span class="cl-badge">2 / 3</span>
+            </div>
 
-            <div class="row g-3">
-                <div class="col-sm-6">
-                    <label class="form-label fw-semibold">@L["Create_Price"] <span class="text-danger">*</span></label>
-                    <input asp-for="Price" type="number" step="0.01" min="0" class="form-control" placeholder="0.00" />
+            <div class="cl-grid-2 mb-4">
+                <!-- Price -->
+                <div>
+                    <label class="cl-label">@L["Create_Price"] <span class="text-danger">*</span></label>
+                    <div class="cl-price-wrap">
+                        <span class="cl-price-currency">₼</span>
+                        <input asp-for="Price" type="number" step="0.01" min="0"
+                               class="cl-price-input" placeholder="0.00" />
+                    </div>
                     <span asp-validation-for="Price" class="text-danger small"></span>
                 </div>
-                <div class="col-sm-6">
-                    <label class="form-label fw-semibold">@L["Create_City"] <span class="text-danger">*</span></label>
-                    <select asp-for="City" class="form-select" required>
-                        <option value="">— Şəhər seçin —</option>
-                        <option>Bakı</option>
-                        <option>Sumqayıt</option>
-                        <option>Gəncə</option>
-                        <option>Mingəçevir</option>
-                        <option>Naxçıvan</option>
-                        <option>Lənkəran</option>
-                        <option>Şəki</option>
-                        <option>Quba</option>
-                        <option>Şirvan</option>
-                        <option>Masallı</option>
-                        <option>Ağcabədi</option>
-                        <option>Ağdaş</option>
-                        <option>Ağstafa</option>
-                        <option>Astara</option>
-                        <option>Balakən</option>
-                        <option>Bərdə</option>
-                        <option>Beyləqan</option>
-                        <option>Biləsuvar</option>
-                        <option>Cəlilabad</option>
-                        <option>Daşkəsən</option>
-                        <option>Füzuli</option>
-                        <option>Gədəbəy</option>
-                        <option>Goranboy</option>
-                        <option>Göyçay</option>
-                        <option>Göygöl</option>
-                        <option>Hacıqabul</option>
-                        <option>İmişli</option>
-                        <option>İsmayıllı</option>
-                        <option>Kəlbəcər</option>
-                        <option>Kürdəmir</option>
-                        <option>Laçın</option>
-                        <option>Lerik</option>
-                        <option>Neftçala</option>
-                        <option>Oğuz</option>
-                        <option>Saatlı</option>
-                        <option>Sabirabad</option>
-                        <option>Salyan</option>
-                        <option>Şamaxı</option>
-                        <option>Şəmkir</option>
-                        <option>Samux</option>
-                        <option>Siyəzən</option>
-                        <option>Tovuz</option>
-                        <option>Ucar</option>
-                        <option>Xaçmaz</option>
-                        <option>Xızı</option>
-                        <option>Yardımlı</option>
-                        <option>Zaqatala</option>
-                        <option>Zərdab</option>
-                    </select>
+
+                <!-- City -->
+                <div>
+                    <label class="cl-label">@L["Create_City"] <span class="text-danger">*</span></label>
+                    <div class="cl-input-wrap">
+                        <i class="bi bi-geo-alt cl-input-icon"></i>
+                        <select asp-for="City" class="cl-select" required>
+                            <option value="">@L["Create_SelectCity"]</option>
+                            @await Html.PartialAsync("_CityOptions")
+                        </select>
+                    </div>
                     <span asp-validation-for="City" class="text-danger small"></span>
                 </div>
-                <div class="col-12">
-                    <label class="form-label fw-semibold">@L["Create_Phone"] <span class="text-danger">*</span></label>
-                    <input asp-for="ContactPhone" type="tel" class="form-control" placeholder="+994 50 000 00 00" />
-                    <span asp-validation-for="ContactPhone" class="text-danger small"></span>
+            </div>
+
+            <!-- Phone -->
+            <div>
+                <label class="cl-label">@L["Create_Phone"] <span class="text-danger">*</span></label>
+                <div class="cl-input-wrap">
+                    <i class="bi bi-telephone cl-input-icon"></i>
+                    <input asp-for="ContactPhone" type="tel" class="cl-input"
+                           placeholder="+994 50 000 00 00" />
                 </div>
+                <span asp-validation-for="ContactPhone" class="text-danger small"></span>
             </div>
         </div>
 
-        <div class="bg-white rounded-3 border p-4 mb-4">
-            <h6 class="fw-bold mb-3 text-muted text-uppercase" style="font-size:.75rem; letter-spacing:.5px;">@L["Create_SectionPhotos"]</h6>
-            <div class="mb-2 text-muted small">@L["Create_PhotosHint"]</div>
-            <input type="file" name="NewImages" class="form-control" multiple
-                   accept="image/jpeg,image/png,image/webp" />
+        <!-- ── SECTION 3: Photos ── -->
+        <div class="cl-card" id="section-3">
+            <div class="cl-card-head">
+                <div class="cl-card-icon bg-warning-soft"><i class="bi bi-images text-warning"></i></div>
+                <div>
+                    <div class="cl-card-title">@L["Create_SectionPhotos"]</div>
+                    <div class="cl-card-sub">@L["Create_PhotosHint"]</div>
+                </div>
+                <span class="cl-badge">3 / 3</span>
+            </div>
+
+            <!-- Drop zone -->
+            <div class="cl-dropzone" id="dropzone">
+                <input type="file" name="NewImages" id="fileInput" multiple
+                       accept="image/jpeg,image/png,image/webp" class="cl-dropzone-input" />
+                <div class="cl-dropzone-body" id="dropzoneBody">
+                    <div class="cl-dropzone-icon"><i class="bi bi-cloud-arrow-up"></i></div>
+                    <div class="cl-dropzone-title">@L["Create_DropHere"]</div>
+                    <div class="cl-dropzone-hint">@L["Create_DropHint"]</div>
+                    <button type="button" class="cl-dropzone-btn" onclick="document.getElementById('fileInput').click()">
+                        <i class="bi bi-folder2-open me-2"></i>@L["Create_BrowseFiles"]
+                    </button>
+                </div>
+                <div class="cl-preview-grid" id="previewGrid"></div>
+            </div>
         </div>
 
-        <div class="d-flex gap-3">
-            <button type="submit" class="btn btn-success btn-lg px-5 fw-bold">
-                <i class="bi bi-check-lg me-2"></i>@L["Create_Publish"]
+        <!-- Submit bar -->
+        <div class="cl-submit-bar">
+            <a href="/Listing" class="cl-cancel-btn">
+                <i class="bi bi-x me-2"></i>@L["Create_Cancel"]
+            </a>
+            <button type="submit" class="cl-submit-btn" id="submitBtn">
+                <i class="bi bi-send me-2"></i>@L["Create_Publish"]
             </button>
-            <a href="/Listing" class="btn btn-outline-secondary btn-lg">@L["Create_Cancel"]</a>
         </div>
+
     </form>
 </div>
 
+@section Styles {
+<style>
+/* ── Hero ── */
+.cl-hero {
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+    color: #fff;
+    padding: 28px 0 0;
+    margin-bottom: 0;
+}
+.cl-hero-inner {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 24px;
+}
+.cl-hero-icon {
+    width: 52px; height: 52px;
+    background: rgba(255,255,255,.12);
+    border-radius: 14px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.5rem;
+    flex-shrink: 0;
+}
+.cl-hero-title {
+    font-size: 1.4rem; font-weight: 800; margin: 0; line-height: 1.2;
+}
+.cl-hero-sub {
+    font-size: .82rem; color: rgba(255,255,255,.6); margin: 3px 0 0;
+}
+
+/* Steps */
+.cl-steps {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    padding-bottom: 0;
+}
+.cl-step {
+    display: flex; align-items: center; gap: 8px;
+    font-size: .78rem; color: rgba(255,255,255,.4);
+    font-weight: 600;
+    padding-bottom: 12px;
+    border-bottom: 2px solid transparent;
+    transition: all .25s;
+    cursor: default;
+    white-space: nowrap;
+}
+.cl-step.active {
+    color: #fff;
+    border-bottom-color: #e94560;
+}
+.cl-step.done { color: rgba(255,255,255,.65); }
+.cl-step-dot {
+    width: 22px; height: 22px;
+    border-radius: 50%;
+    background: rgba(255,255,255,.15);
+    display: flex; align-items: center; justify-content: center;
+    font-size: .72rem; font-weight: 700;
+    transition: background .25s;
+}
+.cl-step.active .cl-step-dot { background: #e94560; color: #fff; }
+.cl-step.done .cl-step-dot { background: #22c55e; color: #fff; }
+.cl-step-line {
+    flex: 1;
+    height: 1px;
+    background: rgba(255,255,255,.15);
+    margin: 0 8px;
+    margin-bottom: 12px;
+    min-width: 20px;
+}
+
+/* ── Cards ── */
+.cl-card {
+    background: #fff;
+    border-radius: 16px;
+    border: 1.5px solid var(--border);
+    padding: 28px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 16px rgba(0,0,0,.04);
+    transition: box-shadow .2s;
+}
+.cl-card:focus-within { box-shadow: 0 4px 24px rgba(0,0,0,.08); }
+
+.cl-card-head {
+    display: flex; align-items: center; gap: 14px;
+    margin-bottom: 24px;
+    padding-bottom: 20px;
+    border-bottom: 1.5px solid var(--border);
+}
+.cl-card-icon {
+    width: 44px; height: 44px; border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.2rem; flex-shrink: 0;
+}
+.bg-primary-soft { background: #eff6ff; }
+.bg-success-soft { background: #f0fdf4; }
+.bg-warning-soft { background: #fffbeb; }
+.cl-card-title { font-size: .95rem; font-weight: 700; color: var(--text); line-height: 1; }
+.cl-card-sub   { font-size: .75rem; color: var(--muted); margin-top: 3px; }
+.cl-badge {
+    margin-left: auto;
+    font-size: .72rem; font-weight: 700;
+    background: var(--bg); color: var(--muted);
+    border: 1.5px solid var(--border);
+    border-radius: 20px; padding: 3px 10px;
+    flex-shrink: 0;
+}
+
+/* ── Labels & inputs ── */
+.cl-label {
+    display: block; font-size: .82rem; font-weight: 700;
+    color: var(--text); margin-bottom: 8px;
+}
+.cl-input-wrap {
+    position: relative;
+}
+.cl-input-icon {
+    position: absolute; left: 13px; top: 50%; transform: translateY(-50%);
+    color: var(--muted); font-size: .95rem; pointer-events: none;
+}
+.cl-input, .cl-select {
+    width: 100%;
+    padding: 11px 14px 11px 38px;
+    border: 1.5px solid var(--border);
+    border-radius: 10px;
+    font-size: .875rem; font-family: inherit;
+    color: var(--text); background: var(--bg);
+    outline: none; transition: border-color .15s, box-shadow .15s;
+    appearance: none;
+}
+.cl-input:focus, .cl-select:focus {
+    border-color: #6366f1;
+    box-shadow: 0 0 0 3px rgba(99,102,241,.1);
+}
+.cl-textarea {
+    width: 100%;
+    padding: 12px 14px;
+    border: 1.5px solid var(--border); border-radius: 10px;
+    font-size: .875rem; font-family: inherit;
+    color: var(--text); background: var(--bg);
+    outline: none; resize: vertical;
+    transition: border-color .15s, box-shadow .15s;
+    min-height: 140px;
+}
+.cl-textarea:focus {
+    border-color: #6366f1;
+    box-shadow: 0 0 0 3px rgba(99,102,241,.1);
+}
+.cl-counter {
+    text-align: right; font-size: .72rem; color: var(--muted);
+    margin-top: 4px;
+}
+
+/* Price input */
+.cl-price-wrap {
+    display: flex; align-items: center;
+    border: 1.5px solid var(--border); border-radius: 10px;
+    background: var(--bg); overflow: hidden;
+    transition: border-color .15s, box-shadow .15s;
+}
+.cl-price-wrap:focus-within {
+    border-color: #6366f1;
+    box-shadow: 0 0 0 3px rgba(99,102,241,.1);
+}
+.cl-price-currency {
+    padding: 11px 14px;
+    font-size: 1rem; font-weight: 700;
+    color: var(--muted);
+    background: #f8f9fa;
+    border-right: 1.5px solid var(--border);
+    flex-shrink: 0;
+}
+.cl-price-input {
+    flex: 1; border: none; outline: none;
+    padding: 11px 14px;
+    font-size: .95rem; font-weight: 600;
+    font-family: inherit; color: var(--text);
+    background: transparent;
+}
+
+/* 2-column grid */
+.cl-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+@@media (max-width: 576px) { .cl-grid-2 { grid-template-columns: 1fr; } }
+
+/* ── Category grid ── */
+.cl-cat-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+    gap: 10px;
+}
+.cl-cat-item { cursor: pointer; }
+.cl-cat-radio { display: none; }
+.cl-cat-box {
+    display: flex; flex-direction: column; align-items: center;
+    gap: 7px; padding: 14px 8px;
+    border: 1.5px solid var(--border); border-radius: 12px;
+    transition: all .18s; cursor: pointer;
+    background: var(--bg);
+    text-align: center;
+}
+.cl-cat-box:hover { border-color: #a5b4fc; background: #f5f3ff; }
+.cl-cat-radio:checked + .cl-cat-box {
+    border-color: #6366f1;
+    background: #eef2ff;
+    box-shadow: 0 0 0 3px rgba(99,102,241,.12);
+}
+.cl-cat-icon { font-size: 1.5rem; color: var(--muted); transition: color .18s; }
+.cl-cat-radio:checked + .cl-cat-box .cl-cat-icon { color: #6366f1; }
+.cl-cat-name { font-size: .72rem; font-weight: 600; color: var(--sub); line-height: 1.2; }
+.cl-cat-radio:checked + .cl-cat-box .cl-cat-name { color: #4f46e5; }
+
+/* ── Drop zone ── */
+.cl-dropzone {
+    position: relative;
+    border: 2px dashed var(--border);
+    border-radius: 14px;
+    transition: border-color .2s, background .2s;
+    overflow: hidden;
+}
+.cl-dropzone.drag-over {
+    border-color: #6366f1;
+    background: #f5f3ff;
+}
+.cl-dropzone-input {
+    position: absolute; inset: 0; opacity: 0;
+    width: 100%; height: 100%; cursor: pointer; z-index: 2;
+}
+.cl-dropzone-body {
+    display: flex; flex-direction: column; align-items: center;
+    justify-content: center; gap: 10px;
+    padding: 40px 20px; text-align: center;
+}
+.cl-dropzone-icon {
+    font-size: 2.8rem;
+    color: #c7d2fe;
+    line-height: 1;
+}
+.cl-dropzone-title { font-size: .9rem; font-weight: 700; color: var(--text); }
+.cl-dropzone-hint  { font-size: .78rem; color: var(--muted); }
+.cl-dropzone-btn {
+    position: relative; z-index: 3;
+    padding: 9px 20px;
+    background: #6366f1; color: #fff;
+    border: none; border-radius: 8px;
+    font-size: .82rem; font-weight: 600; font-family: inherit;
+    cursor: pointer; transition: background .15s;
+    pointer-events: all;
+}
+.cl-dropzone-btn:hover { background: #4f46e5; }
+
+/* Preview */
+.cl-preview-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+    gap: 8px;
+    padding: 12px;
+}
+.cl-preview-item {
+    position: relative; border-radius: 10px; overflow: hidden;
+    aspect-ratio: 1; border: 1.5px solid var(--border);
+}
+.cl-preview-item img {
+    width: 100%; height: 100%; object-fit: cover;
+}
+.cl-preview-remove {
+    position: absolute; top: 4px; right: 4px;
+    width: 22px; height: 22px;
+    background: rgba(0,0,0,.55); color: #fff;
+    border: none; border-radius: 50%; cursor: pointer;
+    font-size: .7rem;
+    display: flex; align-items: center; justify-content: center;
+    transition: background .15s;
+}
+.cl-preview-remove:hover { background: #ef4444; }
+.cl-preview-first::after {
+    content: "1";
+    position: absolute; bottom: 4px; left: 4px;
+    width: 18px; height: 18px;
+    background: #6366f1; color: #fff;
+    border-radius: 50%; font-size: .65rem; font-weight: 700;
+    display: flex; align-items: center; justify-content: center;
+}
+
+/* ── Submit bar ── */
+.cl-submit-bar {
+    display: flex; align-items: center; justify-content: flex-end;
+    gap: 12px; margin-bottom: 40px;
+}
+.cl-cancel-btn {
+    padding: 12px 24px;
+    border: 1.5px solid var(--border);
+    border-radius: 10px; color: var(--sub);
+    font-size: .875rem; font-weight: 600;
+    text-decoration: none; transition: all .15s;
+    display: inline-flex; align-items: center;
+}
+.cl-cancel-btn:hover { border-color: #aaa; color: var(--text); }
+.cl-submit-btn {
+    padding: 12px 32px;
+    background: linear-gradient(135deg, #6366f1, #8b5cf6);
+    color: #fff; border: none; border-radius: 10px;
+    font-size: .9rem; font-weight: 700; font-family: inherit;
+    cursor: pointer; transition: all .2s;
+    display: inline-flex; align-items: center;
+    box-shadow: 0 4px 14px rgba(99,102,241,.35);
+}
+.cl-submit-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 20px rgba(99,102,241,.45);
+}
+.cl-submit-btn:active { transform: translateY(0); }
+</style>
+}
+
 @section Scripts {
 @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+<script>
+// ── Character counters ──
+const titleInput = document.getElementById('titleInput');
+const titleCount = document.getElementById('titleCount');
+const descInput  = document.getElementById('descInput');
+const descCount  = document.getElementById('descCount');
+
+function updateCount(input, counter) {
+    counter.textContent = input.value.length;
+}
+titleInput?.addEventListener('input', () => updateCount(titleInput, titleCount));
+descInput?.addEventListener('input',  () => updateCount(descInput,  descCount));
+updateCount(titleInput, titleCount);
+updateCount(descInput,  descCount);
+
+// ── Step indicator ──
+const sections = ['section-1','section-2','section-3'];
+function updateSteps() {
+    sections.forEach((id, i) => {
+        const el = document.getElementById('step-indicator-' + (i + 1));
+        if (!el) return;
+        const section = document.getElementById(id);
+        if (!section) return;
+        const rect = section.getBoundingClientRect();
+        const inView = rect.top < window.innerHeight * 0.6;
+        el.classList.toggle('active', inView);
+    });
+}
+window.addEventListener('scroll', updateSteps, { passive: true });
+updateSteps();
+
+// ── Image preview & drop zone ──
+const fileInput  = document.getElementById('fileInput');
+const previewGrid = document.getElementById('previewGrid');
+const dropzone   = document.getElementById('dropzone');
+const dropBody   = document.getElementById('dropzoneBody');
+let selectedFiles = [];
+
+fileInput?.addEventListener('change', e => {
+    handleFiles(Array.from(e.target.files));
+});
+
+dropzone?.addEventListener('dragover', e => {
+    e.preventDefault();
+    dropzone.classList.add('drag-over');
+});
+dropzone?.addEventListener('dragleave', () => dropzone.classList.remove('drag-over'));
+dropzone?.addEventListener('drop', e => {
+    e.preventDefault();
+    dropzone.classList.remove('drag-over');
+    handleFiles(Array.from(e.dataTransfer.files).filter(f => f.type.startsWith('image/')));
+});
+
+function handleFiles(files) {
+    const remaining = 10 - selectedFiles.length;
+    files.slice(0, remaining).forEach(file => {
+        selectedFiles.push(file);
+        addPreview(file, selectedFiles.length - 1);
+    });
+    syncInput();
+    if (selectedFiles.length > 0) dropBody.style.display = 'none';
+}
+
+function addPreview(file, idx) {
+    const reader = new FileReader();
+    reader.onload = e => {
+        const div = document.createElement('div');
+        div.className = 'cl-preview-item' + (idx === 0 ? ' cl-preview-first' : '');
+        div.dataset.idx = idx;
+        div.innerHTML = `<img src="${e.target.result}" alt=""/>
+            <button type="button" class="cl-preview-remove" onclick="removePreview(${idx})">
+                <i class="bi bi-x"></i>
+            </button>`;
+        previewGrid.appendChild(div);
+    };
+    reader.readAsDataURL(file);
+}
+
+function removePreview(idx) {
+    selectedFiles.splice(idx, 1);
+    previewGrid.innerHTML = '';
+    selectedFiles.forEach((f, i) => addPreview(f, i));
+    syncInput();
+    if (selectedFiles.length === 0) dropBody.style.display = '';
+}
+
+function syncInput() {
+    const dt = new DataTransfer();
+    selectedFiles.forEach(f => dt.items.add(f));
+    fileInput.files = dt.files;
+}
+</script>
 }

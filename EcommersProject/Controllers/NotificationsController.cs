@@ -1,4 +1,5 @@
 using EcommersProject.BLL.Interfaces;
+using EcommersProject.BLL.Exceptions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
@@ -9,7 +10,8 @@ namespace EcommersProject.Controllers;
 [Authorize]
 public class NotificationsController(
     INotificationService notifications,
-    IPurchaseService purchases) : Controller
+    IPurchaseService purchases,
+    IListingService listings) : Controller
 {
     [HttpGet]
     public async Task<IActionResult> Index()
@@ -50,6 +52,8 @@ public class NotificationsController(
 
         await purchases.RejectAsync(purchaseId);
         await notifications.ClearPurchaseIdAsync(purchaseId);
+
+        try { await listings.ReopenAsync(purchase.ListingId); } catch (NotFoundException) { }
 
         await notifications.CreateAsync(
             purchase.UserId,

@@ -54,6 +54,7 @@ public class NotificationService(IUnitOfWork uow) : INotificationService
         foreach (var n in list)
         {
             n.PurchaseId = null;
+            n.Link       = null;
             await uow.Notifications.UpdateAsync(n);
         }
         if (list.Any())

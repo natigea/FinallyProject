@@ -24,9 +24,10 @@ public class ListingController(
     [HttpGet]
     public async Task<IActionResult> Index(
         string? q, Guid? categoryId, string? city,
-        decimal? priceMin, decimal? priceMax, string? sortBy, int page = 1)
+        decimal? priceMin, decimal? priceMax, string? sortBy,
+        bool onlyVip = false, bool onlyWithPhoto = false, int page = 1)
     {
-        var searchDto = new ListingSearchDto(q, categoryId, city, priceMin, priceMax, sortBy ?? "newest", page, 20);
+        var searchDto = new ListingSearchDto(q, categoryId, city, priceMin, priceMax, sortBy ?? "newest", page, 20, onlyVip, onlyWithPhoto);
         var (items, total) = await listings.SearchAsync(searchDto);
         var cats = await categories.GetAllAsync();
 
@@ -41,7 +42,9 @@ public class ListingController(
             City = city,
             PriceMin = priceMin,
             PriceMax = priceMax,
-            SortBy = sortBy
+            SortBy = sortBy,
+            OnlyVip = onlyVip,
+            OnlyWithPhoto = onlyWithPhoto
         });
     }
 
@@ -112,6 +115,12 @@ public class ListingController(
         if (listing.UserId != userId && !User.IsInRole("Admin"))
             return Forbid();
 
+        if (listing.Status == "Pending" && !User.IsInRole("Admin"))
+        {
+            TempData["Info"] = L["Listing_SentForReview"].Value;
+            return RedirectToAction(nameof(MyListings));
+        }
+
         return View(new ListingFormViewModel
         {
             Id = listing.Id,
@@ -144,8 +153,10 @@ public class ListingController(
         if (listing.UserId != userId && !User.IsInRole("Admin"))
             return Forbid();
 
-        await listings.UpdateAsync(id, new ListingUpdateDto(
-            vm.Title, vm.Description, vm.Price, vm.City, vm.ContactPhone, vm.CategoryId));
+        bool isAdmin = User.IsInRole("Admin");
+        await listings.UpdateAsync(id,
+            new ListingUpdateDto(vm.Title, vm.Description, vm.Price, vm.City, vm.ContactPhone, vm.CategoryId),
+            isAdmin);
 
         // Delete marked images
         foreach (var imgId in vm.DeleteImageIds)
@@ -154,16 +165,11 @@ public class ListingController(
         // Upload new images
         await SaveImages(id, vm.NewImages);
 
-        // Non-admins editing a listing send it back for review
-        if (!User.IsInRole("Admin"))
-        {
-            await listings.SubmitForReviewAsync(id);
-            TempData["Info"] = L["Listing_SentForReview"].Value;
-        }
-        else
-        {
+        if (isAdmin)
             TempData["Success"] = "Объявление обновлено.";
-        }
+        else
+            TempData["Info"] = L["Listing_SentForReview"].Value;
+
         return RedirectToAction(nameof(Detail), new { id });
     }
 
@@ -249,7 +255,7 @@ public class ListingController(
         if (files == null || !files.Any()) return;
         var uploadDir = Path.Combine(env.WebRootPath, "uploads", "listings");
         Directory.CreateDirectory(uploadDir);
-        foreach (var file in files.Take(5))
+        foreach (var file in files.Take(10))
         {
             if (file.Length == 0) continue;
             var ext = Path.GetExtension(file.FileName).ToLowerInvariant();

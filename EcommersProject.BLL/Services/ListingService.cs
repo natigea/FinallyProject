@@ -22,19 +22,20 @@ public class ListingService(IUnitOfWork uow) : IListingService
     public async Task<(IReadOnlyList<ListingGetDto> Items, int Total)> SearchAsync(
         ListingSearchDto dto, CancellationToken ct = default)
     {
+        var now = DateTimeOffset.UtcNow;
         var all = await uow.Listings.FindAsync(
             l => l.Status == ListingStatus.Active &&
                  (dto.CategoryId == null || l.CategoryId == dto.CategoryId) &&
-                 (string.IsNullOrEmpty(dto.City) || l.City.ToLower().Contains(dto.City.ToLower())) &&
+                 (string.IsNullOrEmpty(dto.City) || l.City == dto.City) &&
                  (dto.PriceMin == null || l.Price >= dto.PriceMin) &&
                  (dto.PriceMax == null || l.Price <= dto.PriceMax) &&
+                 (!dto.OnlyVip || (l.IsVip && l.VipExpiresAt.HasValue && l.VipExpiresAt.Value > now)) &&
+                 (!dto.OnlyWithPhoto || l.Images.Any()) &&
                  (string.IsNullOrEmpty(dto.Query) ||
                   l.Title.ToLower().Contains(dto.Query.ToLower()) ||
                   l.Description.ToLower().Contains(dto.Query.ToLower())),
             ct,
             l => l.Category!, l => l.User!, l => l.Images);
-
-        var now = DateTimeOffset.UtcNow;
         var sorted = dto.SortBy switch
         {
             "price_asc"  => all.OrderByDescending(l => l.IsVip && l.VipExpiresAt > now).ThenBy(l => l.Price),
@@ -181,6 +182,16 @@ public class ListingService(IUnitOfWork uow) : IListingService
         await uow.SaveChangesAsync(ct);
     }
 
+    public async Task ReopenAsync(Guid id, CancellationToken ct = default)
+    {
+        var entities = await uow.Listings.FindAsync(l => l.Id == id, ct);
+        var listing = entities.FirstOrDefault()
+            ?? throw new NotFoundException(nameof(Listing), id);
+        listing.Status = ListingStatus.Active;
+        await uow.Listings.UpdateAsync(listing, ct);
+        await uow.SaveChangesAsync(ct);
+    }
+
     public async Task DeleteAsync(Guid id, CancellationToken ct = default)
     {
         var entities = await uow.Listings.FindAsync(l => l.Id == id, ct);
@@ -218,7 +229,7 @@ public class ListingService(IUnitOfWork uow) : IListingService
         return new(
             l.Id, l.Title, l.Description, l.Price, l.City, l.ContactPhone,
             l.Status.ToString(),
-            l.CategoryId, l.Category?.Name, l.Category?.Icon,
+            l.CategoryId, l.Category?.Name, l.Category?.Icon, l.Category?.Slug,
             l.UserId, l.User != null ? l.User.FirstName + " " + l.User.LastName : null,
             l.User?.PhoneNumber,
             l.Images.OrderBy(i => i.SortOrder).Select(i => new ListingImageDto(i.Id, i.Url, i.SortOrder)).ToList(),

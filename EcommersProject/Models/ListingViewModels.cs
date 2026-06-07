@@ -18,6 +18,8 @@ public class BrowseViewModel
     public decimal? PriceMin { get; set; }
     public decimal? PriceMax { get; set; }
     public string? SortBy { get; set; }
+    public bool OnlyVip { get; set; }
+    public bool OnlyWithPhoto { get; set; }
 
     public int TotalPages => (int)Math.Ceiling(Total / (double)PageSize);
 }

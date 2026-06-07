@@ -272,7 +272,7 @@
                 {
                     @if (User.Identity?.IsAuthenticated == true)
                     {
-                        @if (Model.CategoryIcon != "bi-building")
+                        @if (Model.CategoryIcon != "bi-building" && Model.CategorySlug != "jobs" && Model.CategorySlug != "other")
                         {
                         <a href="/Checkout/Delivery?listingId=@Model.Id" class="det-btn-buy mb-2">
                             <i class="bi bi-truck me-2"></i>@L["Detail_OrderDelivery"]
@@ -377,37 +377,38 @@
 <style>
     /* Admin review bar */
     .admin-review-bar {
-        background: #1a1a2e;
+        background: var(--accent);
         color: #fff;
         padding: 9px 0;
         font-size: .82rem;
         position: sticky;
-        top: 60px;
+        top: 64px;
         z-index: 500;
-        border-bottom: 2px solid #e94560;
+        border-bottom: 2px solid var(--accent-h);
+        box-shadow: 0 2px 12px rgba(26,86,219,.3);
     }
     .arb-back {
-        color: rgba(255,255,255,.85);
+        color: rgba(255,255,255,.9);
         text-decoration: none;
         font-weight: 600;
         transition: color .15s;
     }
     .arb-back:hover { color: #fff; }
-    .arb-sep { color: rgba(255,255,255,.3); }
-    .arb-label { color: rgba(255,255,255,.6); font-size: .78rem; }
+    .arb-sep { color: rgba(255,255,255,.35); }
+    .arb-label { color: rgba(255,255,255,.65); font-size: .78rem; }
 
     /* Back button */
     .det-back-btn {
         display: inline-flex; align-items: center; gap: 5px;
-        padding: 5px 12px; border-radius: var(--radius);
-        border: 1.5px solid var(--border); background: var(--bg);
+        padding: 6px 14px; border-radius: 24px;
+        border: 1.5px solid var(--border); background: var(--card);
         color: var(--sub); font-size: .82rem; font-weight: 500;
         text-decoration: none; white-space: nowrap; flex-shrink: 0;
-        transition: all .15s;
+        transition: all .15s; box-shadow: var(--shadow-sm);
     }
-    .det-back-btn:hover { border-color: #aaa; color: var(--text); }
+    .det-back-btn:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-soft); }
 
-    .det-layout { display: grid; grid-template-columns: 1fr 310px; gap: 16px; align-items: start; }
+    .det-layout { display: grid; grid-template-columns: 1fr 320px; gap: 20px; align-items: start; }
     @@media (max-width: 991px) { .det-layout { grid-template-columns: 1fr; } }
 
     /* Gallery */
@@ -425,7 +426,7 @@
         width: 62px; height: 50px; object-fit: cover; border-radius: 5px;
         cursor: pointer; opacity: .5; border: 2px solid transparent; flex-shrink: 0; transition: all .15s;
     }
-    .det-thumb.act, .det-thumb:hover { opacity: 1; border-color: var(--text); }
+    .det-thumb.act, .det-thumb:hover { opacity: 1; border-color: var(--accent); }
 
     /* Info table */
     .det-table { width: 100%; border-collapse: collapse; font-size: .875rem; }
@@ -440,8 +441,8 @@
     .det-closed  { background: #f1f5f9; color: #64748b; }
 
     /* Panel */
-    .det-sticky { position: sticky; top: 72px; }
-    .det-price { font-size: 1.75rem; font-weight: 800; color: var(--text); line-height: 1; margin-bottom: 8px; }
+    .det-sticky { position: sticky; top: 76px; }
+    .det-price { font-size: 1.85rem; font-weight: 800; color: var(--accent); line-height: 1; margin-bottom: 8px; }
     .det-title { font-size: 1rem; font-weight: 600; color: var(--text); margin-bottom: 6px; line-height: 1.4; }
     .det-meta { display: flex; gap: 12px; font-size: .8rem; color: var(--sub); flex-wrap: wrap; }
 
@@ -449,12 +450,12 @@
     .det-btn-buy {
         display: flex; align-items: center; justify-content: center;
         width: 100%; padding: 13px;
-        background: linear-gradient(135deg, #2563eb, #4f46e5); color: #fff;
+        background: var(--accent); color: #fff;
         border-radius: var(--radius); font-weight: 700; font-size: .9rem;
         border: none; cursor: pointer; transition: all .2s; text-align: center;
-        box-shadow: 0 4px 14px rgba(37,99,235,.3);
+        box-shadow: 0 4px 14px rgba(26,86,219,.3);
     }
-    .det-btn-buy:hover { opacity: .9; color: #fff; transform: translateY(-1px); box-shadow: 0 6px 18px rgba(37,99,235,.4); }
+    .det-btn-buy:hover { background: var(--accent-h); color: #fff; transform: translateY(-1px); box-shadow: 0 6px 18px rgba(26,86,219,.42); }
     .det-btn-vip {
         display: flex; align-items: center; justify-content: center;
         width: 100%; padding: 11px;
@@ -473,11 +474,11 @@
     .det-btn-phone {
         display: flex; align-items: center; justify-content: center;
         width: 100%; padding: 12px;
-        background: var(--text); color: #fff;
+        background: #0f172a; color: #fff;
         border-radius: var(--radius); font-weight: 600; font-size: .9rem;
-        border: none; cursor: pointer; transition: opacity .15s; text-align: center;
+        border: none; cursor: pointer; transition: opacity .15s, transform .15s; text-align: center;
     }
-    .det-btn-phone:hover { opacity: .85; color: #fff; }
+    .det-btn-phone:hover { opacity: .85; color: #fff; transform: translateY(-1px); }
 
     .det-msg-row { display: flex; gap: 6px; }
     .det-msg-input {
@@ -485,15 +486,15 @@
         padding: 9px 12px; font-size: .875rem; font-family: inherit;
         outline: none; transition: border-color .15s;
     }
-    .det-msg-input:focus { border-color: #aaa; }
+    .det-msg-input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(37,99,235,.08); }
     .det-msg-send {
         width: 40px; flex-shrink: 0;
-        background: var(--text); color: #fff;
+        background: var(--accent); color: #fff;
         border: none; border-radius: var(--radius); cursor: pointer;
-        font-size: .95rem; transition: opacity .15s;
+        font-size: .95rem; transition: background .15s;
         display: flex; align-items: center; justify-content: center;
     }
-    .det-msg-send:hover { opacity: .85; }
+    .det-msg-send:hover { background: var(--accent-h); }
 
     .det-fav-btn {
         width: 100%; padding: 9px;
@@ -536,11 +537,12 @@
 
     /* Seller */
     .det-avatar {
-        width: 44px; height: 44px;
-        background: var(--text); color: #fff;
+        width: 46px; height: 46px;
+        background: linear-gradient(135deg, var(--accent), #60a5fa); color: #fff;
         border-radius: 50%;
         display: flex; align-items: center; justify-content: center;
         font-weight: 700; font-size: 1.05rem;
+        box-shadow: 0 3px 10px rgba(26,86,219,.22);
         flex-shrink: 0;
     }
 
@@ -560,10 +562,10 @@
     .review-item:last-child { border-bottom: none; }
     .review-header { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
     .review-avatar {
-        width: 34px; height: 34px; border-radius: 50%;
-        background: var(--text); color: #fff;
+        width: 36px; height: 36px; border-radius: 50%;
+        background: linear-gradient(135deg, var(--accent), #60a5fa); color: #fff;
         display: flex; align-items: center; justify-content: center;
-        font-size: .85rem; font-weight: 700; flex-shrink: 0;
+        font-size: .82rem; font-weight: 700; flex-shrink: 0;
         text-transform: uppercase;
     }
     .review-author { font-size: .85rem; font-weight: 600; color: var(--text); line-height: 1; }
@@ -599,12 +601,13 @@
     .review-textarea::placeholder { color: #ccc; }
     .review-submit {
         display: inline-flex; align-items: center;
-        padding: 9px 20px; background: var(--text); color: #fff;
+        padding: 9px 20px; background: var(--accent); color: #fff;
         border: none; border-radius: var(--radius);
         font-size: .875rem; font-weight: 600; font-family: inherit;
-        cursor: pointer; transition: opacity .15s;
+        cursor: pointer; transition: background .15s, box-shadow .15s;
+        box-shadow: 0 2px 8px rgba(26,86,219,.25);
     }
-    .review-submit:hover { opacity: .85; }
+    .review-submit:hover { background: var(--accent-h); box-shadow: 0 4px 14px rgba(26,86,219,.38); }
     .review-login-link {
         display: inline-flex; align-items: center; gap: 6px;
         font-size: .82rem; color: var(--accent); text-decoration: none;
