@@ -57,6 +57,7 @@
                         var catName = L["Cat_" + cat.Slug] is { ResourceNotFound: false } ck ? ck.Value : cat.Name;
                         <label class="cl-cat-item">
                             <input type="radio" name="CategoryId" value="@cat.Id"
+                                   data-slug="@cat.Slug"
                                    @(Model.CategoryId == cat.Id ? "checked" : "")
                                    required class="cl-cat-radio" />
                             <span class="cl-cat-box">
@@ -131,8 +132,8 @@
                 <span asp-validation-for="ContactPhone" class="text-danger small"></span>
             </div>
 
-            <!-- Delivery toggle -->
-            <div class="cl-delivery-toggle">
+            <!-- Delivery toggle (hidden for categories without delivery) -->
+            <div class="cl-delivery-toggle" id="deliverySection">
                 <div class="cl-delivery-icon"><i class="bi bi-truck"></i></div>
                 <div class="cl-delivery-info">
                     <div class="cl-delivery-title">@L["Create_DeliveryAvailable"]</div>
@@ -588,6 +589,23 @@ function syncInput() {
     const dt = new DataTransfer();
     selectedFiles.forEach(f => dt.items.add(f));
     fileInput.files = dt.files;
+}
+
+// ── Hide delivery for certain categories ──
+const noDeliverySlugs = ['business','animals','services','realestate','jobs','other'];
+const deliverySection = document.getElementById('deliverySection');
+const deliveryCheckbox = document.getElementById('deliveryToggle');
+document.querySelectorAll('.cl-cat-radio').forEach(radio => {
+    radio.addEventListener('change', function() {
+        const hide = noDeliverySlugs.includes(this.dataset.slug);
+        deliverySection.style.display = hide ? 'none' : '';
+        if (hide) deliveryCheckbox.checked = false;
+    });
+});
+const checkedCat = document.querySelector('.cl-cat-radio:checked');
+if (checkedCat && noDeliverySlugs.includes(checkedCat.dataset.slug)) {
+    deliverySection.style.display = 'none';
+    deliveryCheckbox.checked = false;
 }
 </script>
 }

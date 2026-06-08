@@ -4,19 +4,19 @@
     ViewData["Title"] = L["Admin_Listings"].Value;
 }
 
-<!-- ══ PENDING queue ═══════════════════════════════════════════════════════ -->
+<!-- Pending queue -->
 @if (Model.PendingListings.Any())
 {
-    <div class="card border-warning mb-4">
-        <div class="card-header d-flex align-items-center gap-2 bg-warning bg-opacity-10 border-warning py-2">
+    <div class="card mb-4" style="border-color:#fbbf24;">
+        <div class="card-header d-flex align-items-center gap-2" style="background:rgba(251,191,36,.06); border-color:#fbbf24;">
             <i class="bi bi-hourglass-split text-warning"></i>
             <span class="fw-semibold">@L["Admin_PendingListings"]</span>
-            <span class="badge bg-warning text-dark ms-1">@Model.PendingListings.Count</span>
+            <span class="badge" style="background:linear-gradient(135deg,#f59e0b,#fbbf24); color:#fff;">@Model.PendingListings.Count</span>
         </div>
         <div class="card-body p-0">
             <div class="table-responsive">
                 <table class="table table-hover align-middle mb-0">
-                    <thead class="table-light">
+                    <thead>
                         <tr>
                             <th>@L["Admin_ColTitle"]</th><th>@L["Admin_ColCategory"]</th>
                             <th>@L["Admin_ColCity"]</th><th>@L["Admin_ColPrice"]</th>
@@ -28,12 +28,12 @@
                         @foreach (var l in Model.PendingListings)
                         {
                             <tr>
-                                <td class="fw-medium">@l.Title</td>
-                                <td class="small text-muted">@(l.CategoryName ?? "—")</td>
+                                <td class="fw-semibold">@l.Title</td>
+                                <td class="small" style="color:var(--text-muted);">@(l.CategoryName ?? "—")</td>
                                 <td class="small">@l.City</td>
-                                <td class="fw-medium">@l.Price.ToString("N0") ₼</td>
-                                <td class="small">@(l.UserName ?? "—")</td>
-                                <td class="small text-muted">@l.CreatedDate.ToString("dd.MM.yy HH:mm")</td>
+                                <td class="fw-semibold">@l.Price.ToString("N0") ₼</td>
+                                <td class="small" style="color:var(--text-secondary);">@(l.UserName ?? "—")</td>
+                                <td class="small" style="color:var(--text-muted);">@l.CreatedDate.ToString("dd.MM.yy HH:mm")</td>
                                 <td>
                                     <div class="d-flex gap-1 flex-wrap">
                                         <a href="/Listing/Detail/@l.Id" target="_blank"
@@ -43,7 +43,7 @@
                                         <form method="post" asp-page-handler="Approve">
                                             @Html.AntiForgeryToken()
                                             <input type="hidden" name="id" value="@l.Id" />
-                                            <button class="btn btn-sm btn-success" title="@L["Admin_Approve"]">
+                                            <button class="btn btn-sm btn-success" style="border-radius:8px; font-size:.8rem;" title="@L["Admin_Approve"]">
                                                 <i class="bi bi-check-lg me-1"></i>@L["Admin_Approve"]
                                             </button>
                                         </form>
@@ -51,7 +51,7 @@
                                               onsubmit="return confirm('@L["Admin_RejectConfirm"]')">
                                             @Html.AntiForgeryToken()
                                             <input type="hidden" name="id" value="@l.Id" />
-                                            <button class="btn btn-sm btn-outline-danger" title="@L["Admin_Reject"]">
+                                            <button class="btn btn-sm btn-outline-danger" style="border-radius:8px; font-size:.8rem;" title="@L["Admin_Reject"]">
                                                 <i class="bi bi-x-lg me-1"></i>@L["Admin_Reject"]
                                             </button>
                                         </form>
@@ -66,67 +66,62 @@
     </div>
 }
 
-<!-- ══ Header ═══════════════════════════════════════════════════════════════ -->
+<!-- Header -->
 <div class="d-flex justify-content-between align-items-center mb-3">
     <div>
-        <h5 class="mb-0 fw-bold">@L["Admin_AllListings"]</h5>
-        <small class="text-muted">@L["Admin_Found"] @Model.Listings.Count</small>
+        <h5 class="mb-1 fw-bold" style="letter-spacing:-.3px;">@L["Admin_AllListings"]</h5>
+        <span class="small" style="color:var(--text-muted);">@L["Admin_Found"] @Model.Listings.Count</span>
     </div>
 </div>
 
-<!-- ══ Filters ══════════════════════════════════════════════════════════════ -->
+<!-- Filters -->
 <div class="card mb-3">
-    <div class="card-body py-2">
-        <form method="get" class="row g-2 align-items-center">
-
+    <div class="card-body filter-card">
+        <form method="get" class="d-flex gap-2 align-items-center flex-wrap">
             <!-- Status tabs -->
-            <div class="col-12 col-md-auto mb-1 mb-md-0">
-                <div class="btn-group btn-group-sm" role="group">
-                    <a href="?Search=@Model.Search&CategoryFilter=@Model.CategoryFilter&StatusFilter=all"
-                       class="btn @(Model.StatusFilter == "all" ? "btn-dark" : "btn-outline-secondary")">
-                        @L["Common_All"] <span class="badge @(Model.StatusFilter == "all" ? "bg-light text-dark" : "bg-secondary") ms-1">@Model.CountAll</span>
-                    </a>
-                    <a href="?Search=@Model.Search&CategoryFilter=@Model.CategoryFilter&StatusFilter=active"
-                       class="btn @(Model.StatusFilter == "active" ? "btn-success" : "btn-outline-secondary")">
-                        @L["Admin_ListingsActive"] <span class="badge @(Model.StatusFilter == "active" ? "bg-light text-success" : "bg-secondary") ms-1">@Model.CountActive</span>
-                    </a>
-                    <a href="?Search=@Model.Search&CategoryFilter=@Model.CategoryFilter&StatusFilter=pending"
-                       class="btn @(Model.StatusFilter == "pending" ? "btn-warning text-dark" : "btn-outline-secondary")">
-                        @L["Status_Pending"] <span class="badge @(Model.StatusFilter == "pending" ? "bg-light text-warning" : "bg-secondary") ms-1">@Model.CountPending</span>
-                    </a>
-                    <a href="?Search=@Model.Search&CategoryFilter=@Model.CategoryFilter&StatusFilter=closed"
-                       class="btn @(Model.StatusFilter == "closed" ? "btn-secondary" : "btn-outline-secondary")">
-                        @L["Admin_ListingsClosed"] <span class="badge @(Model.StatusFilter == "closed" ? "bg-light text-secondary" : "bg-secondary") ms-1">@Model.CountClosed</span>
-                    </a>
-                </div>
+            <div class="btn-group btn-group-sm" role="group">
+                <a href="?Search=@Model.Search&CategoryFilter=@Model.CategoryFilter&StatusFilter=all"
+                   class="btn @(Model.StatusFilter == "all" ? "btn-dark" : "btn-outline-secondary")" style="border-radius:8px 0 0 8px;">
+                    @L["Common_All"] <span class="badge @(Model.StatusFilter == "all" ? "bg-light text-dark" : "bg-secondary bg-opacity-25") ms-1">@Model.CountAll</span>
+                </a>
+                <a href="?Search=@Model.Search&CategoryFilter=@Model.CategoryFilter&StatusFilter=active"
+                   class="btn @(Model.StatusFilter == "active" ? "btn-success" : "btn-outline-secondary")">
+                    @L["Admin_ListingsActive"] <span class="badge @(Model.StatusFilter == "active" ? "bg-light text-success" : "bg-secondary bg-opacity-25") ms-1">@Model.CountActive</span>
+                </a>
+                <a href="?Search=@Model.Search&CategoryFilter=@Model.CategoryFilter&StatusFilter=pending"
+                   class="btn @(Model.StatusFilter == "pending" ? "btn-warning text-dark" : "btn-outline-secondary")">
+                    @L["Status_Pending"] <span class="badge @(Model.StatusFilter == "pending" ? "bg-light text-warning" : "bg-secondary bg-opacity-25") ms-1">@Model.CountPending</span>
+                </a>
+                <a href="?Search=@Model.Search&CategoryFilter=@Model.CategoryFilter&StatusFilter=closed"
+                   class="btn @(Model.StatusFilter == "closed" ? "btn-secondary" : "btn-outline-secondary")" style="border-radius:0 8px 8px 0;">
+                    @L["Admin_ListingsClosed"] <span class="badge @(Model.StatusFilter == "closed" ? "bg-light text-secondary" : "bg-secondary bg-opacity-25") ms-1">@Model.CountClosed</span>
+                </a>
             </div>
 
-            <!-- Search + category -->
-            <div class="col-auto">
-                <input type="hidden" name="StatusFilter" value="@Model.StatusFilter" />
-                <input asp-for="Search" type="text" class="form-control form-control-sm"
-                       placeholder="@L["Admin_SearchListings"]" style="min-width:200px" />
+            <div class="vr d-none d-md-block" style="height:28px; opacity:.2;"></div>
+
+            <input type="hidden" name="StatusFilter" value="@Model.StatusFilter" />
+            <div class="position-relative" style="min-width:200px;">
+                <i class="bi bi-search position-absolute" style="left:12px;top:50%;transform:translateY(-50%);color:var(--text-muted);font-size:.85rem;"></i>
+                <input asp-for="Search" type="text" class="form-control form-control-sm ps-5"
+                       placeholder="@L["Admin_SearchListings"]" />
             </div>
-            <div class="col-auto">
-                <select asp-for="CategoryFilter" class="form-select form-select-sm" style="min-width:150px">
-                    <option value="">@L["Admin_AllCategories"]</option>
-                    @foreach (var c in Model.Categories)
-                    {
-                        <option value="@c.Id">@c.Name</option>
-                    }
-                </select>
-            </div>
-            <div class="col-auto">
-                <button type="submit" class="btn btn-sm btn-outline-primary">
-                    <i class="bi bi-search"></i>
-                </button>
-                <a href="/Admin/Products" class="btn btn-sm btn-outline-secondary ms-1">@L["Admin_Reset"]</a>
-            </div>
+            <select asp-for="CategoryFilter" class="form-select form-select-sm" style="min-width:150px;">
+                <option value="">@L["Admin_AllCategories"]</option>
+                @foreach (var c in Model.Categories)
+                {
+                    <option value="@c.Id">@c.Name</option>
+                }
+            </select>
+            <button type="submit" class="btn btn-sm btn-primary" style="border-radius:8px;">
+                <i class="bi bi-funnel"></i>
+            </button>
+            <a href="/Admin/Products" class="btn btn-sm btn-outline-secondary" style="border-radius:8px;">@L["Admin_Reset"]</a>
         </form>
     </div>
 </div>
 
-<!-- ══ Table ════════════════════════════════════════════════════════════════ -->
+<!-- Table -->
 <div class="card">
     <div class="card-body p-0">
         @if (!Model.Listings.Any())
@@ -140,7 +135,7 @@
         {
             <div class="table-responsive">
                 <table class="table table-hover align-middle mb-0">
-                    <thead class="table-light">
+                    <thead>
                         <tr>
                             <th>@L["Admin_ColTitle"]</th><th>@L["Admin_ColCategory"]</th>
                             <th>@L["Admin_ColCity"]</th><th>@L["Admin_ColPrice"]</th>
@@ -152,28 +147,32 @@
                         @foreach (var l in Model.Listings)
                         {
                             <tr>
-                                <td class="fw-medium">
-                                    <a href="/Listing/Detail/@l.Id" class="text-decoration-none text-dark">@l.Title</a>
+                                <td class="fw-semibold">
+                                    <a href="/Listing/Detail/@l.Id" class="text-decoration-none" style="color:var(--text-primary);">@l.Title</a>
                                 </td>
-                                <td class="small text-muted">@(l.CategoryName ?? "—")</td>
+                                <td class="small" style="color:var(--text-muted);">@(l.CategoryName ?? "—")</td>
                                 <td class="small">@l.City</td>
-                                <td class="fw-medium">@l.Price.ToString("N0") ₼</td>
-                                <td class="small">@(l.UserName ?? "—")</td>
+                                <td class="fw-semibold">@l.Price.ToString("N0") ₼</td>
+                                <td class="small" style="color:var(--text-secondary);">@(l.UserName ?? "—")</td>
                                 <td>
                                     @switch (l.Status)
                                     {
                                         case "Active":
-                                            <span class="badge bg-success-subtle text-success">@L["Status_Active"]</span>
+                                            <span class="badge bg-success-subtle text-success">
+                                                <i class="bi bi-check-circle me-1"></i>@L["Status_Active"]
+                                            </span>
                                             break;
                                         case "Pending":
-                                            <span class="badge bg-warning-subtle text-warning">@L["Status_Pending"]</span>
+                                            <span class="badge bg-warning-subtle text-warning">
+                                                <i class="bi bi-clock me-1"></i>@L["Status_Pending"]
+                                            </span>
                                             break;
                                         default:
                                             <span class="badge bg-secondary-subtle text-secondary">@L["Status_Closed"]</span>
                                             break;
                                     }
                                 </td>
-                                <td class="small text-muted">@l.CreatedDate.ToString("dd.MM.yyyy")</td>
+                                <td class="small" style="color:var(--text-muted);">@l.CreatedDate.ToString("dd.MM.yyyy")</td>
                                 <td>
                                     <div class="d-flex gap-1">
                                         <a href="/Listing/Detail/@l.Id" target="_blank"

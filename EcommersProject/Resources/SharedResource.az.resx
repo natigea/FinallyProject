@@ -281,6 +281,7 @@
   <data name="Admin_Users"          xml:space="preserve"><value>İstifadəçilər</value></data>
   <data name="Admin_Listings"       xml:space="preserve"><value>Elanlar</value></data>
   <data name="Admin_Categories"     xml:space="preserve"><value>Kateqoriyalar</value></data>
+  <data name="Admin_DeliveryOrders" xml:space="preserve"><value>Çatdırılma sifarişləri</value></data>
   <data name="Admin_Brands"         xml:space="preserve"><value>Brendlər</value></data>
   <data name="Admin_MyStats"        xml:space="preserve"><value>Mənim statistikam</value></data>
   <data name="Admin_MyListings"     xml:space="preserve"><value>Elanlarım</value></data>
@@ -360,6 +361,31 @@
   <data name="Admin_CannotDemoteAdmin"       xml:space="preserve"><value>Yalnız baş admin digər adminlərin hüquqlarını ala bilər.</value></data>
   <data name="Admin_SuperAdmin"              xml:space="preserve"><value>Baş</value></data>
   <data name="Admin_Protected"               xml:space="preserve"><value>Qorunur</value></data>
+
+  <!-- Delivery Orders -->
+  <data name="DO_Title"          xml:space="preserve"><value>Çatdırılma sifarişləri</value></data>
+  <data name="DO_Total"          xml:space="preserve"><value>Cəmi:</value></data>
+  <data name="DO_Empty"          xml:space="preserve"><value>Çatdırılma sifarişi hələ yoxdur.</value></data>
+  <data name="DO_Order"          xml:space="preserve"><value>Sifariş</value></data>
+  <data name="DO_Buyer"          xml:space="preserve"><value>Alıcı</value></data>
+  <data name="DO_Seller"         xml:space="preserve"><value>Satıcı</value></data>
+  <data name="DO_Product"        xml:space="preserve"><value>Məhsul</value></data>
+  <data name="DO_Price"          xml:space="preserve"><value>Qiymət</value></data>
+  <data name="DO_Fee"            xml:space="preserve"><value>Xidmət haqqı</value></data>
+  <data name="DO_Total2"         xml:space="preserve"><value>Cəmi</value></data>
+  <data name="DO_City"           xml:space="preserve"><value>Şəhər</value></data>
+  <data name="DO_Address"        xml:space="preserve"><value>Çatdırılma ünvanı</value></data>
+  <data name="DO_Phone"          xml:space="preserve"><value>Telefon</value></data>
+  <data name="DO_Card"           xml:space="preserve"><value>Kart</value></data>
+  <data name="DO_PaidAt"         xml:space="preserve"><value>Ödəniş tarixi</value></data>
+  <data name="DO_Status"         xml:space="preserve"><value>Status</value></data>
+  <data name="DO_Date"           xml:space="preserve"><value>Tarix</value></data>
+  <data name="DO_CreatedAt"      xml:space="preserve"><value>Yaradılma tarixi</value></data>
+  <data name="DO_Details"        xml:space="preserve"><value>Ətraflı</value></data>
+  <data name="DO_Approved"       xml:space="preserve"><value>Təsdiqləndi</value></data>
+  <data name="DO_Rejected"       xml:space="preserve"><value>Rədd edildi</value></data>
+  <data name="DO_Pending"        xml:space="preserve"><value>Gözləmədə</value></data>
+
   <data name="Common_Back"                   xml:space="preserve"><value>Geri</value></data>
 
   <!-- Admin – Categories management -->

@@ -1,5 +1,5 @@
 @page
-@model EcommersProject.Pages.Seller.OrdersModel
+@model EcommersProject.Pages.Admin.DeliveryOrdersModel
 @{
     ViewData["Title"] = L["DO_Title"];
 }
@@ -30,6 +30,7 @@
                         <tr>
                             <th>@L["DO_Order"]</th>
                             <th>@L["DO_Buyer"]</th>
+                            <th>@L["DO_Seller"]</th>
                             <th>@L["DO_Product"]</th>
                             <th>@L["DO_Total2"]</th>
                             <th>@L["DO_Status"]</th>
@@ -44,7 +45,12 @@
                                 <td>
                                     <span class="fw-semibold" style="font-size:.8rem; color:var(--text-primary);">@o.OrderNumber</span>
                                 </td>
-                                <td class="fw-semibold" style="color:var(--text-primary);">@(o.BuyerName ?? "—")</td>
+                                <td>
+                                    <span class="fw-semibold" style="color:var(--text-primary);">@(o.BuyerName ?? "—")</span>
+                                </td>
+                                <td>
+                                    <span style="color:var(--text-secondary);">@(o.SellerName ?? "—")</span>
+                                </td>
                                 <td>
                                     <a href="/Listing/Detail/@o.ListingId" class="text-decoration-none fw-semibold" style="color:var(--accent);">
                                         @o.ListingTitle
@@ -103,6 +109,10 @@
                             <tr>
                                 <td class="text-muted" style="width:40%;">@L["DO_Buyer"]</td>
                                 <td class="fw-semibold">@(o.BuyerName ?? "—")</td>
+                            </tr>
+                            <tr>
+                                <td class="text-muted">@L["DO_Seller"]</td>
+                                <td class="fw-semibold">@(o.SellerName ?? "—")</td>
                             </tr>
                             <tr>
                                 <td class="text-muted">@L["DO_Product"]</td>

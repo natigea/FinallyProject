@@ -1,14 +1,11 @@
-using EcommersProject.BLL.DTOs;
 using EcommersProject.BLL.Interfaces;
 using EcommersProject.Hubs;
-using EcommersProject.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
 using System.Collections.Concurrent;
 using System.Net.Http.Headers;
 using System.Security.Claims;
-using System.Text;
 using System.Text.Json;
 
 namespace EcommersProject.Controllers;
@@ -16,156 +13,196 @@ namespace EcommersProject.Controllers;
 [Authorize]
 [ApiExplorerSettings(IgnoreApi = true)]
 public class CallController(
+    IMessageService messages,
+    IHubContext<ChatHub> hub,
     IHttpClientFactory httpFactory,
     IConfiguration config,
-    IMessageService msgService,
-    INotificationService notifService,
-    FcmService fcm,
-    IHubContext<ChatHub> hubContext) : Controller
+    ILogger<CallController> logger) : Controller
 {
-    // In-memory pending calls (ephemeral, single-server)
-    private static readonly ConcurrentDictionary<Guid, PendingCall> _pending = new();
-    private static readonly JsonSerializerOptions _jOpts = new(JsonSerializerDefaults.Web);
+    private record PendingCall(
+        Guid ConversationId,
+        Guid CallerId,
+        string CallerName,
+        string RoomUrl,
+        DateTime CreatedAt);
 
-    // GET /Call/Join/{conversationId}
-    [HttpGet]
+    // key = recipientUserId → pending call info
+    private static readonly ConcurrentDictionary<Guid, PendingCall> _pending = new();
+
+    [HttpGet("Call/Join/{conversationId}")]
     public async Task<IActionResult> Join(Guid conversationId)
     {
-        var userId   = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
-        var userName = User.Identity?.Name ?? "Пользователь";
-        var apiKey   = config["Daily:ApiKey"]!;
-        var roomName = "conv-" + conversationId.ToString("N")[..16];
+        var userId = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+        logger.LogInformation("[Call] Join: userId={UserId}, conversationId={ConvId}", userId, conversationId);
 
-        using var http = httpFactory.CreateClient();
-        http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", apiKey);
+        if (conversationId == Guid.Empty)
+        {
+            logger.LogError("[Call] Join REJECTED: conversationId is Guid.Empty");
+            return BadRequest(new { error = "conversationId is empty" });
+        }
 
-        // Get or create room
+        var conv = await messages.GetConversationAsync(conversationId);
+        if (conv.BuyerId != userId && conv.SellerId != userId)
+            return Forbid();
+
+        var recipientId = conv.BuyerId == userId ? conv.SellerId : conv.BuyerId;
+        var callerName = User.Identity?.Name ?? "?";
+
+        var existingCall = _pending.Values.FirstOrDefault(p =>
+            p.ConversationId == conversationId && p.CallerId != userId);
+        var isCaller = existingCall == null;
+
+        logger.LogInformation("[Call] Join: caller={CallerName}, recipient={RecipientId}, isCaller={IsCaller}",
+            callerName, recipientId, isCaller);
+
         string roomUrl;
-        var getResp = await http.GetAsync($"https://api.daily.co/v1/rooms/{roomName}");
-        if (getResp.IsSuccessStatusCode)
-        {
-            using var doc = JsonDocument.Parse(await getResp.Content.ReadAsStringAsync());
-            roomUrl = doc.RootElement.GetProperty("url").GetString()!;
-        }
-        else
-        {
-            var expiry  = DateTimeOffset.UtcNow.AddHours(2).ToUnixTimeSeconds();
-            var payload = JsonSerializer.Serialize(new { name = roomName, properties = new { exp = expiry, enable_chat = false } });
-            var created = await http.PostAsync("https://api.daily.co/v1/rooms",
-                          new StringContent(payload, Encoding.UTF8, "application/json"));
-            if (!created.IsSuccessStatusCode)
-                return StatusCode(502, "Daily.co room creation failed");
-            using var doc = JsonDocument.Parse(await created.Content.ReadAsStringAsync());
-            roomUrl = doc.RootElement.GetProperty("url").GetString()!;
-        }
-
-        // Meeting token: skip prejoin, audio-only, set name
-        var tokenPayload = JsonSerializer.Serialize(new
-        {
-            properties = new
-            {
-                room_name         = roomName,
-                user_name         = userName,
-                enable_prejoin_ui = false,
-                start_video_off   = true,
-                start_audio_off   = false
-            }
-        });
-        var tokenResp = await http.PostAsync("https://api.daily.co/v1/meeting-tokens",
-                        new StringContent(tokenPayload, Encoding.UTF8, "application/json"));
-
-        string? tokenValue = null;
-        if (tokenResp.IsSuccessStatusCode)
-        {
-            using var tDoc = JsonDocument.Parse(await tokenResp.Content.ReadAsStringAsync());
-            if (tDoc.RootElement.TryGetProperty("token", out var tok))
-                tokenValue = tok.GetString();
-        }
-
-        // If another user already has a pending call for this conversation → callee is accepting
-        bool isCaller = !_pending.TryGetValue(conversationId, out var existing) || existing.CallerId == userId;
-
         if (isCaller)
         {
-            // Store pending call for the other participant to detect
-            _pending[conversationId] = new PendingCall(conversationId, userId, userName, DateTimeOffset.UtcNow);
+            roomUrl = await CreateDailyRoom(conversationId);
+            logger.LogInformation("[Call] Daily room created: {RoomUrl}", roomUrl);
 
-            // Notify other participant (in-app + FCM push)
-            try
-            {
-                var conv    = await msgService.GetConversationAsync(conversationId);
-                var otherId = conv.BuyerId == userId ? conv.SellerId : conv.BuyerId;
-                await notifService.CreateAsync(otherId,
-                    "📞 Входящий звонок",
-                    $"{userName} звонит вам — откройте чат чтобы ответить",
-                    $"/Messages/Chat/{conversationId}");
-                // FCM push so the phone rings even when the app is in background
-                await fcm.SendCallAsync(otherId, userName, conversationId);
-                // SignalR real-time push (instant, works while browser is open)
-                await hubContext.Clients.Group($"user-{otherId}")
-                    .SendAsync("IncomingCall", userName, conversationId.ToString());
-            }
-            catch { }
+            var pending = new PendingCall(conversationId, userId, callerName, roomUrl, DateTime.UtcNow);
+            _pending[recipientId] = pending;
+            logger.LogInformation("[Call] Stored pending call: recipientId={RecipientId}, convId={ConvId}",
+                recipientId, conversationId);
+
+            await hub.Clients.Group($"user-{recipientId}")
+                .SendAsync("IncomingCall", callerName, conversationId.ToString());
+            logger.LogInformation("[Call] SignalR IncomingCall sent to group user-{RecipientId}", recipientId);
         }
         else
         {
-            // Callee accepted → clear pending
-            _pending.TryRemove(conversationId, out _);
+            roomUrl = existingCall.RoomUrl;
+            logger.LogInformation("[Call] Callee joining existing room: {RoomUrl}", roomUrl);
+            _pending.TryRemove(userId, out _);
         }
 
-        return Json(new { url = roomUrl, token = tokenValue, isCaller });
+        return Json(new { roomUrl, isCaller, conversationId });
     }
 
-    // GET /Call/Poll?conversationId=...
-    [HttpGet]
-    public IActionResult Poll(Guid conversationId)
+    [HttpGet("Call/PollIncoming")]
+    public IActionResult PollIncoming()
     {
         var userId = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
 
-        // Expire calls older than 60 seconds
-        var cutoff = DateTimeOffset.UtcNow.AddSeconds(-60);
-        foreach (var key in _pending.Keys.ToList())
-            if (_pending.TryGetValue(key, out var v) && v.StartedAt < cutoff)
-                _pending.TryRemove(key, out _);
+        if (_pending.TryGetValue(userId, out var call))
+        {
+            if ((DateTime.UtcNow - call.CreatedAt).TotalSeconds > 60)
+            {
+                _pending.TryRemove(userId, out _);
+                logger.LogInformation("[Call] PollIncoming: expired call removed for userId={UserId}", userId);
+                return Json(new { incoming = false });
+            }
 
-        if (_pending.TryGetValue(conversationId, out var call) && call.CallerId != userId)
-            return Json(new { incoming = true, callerName = call.CallerName });
+            logger.LogInformation("[Call] PollIncoming: found call for userId={UserId}, convId={ConvId}, caller={Caller}",
+                userId, call.ConversationId, call.CallerName);
+
+            return Json(new
+            {
+                incoming = true,
+                callerName = call.CallerName,
+                conversationId = call.ConversationId.ToString()
+            });
+        }
 
         return Json(new { incoming = false });
     }
 
-    // GET /Call/Decline?conversationId=...
-    [HttpGet]
-    public async Task<IActionResult> Decline(Guid conversationId)
-    {
-        if (_pending.TryRemove(conversationId, out var removed))
-        {
-            // Notify caller that their call was declined
-            try
-            {
-                await hubContext.Clients.Group($"user-{removed.CallerId}")
-                    .SendAsync("CallDeclined", conversationId.ToString());
-            }
-            catch { }
-        }
-        return Ok();
-    }
-
-    // GET /Call/Log?conversationId=...&duration=...
-    [HttpGet]
-    public async Task<IActionResult> Log(Guid conversationId, int duration)
+    [HttpGet("Call/Poll")]
+    public IActionResult Poll(Guid conversationId)
     {
         var userId = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
-        var mins   = duration / 60;
-        var secs   = duration % 60;
-        // Always Russian — hardcoded
-        var text   = duration >= 5
-            ? $"📞 Голосовой звонок · {mins}:{secs:D2}"
-            : "📞 Звонок (не состоялся)";
-        try { await msgService.SendMessageAsync(new MessageCreateDto(conversationId, userId, text)); }
-        catch { }
+
+        if (conversationId == Guid.Empty)
+        {
+            logger.LogWarning("[Call] Poll: conversationId is Guid.Empty, userId={UserId}", userId);
+            return Json(new { incoming = false });
+        }
+
+        if (_pending.TryGetValue(userId, out var call) && call.ConversationId == conversationId)
+        {
+            if ((DateTime.UtcNow - call.CreatedAt).TotalSeconds > 60)
+            {
+                _pending.TryRemove(userId, out _);
+                return Json(new { incoming = false });
+            }
+
+            return Json(new
+            {
+                incoming = true,
+                callerName = call.CallerName,
+                conversationId = call.ConversationId.ToString()
+            });
+        }
+
+        return Json(new { incoming = false });
+    }
+
+    [HttpGet("Call/Decline")]
+    public IActionResult Decline(Guid conversationId)
+    {
+        var userId = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+        logger.LogInformation("[Call] Decline: userId={UserId}, convId={ConvId}", userId, conversationId);
+
+        if (_pending.TryRemove(userId, out var call))
+        {
+            hub.Clients.Group($"user-{call.CallerId}")
+                .SendAsync("CallDeclined", call.ConversationId.ToString());
+        }
+
         return Ok();
     }
 
-    public record PendingCall(Guid ConversationId, Guid CallerId, string CallerName, DateTimeOffset StartedAt);
+    [HttpGet("Call/Log")]
+    public IActionResult Log(Guid conversationId, int duration)
+    {
+        var userId = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+        logger.LogInformation("[Call] Log: userId={UserId}, convId={ConvId}, duration={Duration}s",
+            userId, conversationId, duration);
+
+        // Clean up pending call for recipient
+        foreach (var kvp in _pending)
+        {
+            if (kvp.Value.ConversationId == conversationId)
+            {
+                _pending.TryRemove(kvp.Key, out _);
+                break;
+            }
+        }
+
+        return Ok();
+    }
+
+    private async Task<string> CreateDailyRoom(Guid conversationId)
+    {
+        var apiKey = config["DailyCo:ApiKey"];
+        var client = httpFactory.CreateClient();
+        client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", apiKey);
+
+        var roomName = $"call-{conversationId:N}-{DateTime.UtcNow.Ticks}";
+        var body = JsonSerializer.Serialize(new
+        {
+            name = roomName,
+            properties = new
+            {
+                exp = DateTimeOffset.UtcNow.AddHours(1).ToUnixTimeSeconds(),
+                max_participants = 2,
+                enable_chat = false,
+                start_video_off = true
+            }
+        });
+
+        var resp = await client.PostAsync(
+            "https://api.daily.co/v1/rooms",
+            new StringContent(body, System.Text.Encoding.UTF8, "application/json"));
+
+        var json = await resp.Content.ReadAsStringAsync();
+        logger.LogInformation("[Call] Daily API response: {Status} {Body}", resp.StatusCode, json);
+
+        if (!resp.IsSuccessStatusCode)
+            throw new Exception($"Daily.co room creation failed: {resp.StatusCode} - {json}");
+
+        using var doc = JsonDocument.Parse(json);
+        return doc.RootElement.GetProperty("url").GetString()!;
+    }
 }

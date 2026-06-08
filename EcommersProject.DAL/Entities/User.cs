@@ -13,6 +13,9 @@ public class User : BaseEntity
     public string? ResetToken { get; set; }
     public DateTimeOffset? ResetTokenExpiry { get; set; }
     public string? FcmToken { get; set; }
+    public bool IsEmailVerified { get; set; }
+    public string? EmailVerificationCode { get; set; }
+    public DateTimeOffset? EmailCodeExpiry { get; set; }
 
     public ICollection<Listing> Listings { get; set; } = new List<Listing>();
     public ICollection<Favorite> Favorites { get; set; } = new List<Favorite>();

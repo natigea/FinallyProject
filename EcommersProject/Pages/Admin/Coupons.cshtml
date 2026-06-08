@@ -7,9 +7,9 @@
 <div class="row g-4">
     <div class="col-lg-8">
         <div class="card">
-            <div class="card-header py-3 d-flex align-items-center justify-content-between">
-                <span><i class="bi bi-tags me-2 text-primary"></i>Категории</span>
-                <span class="badge bg-primary-subtle text-primary">@Model.Categories.Count</span>
+            <div class="card-header d-flex align-items-center justify-content-between">
+                <span><i class="bi bi-tags-fill me-2" style="color:var(--accent);"></i>Категории</span>
+                <span class="badge" style="background:var(--accent-soft); color:var(--accent);">@Model.Categories.Count</span>
             </div>
             <div class="card-body p-0">
                 @if (!Model.Categories.Any())
@@ -22,13 +22,13 @@
                 else
                 {
                     <table class="table table-hover align-middle mb-0">
-                        <thead class="table-light">
+                        <thead>
                             <tr>
-                                <th>#</th>
-                                <th>Иконка</th>
+                                <th style="width:48px;">#</th>
+                                <th style="width:56px;">Иконка</th>
                                 <th>Название</th>
                                 <th>Описание</th>
-                                <th>Действия</th>
+                                <th style="width:64px;">Действия</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -36,10 +36,14 @@
                             {
                                 var c = Model.Categories[i];
                                 <tr>
-                                    <td class="text-muted small">@(i + 1)</td>
-                                    <td><i class="bi @c.Icon fs-5 text-primary"></i></td>
-                                    <td class="fw-medium">@c.Name</td>
-                                    <td class="text-muted small">@(string.IsNullOrEmpty(c.Description) ? "—" : c.Description)</td>
+                                    <td class="small" style="color:var(--text-muted);">@(i + 1)</td>
+                                    <td>
+                                        <div style="width:36px;height:36px;border-radius:10px;background:var(--accent-soft);display:flex;align-items:center;justify-content:center;">
+                                            <i class="bi @c.Icon" style="font-size:1.1rem;color:var(--accent);"></i>
+                                        </div>
+                                    </td>
+                                    <td class="fw-semibold">@c.Name</td>
+                                    <td class="small" style="color:var(--text-muted);">@(string.IsNullOrEmpty(c.Description) ? "—" : c.Description)</td>
                                     <td>
                                         <form method="post" asp-page-handler="Delete"
                                               onsubmit="return confirm('Удалить категорию «@c.Name»?')">
@@ -59,31 +63,33 @@
     </div>
 
     <div class="col-lg-4">
-        <div class="card">
-            <div class="card-header py-3">
-                <i class="bi bi-plus-circle me-2 text-success"></i>Новая категория
+        <div class="card" style="border-top:3px solid #10b981;">
+            <div class="card-header">
+                <i class="bi bi-plus-circle-fill me-2 text-success"></i>Новая категория
             </div>
             <div class="card-body">
                 <form method="post" asp-page-handler="Create">
                     <div class="mb-3">
-                        <label class="form-label small fw-medium">Название <span class="text-danger">*</span></label>
+                        <label class="form-label">Название <span class="text-danger">*</span></label>
                         <input asp-for="NewName" type="text" class="form-control" placeholder="Например: Электроника" required />
                     </div>
                     <div class="mb-3">
-                        <label class="form-label small fw-medium">Описание</label>
+                        <label class="form-label">Описание</label>
                         <textarea asp-for="NewDescription" class="form-control" rows="2"
                                   placeholder="Краткое описание категории..."></textarea>
                     </div>
                     <div class="mb-3">
-                        <label class="form-label small fw-medium">Bootstrap Icon</label>
+                        <label class="form-label">Bootstrap Icon</label>
                         <div class="input-group">
-                            <span class="input-group-text"><i id="iconPreview" class="bi bi-tag"></i></span>
+                            <span class="input-group-text" style="border-radius:8px 0 0 8px; background:var(--accent-soft); border-color:var(--card-border);">
+                                <i id="iconPreview" class="bi bi-tag" style="color:var(--accent);"></i>
+                            </span>
                             <input asp-for="NewIcon" type="text" class="form-control" placeholder="bi-tag"
                                    oninput="document.getElementById('iconPreview').className='bi '+this.value" />
                         </div>
-                        <div class="form-text">Например: bi-phone, bi-car-front, bi-house</div>
+                        <div class="form-text" style="font-size:.75rem;">Например: bi-phone, bi-car-front, bi-house</div>
                     </div>
-                    <button type="submit" class="btn btn-success w-100">
+                    <button type="submit" class="btn btn-success w-100" style="border-radius:10px; font-weight:600;">
                         <i class="bi bi-plus-lg me-1"></i>Добавить категорию
                     </button>
                 </form>

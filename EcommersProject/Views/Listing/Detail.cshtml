@@ -272,7 +272,8 @@
                 {
                     @if (User.Identity?.IsAuthenticated == true)
                     {
-                        @if (Model.DeliveryAvailable && Model.CategoryIcon != "bi-building" && Model.CategorySlug != "jobs" && Model.CategorySlug != "other" && Model.CategorySlug != "animals")
+                        var noDelivery = new[] { "business", "animals", "services", "realestate", "jobs", "other" };
+                        if (Model.DeliveryAvailable && !noDelivery.Contains(Model.CategorySlug))
                         {
                         <a href="/Checkout/Delivery?listingId=@Model.Id" class="det-btn-buy mb-2">
                             <i class="bi bi-truck me-2"></i>@L["Detail_OrderDelivery"]

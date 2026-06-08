@@ -12,13 +12,16 @@ public record PurchaseGetDto(
     int? VipDays,
     string? DeliveryAddress,
     string? DeliveryCity,
+    string? DeliveryPhone,
     string Status,
     string? SellerApprovalStatus,
     Guid? SellerId,
+    string? SellerName,
     string? CardLast4,
     DateTimeOffset? PaidAt,
     DateTimeOffset CreatedDate,
-    Guid UserId);
+    Guid UserId,
+    string? BuyerName);
 
 public record DeliveryCreateDto(
     Guid UserId,

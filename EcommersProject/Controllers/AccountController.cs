@@ -13,8 +13,6 @@ public class AccountController(
     IAuthService auth,
     IUserService users,
     IListingService listings,
-    IFavoriteService favorites,
-    IMessageService messages,
     IPurchaseService purchases,
     IReviewService reviews) : Controller
 {
@@ -65,7 +63,7 @@ public class AccountController(
                 vm.Email, vm.FirstName, vm.LastName, vm.PhoneNumber, vm.Password));
 
             await SignInUser(result);
-            TempData["Success"] = "Добро пожаловать! Вы успешно зарегистрировались.";
+            TempData["Success"] = "Регистрация прошла успешно! Добро пожаловать!";
             return RedirectToAction("Index", "Home");
         }
         catch (Exception ex)
@@ -192,17 +190,16 @@ public class AccountController(
 
         await users.UpdateAsync(userId, new UserUpdateDto(vm.FirstName, vm.LastName, vm.PhoneNumber, photoUrl));
 
-        // Refresh cookie with updated name
         var updated = await users.GetByIdAsync(userId);
-        var existingClaims = ((System.Security.Claims.ClaimsIdentity)User.Identity!).Claims
+        var existingClaims = ((ClaimsIdentity)User.Identity!).Claims
             .Where(c => c.Type != ClaimTypes.Name)
             .Append(new Claim(ClaimTypes.Name, $"{updated.FirstName} {updated.LastName}"))
             .ToList();
-        var identity = new System.Security.Claims.ClaimsIdentity(existingClaims, Microsoft.AspNetCore.Authentication.Cookies.CookieAuthenticationDefaults.AuthenticationScheme);
+        var identity = new ClaimsIdentity(existingClaims, CookieAuthenticationDefaults.AuthenticationScheme);
         await HttpContext.SignInAsync(
-            Microsoft.AspNetCore.Authentication.Cookies.CookieAuthenticationDefaults.AuthenticationScheme,
-            new System.Security.Claims.ClaimsPrincipal(identity),
-            new Microsoft.AspNetCore.Authentication.AuthenticationProperties { IsPersistent = true, ExpiresUtc = DateTimeOffset.UtcNow.AddHours(8) });
+            CookieAuthenticationDefaults.AuthenticationScheme,
+            new ClaimsPrincipal(identity),
+            new AuthenticationProperties { IsPersistent = true, ExpiresUtc = DateTimeOffset.UtcNow.AddHours(8) });
 
         TempData["Success"] = "Профиль успешно обновлён.";
         return RedirectToAction(nameof(Profile), new { tab = "settings" });
@@ -216,7 +213,6 @@ public class AccountController(
 
         var userId = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
         var user = await users.GetByIdAsync(userId);
-        // Pass "" (empty string) as PhotoUrl — mapping treats it as "clear to null"
         await users.UpdateAsync(userId, new UserUpdateDto(user.FirstName, user.LastName, user.PhoneNumber, ""));
         return RedirectToAction(nameof(Profile), new { tab = "settings" });
     }

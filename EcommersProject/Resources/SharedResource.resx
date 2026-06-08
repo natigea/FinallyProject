@@ -281,6 +281,7 @@
   <data name="Admin_Users"          xml:space="preserve"><value>Пользователи</value></data>
   <data name="Admin_Listings"       xml:space="preserve"><value>Объявления</value></data>
   <data name="Admin_Categories"     xml:space="preserve"><value>Категории</value></data>
+  <data name="Admin_DeliveryOrders" xml:space="preserve"><value>Заказы доставки</value></data>
   <data name="Admin_Brands"         xml:space="preserve"><value>Бренды</value></data>
   <data name="Admin_MyStats"        xml:space="preserve"><value>Моя статистика</value></data>
   <data name="Admin_MyListings"     xml:space="preserve"><value>Мои объявления</value></data>
@@ -360,6 +361,31 @@
   <data name="Admin_CannotDemoteAdmin"       xml:space="preserve"><value>Только главный администратор может снимать права у других администраторов.</value></data>
   <data name="Admin_SuperAdmin"              xml:space="preserve"><value>Главный</value></data>
   <data name="Admin_Protected"               xml:space="preserve"><value>Защищено</value></data>
+
+  <!-- Delivery Orders -->
+  <data name="DO_Title"          xml:space="preserve"><value>Заказы доставки</value></data>
+  <data name="DO_Total"          xml:space="preserve"><value>Всего:</value></data>
+  <data name="DO_Empty"          xml:space="preserve"><value>Заказов через доставку пока нет.</value></data>
+  <data name="DO_Order"          xml:space="preserve"><value>Заказ</value></data>
+  <data name="DO_Buyer"          xml:space="preserve"><value>Покупатель</value></data>
+  <data name="DO_Seller"         xml:space="preserve"><value>Продавец</value></data>
+  <data name="DO_Product"        xml:space="preserve"><value>Товар</value></data>
+  <data name="DO_Price"          xml:space="preserve"><value>Цена</value></data>
+  <data name="DO_Fee"            xml:space="preserve"><value>Сбор</value></data>
+  <data name="DO_Total2"         xml:space="preserve"><value>Итого</value></data>
+  <data name="DO_City"           xml:space="preserve"><value>Город</value></data>
+  <data name="DO_Address"        xml:space="preserve"><value>Адрес доставки</value></data>
+  <data name="DO_Phone"          xml:space="preserve"><value>Телефон</value></data>
+  <data name="DO_Card"           xml:space="preserve"><value>Карта</value></data>
+  <data name="DO_PaidAt"         xml:space="preserve"><value>Дата оплаты</value></data>
+  <data name="DO_Status"         xml:space="preserve"><value>Статус</value></data>
+  <data name="DO_Date"           xml:space="preserve"><value>Дата</value></data>
+  <data name="DO_CreatedAt"      xml:space="preserve"><value>Дата создания</value></data>
+  <data name="DO_Details"        xml:space="preserve"><value>Подробнее</value></data>
+  <data name="DO_Approved"       xml:space="preserve"><value>Одобрен</value></data>
+  <data name="DO_Rejected"       xml:space="preserve"><value>Отклонён</value></data>
+  <data name="DO_Pending"        xml:space="preserve"><value>Ожидание</value></data>
+
   <data name="Common_Back"                   xml:space="preserve"><value>Назад</value></data>
 
   <!-- Admin – Categories management -->

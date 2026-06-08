@@ -7,54 +7,48 @@
 <!-- KPI Cards -->
 <div class="row g-3 mb-4">
     <div class="col-sm-6 col-xl-3">
-        <div class="stat-card bg-gradient-primary">
-            <div class="d-flex justify-content-between align-items-start">
-                <div>
-                    <div class="stat-value">@Model.TotalListings</div>
-                    <div class="stat-label">@L["Admin_TotalListings"]</div>
-                </div>
-                <i class="bi bi-grid-3x3-gap stat-icon"></i>
+        <div class="kpi bg-g-indigo">
+            <div class="d-flex justify-content-between align-items-start mb-3">
+                <div class="kpi-icon"><i class="bi bi-grid-3x3-gap-fill"></i></div>
             </div>
-            <div class="mt-2 small opacity-75">
-                @L["Admin_ActiveLabel"] @Model.ActiveListings
+            <div class="kpi-value">@Model.TotalListings</div>
+            <div class="kpi-label">@L["Admin_TotalListings"]</div>
+            <div class="kpi-sub">
+                <i class="bi bi-check-circle me-1"></i>@L["Admin_ActiveLabel"] @Model.ActiveListings
             </div>
         </div>
     </div>
     <div class="col-sm-6 col-xl-3">
-        <div class="stat-card bg-gradient-success">
-            <div class="d-flex justify-content-between align-items-start">
-                <div>
-                    <div class="stat-value">@Model.TotalUsers</div>
-                    <div class="stat-label">@L["Admin_TotalUsers"]</div>
-                </div>
-                <i class="bi bi-people stat-icon"></i>
+        <div class="kpi bg-g-emerald">
+            <div class="d-flex justify-content-between align-items-start mb-3">
+                <div class="kpi-icon"><i class="bi bi-people-fill"></i></div>
             </div>
+            <div class="kpi-value">@Model.TotalUsers</div>
+            <div class="kpi-label">@L["Admin_TotalUsers"]</div>
         </div>
     </div>
     <div class="col-sm-6 col-xl-3">
-        <div class="stat-card bg-gradient-warning">
-            <div class="d-flex justify-content-between align-items-start">
-                <div>
-                    <div class="stat-value">@Model.TotalCategories</div>
-                    <div class="stat-label">@L["Admin_TotalCategories"]</div>
-                </div>
-                <i class="bi bi-tag stat-icon"></i>
+        <div class="kpi bg-g-amber">
+            <div class="d-flex justify-content-between align-items-start mb-3">
+                <div class="kpi-icon"><i class="bi bi-tags-fill"></i></div>
             </div>
+            <div class="kpi-value">@Model.TotalCategories</div>
+            <div class="kpi-label">@L["Admin_TotalCategories"]</div>
         </div>
     </div>
     <div class="col-sm-6 col-xl-3">
         <a href="/Admin/Products" class="text-decoration-none">
-            <div class="stat-card @(Model.PendingListings > 0 ? "bg-gradient-danger" : "bg-gradient-info")">
-                <div class="d-flex justify-content-between align-items-start">
-                    <div>
-                        <div class="stat-value">@Model.PendingListings</div>
-                        <div class="stat-label">@L["Admin_PendingListings"]</div>
-                    </div>
-                    <i class="bi bi-hourglass-split stat-icon"></i>
+            <div class="kpi @(Model.PendingListings > 0 ? "bg-g-rose" : "bg-g-sky")">
+                <div class="d-flex justify-content-between align-items-start mb-3">
+                    <div class="kpi-icon"><i class="bi bi-hourglass-split"></i></div>
                 </div>
+                <div class="kpi-value">@Model.PendingListings</div>
+                <div class="kpi-label">@L["Admin_PendingListings"]</div>
                 @if (Model.PendingListings > 0)
                 {
-                    <div class="mt-2 small opacity-75">@L["Admin_RequireReview"]</div>
+                    <div class="kpi-sub">
+                        <i class="bi bi-arrow-right me-1"></i>@L["Admin_RequireReview"]
+                    </div>
                 }
             </div>
         </a>
@@ -63,9 +57,11 @@
 
 <!-- Recent Listings -->
 <div class="card">
-    <div class="card-header py-3 d-flex align-items-center justify-content-between">
-        <span><i class="bi bi-clock-history me-2 text-warning"></i>@L["Admin_RecentListings"]</span>
-        <a href="/Admin/Products" class="btn btn-sm btn-outline-secondary">@L["Admin_AllListings"]</a>
+    <div class="card-header d-flex align-items-center justify-content-between">
+        <span><i class="bi bi-clock-history me-2" style="color:var(--accent);"></i>@L["Admin_RecentListings"]</span>
+        <a href="/Admin/Products" class="btn btn-sm btn-outline-secondary" style="border-radius:8px; font-size:.8rem;">
+            @L["Admin_AllListings"] <i class="bi bi-arrow-right ms-1"></i>
+        </a>
     </div>
     <div class="card-body p-0">
         @if (!Model.RecentListings.Any())
@@ -76,7 +72,7 @@
         {
             <div class="table-responsive">
                 <table class="table table-hover mb-0 align-middle">
-                    <thead class="table-light">
+                    <thead>
                         <tr>
                             <th>@L["Admin_ColTitle"]</th>
                             <th>@L["Admin_ColCategory"]</th>
@@ -91,13 +87,13 @@
                         @foreach (var l in Model.RecentListings)
                         {
                             <tr>
-                                <td class="fw-medium">
-                                    <a href="/Listing/Detail/@l.Id" class="text-decoration-none text-dark">@l.Title</a>
+                                <td class="fw-semibold">
+                                    <a href="/Listing/Detail/@l.Id" class="text-decoration-none" style="color:var(--text-primary);">@l.Title</a>
                                 </td>
-                                <td class="small text-muted">@(l.CategoryName ?? "—")</td>
+                                <td class="small" style="color:var(--text-muted);">@(l.CategoryName ?? "—")</td>
                                 <td class="small">@l.City</td>
-                                <td class="fw-medium">@l.Price.ToString("N0") ₼</td>
-                                <td class="small">@(l.UserName ?? "—")</td>
+                                <td class="fw-semibold">@l.Price.ToString("N0") ₼</td>
+                                <td class="small" style="color:var(--text-secondary);">@(l.UserName ?? "—")</td>
                                 <td>
                                     @if (l.Status == "Active")
                                     {
@@ -112,7 +108,7 @@
                                         <span class="badge bg-warning-subtle text-warning">@L["Status_Pending"]</span>
                                     }
                                 </td>
-                                <td class="small text-muted">@l.CreatedDate.ToString("dd.MM.yy")</td>
+                                <td class="small" style="color:var(--text-muted);">@l.CreatedDate.ToString("dd.MM.yy")</td>
                             </tr>
                         }
                     </tbody>

@@ -281,6 +281,7 @@
   <data name="Admin_Users"          xml:space="preserve"><value>Users</value></data>
   <data name="Admin_Listings"       xml:space="preserve"><value>Listings</value></data>
   <data name="Admin_Categories"     xml:space="preserve"><value>Categories</value></data>
+  <data name="Admin_DeliveryOrders" xml:space="preserve"><value>Delivery Orders</value></data>
   <data name="Admin_Brands"         xml:space="preserve"><value>Brands</value></data>
   <data name="Admin_MyStats"        xml:space="preserve"><value>My Statistics</value></data>
   <data name="Admin_MyListings"     xml:space="preserve"><value>My Listings</value></data>
@@ -360,6 +361,31 @@
   <data name="Admin_CannotDemoteAdmin"       xml:space="preserve"><value>Only the super admin can remove admin rights from other admins.</value></data>
   <data name="Admin_SuperAdmin"              xml:space="preserve"><value>Super</value></data>
   <data name="Admin_Protected"               xml:space="preserve"><value>Protected</value></data>
+
+  <!-- Delivery Orders -->
+  <data name="DO_Title"          xml:space="preserve"><value>Delivery Orders</value></data>
+  <data name="DO_Total"          xml:space="preserve"><value>Total:</value></data>
+  <data name="DO_Empty"          xml:space="preserve"><value>No delivery orders yet.</value></data>
+  <data name="DO_Order"          xml:space="preserve"><value>Order</value></data>
+  <data name="DO_Buyer"          xml:space="preserve"><value>Buyer</value></data>
+  <data name="DO_Seller"         xml:space="preserve"><value>Seller</value></data>
+  <data name="DO_Product"        xml:space="preserve"><value>Product</value></data>
+  <data name="DO_Price"          xml:space="preserve"><value>Price</value></data>
+  <data name="DO_Fee"            xml:space="preserve"><value>Service fee</value></data>
+  <data name="DO_Total2"         xml:space="preserve"><value>Total</value></data>
+  <data name="DO_City"           xml:space="preserve"><value>City</value></data>
+  <data name="DO_Address"        xml:space="preserve"><value>Delivery address</value></data>
+  <data name="DO_Phone"          xml:space="preserve"><value>Phone</value></data>
+  <data name="DO_Card"           xml:space="preserve"><value>Card</value></data>
+  <data name="DO_PaidAt"         xml:space="preserve"><value>Payment date</value></data>
+  <data name="DO_Status"         xml:space="preserve"><value>Status</value></data>
+  <data name="DO_Date"           xml:space="preserve"><value>Date</value></data>
+  <data name="DO_CreatedAt"      xml:space="preserve"><value>Created</value></data>
+  <data name="DO_Details"        xml:space="preserve"><value>Details</value></data>
+  <data name="DO_Approved"       xml:space="preserve"><value>Approved</value></data>
+  <data name="DO_Rejected"       xml:space="preserve"><value>Rejected</value></data>
+  <data name="DO_Pending"        xml:space="preserve"><value>Pending</value></data>
+
   <data name="Common_Back"                   xml:space="preserve"><value>Back</value></data>
 
   <!-- Admin – Categories management -->

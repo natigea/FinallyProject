@@ -163,6 +163,14 @@ using (var scope = app.Services.CreateScope())
             IF NOT EXISTS (SELECT * FROM sys.columns WHERE Name = N'FcmToken' AND Object_ID = OBJECT_ID(N'Users'))
                 ALTER TABLE [Users] ADD [FcmToken] NVARCHAR(500) NULL;
 
+            -- Email verification columns on Users
+            IF NOT EXISTS (SELECT * FROM sys.columns WHERE Name = N'IsEmailVerified' AND Object_ID = OBJECT_ID(N'Users'))
+                ALTER TABLE [Users] ADD [IsEmailVerified] BIT NOT NULL DEFAULT 0;
+            IF NOT EXISTS (SELECT * FROM sys.columns WHERE Name = N'EmailVerificationCode' AND Object_ID = OBJECT_ID(N'Users'))
+                ALTER TABLE [Users] ADD [EmailVerificationCode] NVARCHAR(10) NULL;
+            IF NOT EXISTS (SELECT * FROM sys.columns WHERE Name = N'EmailCodeExpiry' AND Object_ID = OBJECT_ID(N'Users'))
+                ALTER TABLE [Users] ADD [EmailCodeExpiry] DATETIMEOFFSET NULL;
+
             -- Notifications table
             IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='Notifications' AND xtype='U')
             CREATE TABLE [Notifications] (

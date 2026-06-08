@@ -12,4 +12,5 @@ public interface IPurchaseService
     Task<IReadOnlyList<PurchaseGetDto>> GetBySellerAsync(Guid sellerId);
     Task ApproveAsync(Guid purchaseId);
     Task RejectAsync(Guid purchaseId);
+    Task<IReadOnlyList<PurchaseGetDto>> GetAllDeliveryAsync(CancellationToken cancellationToken = default);
 }

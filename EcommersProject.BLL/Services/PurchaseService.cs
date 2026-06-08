@@ -2,6 +2,7 @@ using EcommersProject.BLL.DTOs;
 using EcommersProject.BLL.Interfaces;
 using EcommersProject.DAL.Entities;
 using EcommersProject.DAL.UnitOfWork;
+using Microsoft.EntityFrameworkCore;
 
 namespace EcommersProject.BLL.Services;
 
@@ -132,6 +133,27 @@ public class PurchaseService(IUnitOfWork uow) : IPurchaseService
         await uow.SaveChangesAsync();
     }
 
+    public async Task<IReadOnlyList<PurchaseGetDto>> GetAllDeliveryAsync(CancellationToken cancellationToken = default)
+    {
+        var list = await uow.Context.Set<Purchase>()
+            .Where(p => p.Type == PurchaseType.Delivery && !p.IsDeleted)
+            .Include(p => p.User)
+            .Include(p => p.Seller)
+            .OrderByDescending(p => p.CreatedDate)
+            .ToListAsync(cancellationToken);
+
+        return list.Select(p => new PurchaseGetDto(
+            p.Id, p.OrderNumber, p.Type,
+            p.ListingTitle, p.ListingId,
+            p.ListingPrice, p.DeliveryFee, p.TotalAmount,
+            p.VipDays, p.DeliveryAddress, p.DeliveryCity, p.DeliveryPhone,
+            p.Status, p.SellerApprovalStatus, p.SellerId,
+            p.Seller != null ? $"{p.Seller.FirstName} {p.Seller.LastName}" : null,
+            p.CardLast4, p.PaidAt, p.CreatedDate, p.UserId,
+            p.User != null ? $"{p.User.FirstName} {p.User.LastName}" : null
+        )).ToList();
+    }
+
     private static string GenerateOrderNumber()
         => $"ORD-{DateTime.UtcNow:yyyyMMdd}-{Guid.NewGuid().ToString("N")[..6].ToUpper()}";
 
@@ -139,7 +161,9 @@ public class PurchaseService(IUnitOfWork uow) : IPurchaseService
         p.Id, p.OrderNumber, p.Type,
         p.ListingTitle, p.ListingId,
         p.ListingPrice, p.DeliveryFee, p.TotalAmount,
-        p.VipDays, p.DeliveryAddress, p.DeliveryCity,
+        p.VipDays, p.DeliveryAddress, p.DeliveryCity, p.DeliveryPhone,
         p.Status, p.SellerApprovalStatus, p.SellerId,
-        p.CardLast4, p.PaidAt, p.CreatedDate, p.UserId);
+        p.Seller != null ? $"{p.Seller.FirstName} {p.Seller.LastName}" : null,
+        p.CardLast4, p.PaidAt, p.CreatedDate, p.UserId,
+        p.User != null ? $"{p.User.FirstName} {p.User.LastName}" : null);
 }

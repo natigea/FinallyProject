@@ -7,72 +7,68 @@
 <!-- KPI Cards -->
 <div class="row g-3 mb-4">
     <div class="col-sm-6 col-xl-4">
-        <div class="stat-card bg-gradient-primary">
-            <div class="d-flex justify-content-between align-items-start">
-                <div>
-                    <div class="stat-value">@Model.MyListings.Count</div>
-                    <div class="stat-label">Всего объявлений</div>
-                </div>
-                <i class="bi bi-grid-3x3-gap stat-icon"></i>
+        <div class="kpi bg-g-indigo">
+            <div class="d-flex justify-content-between align-items-start mb-3">
+                <div class="kpi-icon"><i class="bi bi-grid-3x3-gap-fill"></i></div>
             </div>
+            <div class="kpi-value">@Model.MyListings.Count</div>
+            <div class="kpi-label">Всего объявлений</div>
         </div>
     </div>
     <div class="col-sm-6 col-xl-4">
-        <div class="stat-card bg-gradient-success">
-            <div class="d-flex justify-content-between align-items-start">
-                <div>
-                    <div class="stat-value">@Model.ActiveCount</div>
-                    <div class="stat-label">Активных</div>
-                </div>
-                <i class="bi bi-check-circle stat-icon"></i>
+        <div class="kpi bg-g-emerald">
+            <div class="d-flex justify-content-between align-items-start mb-3">
+                <div class="kpi-icon"><i class="bi bi-check-circle-fill"></i></div>
             </div>
+            <div class="kpi-value">@Model.ActiveCount</div>
+            <div class="kpi-label">Активных</div>
         </div>
     </div>
     <div class="col-sm-6 col-xl-4">
-        <div class="stat-card bg-gradient-warning">
-            <div class="d-flex justify-content-between align-items-start">
-                <div>
-                    <div class="stat-value">@Model.ClosedCount</div>
-                    <div class="stat-label">Завершённых</div>
-                </div>
-                <i class="bi bi-archive stat-icon"></i>
+        <div class="kpi bg-g-amber">
+            <div class="d-flex justify-content-between align-items-start mb-3">
+                <div class="kpi-icon"><i class="bi bi-archive-fill"></i></div>
             </div>
+            <div class="kpi-value">@Model.ClosedCount</div>
+            <div class="kpi-label">Завершённых</div>
         </div>
     </div>
 </div>
 
 <!-- Quick actions -->
-<div class="d-flex gap-2 mb-4">
-    <a href="/Listing/Create" class="btn btn-success">
+<div class="d-flex gap-2 mb-4 flex-wrap">
+    <a href="/Listing/Create" class="btn btn-success" style="border-radius:10px; font-weight:600;">
         <i class="bi bi-plus-lg me-1"></i>Подать объявление
     </a>
-    <a href="/Listing/MyListings" class="btn btn-outline-secondary">
+    <a href="/Listing/MyListings" class="btn btn-outline-secondary" style="border-radius:10px;">
         <i class="bi bi-list-ul me-1"></i>Все мои объявления
     </a>
-    <a href="/Messages" class="btn btn-outline-primary">
-        <i class="bi bi-chat me-1"></i>Сообщения
+    <a href="/Messages" class="btn btn-outline-primary" style="border-radius:10px;">
+        <i class="bi bi-chat-dots me-1"></i>Сообщения
     </a>
 </div>
 
 <!-- Recent listings -->
 <div class="card">
-    <div class="card-header py-3 d-flex align-items-center justify-content-between">
-        <span><i class="bi bi-clock-history me-2 text-warning"></i>Мои последние объявления</span>
-        <a href="/Listing/MyListings" class="btn btn-sm btn-outline-secondary">Все</a>
+    <div class="card-header d-flex align-items-center justify-content-between">
+        <span><i class="bi bi-clock-history me-2" style="color:var(--accent);"></i>Мои последние объявления</span>
+        <a href="/Listing/MyListings" class="btn btn-sm btn-outline-secondary" style="border-radius:8px; font-size:.8rem;">
+            Все <i class="bi bi-arrow-right ms-1"></i>
+        </a>
     </div>
     <div class="card-body p-0">
         @if (!Model.MyListings.Any())
         {
             <div class="empty-state">
                 <i class="bi bi-grid-3x3-gap"></i>
-                У вас ещё нет объявлений. <a href="/Listing/Create">Подайте первое!</a>
+                У вас ещё нет объявлений. <a href="/Listing/Create" style="color:var(--accent); font-weight:600;">Подайте первое!</a>
             </div>
         }
         else
         {
             <div class="table-responsive">
                 <table class="table table-hover mb-0 align-middle">
-                    <thead class="table-light">
+                    <thead>
                         <tr>
                             <th>Название</th>
                             <th>Категория</th>
@@ -87,23 +83,25 @@
                         @foreach (var l in Model.MyListings.Take(10))
                         {
                             <tr>
-                                <td class="fw-medium">
-                                    <a href="/Listing/Detail/@l.Id" class="text-decoration-none text-dark">@l.Title</a>
+                                <td class="fw-semibold">
+                                    <a href="/Listing/Detail/@l.Id" class="text-decoration-none" style="color:var(--text-primary);">@l.Title</a>
                                 </td>
-                                <td class="small text-muted">@(l.CategoryName ?? "—")</td>
+                                <td class="small" style="color:var(--text-muted);">@(l.CategoryName ?? "—")</td>
                                 <td class="small">@l.City</td>
-                                <td class="fw-medium">@l.Price.ToString("N0") ₼</td>
+                                <td class="fw-semibold">@l.Price.ToString("N0") ₼</td>
                                 <td>
                                     @if (l.Status == "Active")
                                     {
-                                        <span class="badge bg-success-subtle text-success">Активно</span>
+                                        <span class="badge bg-success-subtle text-success">
+                                            <i class="bi bi-check-circle me-1"></i>Активно
+                                        </span>
                                     }
                                     else
                                     {
                                         <span class="badge bg-secondary-subtle text-secondary">Закрыто</span>
                                     }
                                 </td>
-                                <td class="small text-muted">@l.CreatedDate.ToString("dd.MM.yy")</td>
+                                <td class="small" style="color:var(--text-muted);">@l.CreatedDate.ToString("dd.MM.yy")</td>
                                 <td>
                                     <a href="/Listing/Edit/@l.Id" class="btn btn-sm btn-outline-primary btn-action" title="Редактировать">
                                         <i class="bi bi-pencil"></i>

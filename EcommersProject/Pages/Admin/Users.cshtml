@@ -8,25 +8,24 @@
 
 <div class="d-flex justify-content-between align-items-center mb-4">
     <div>
-        <h5 class="mb-0 fw-bold">@L["Admin_ManageUsers"]</h5>
-        <small class="text-muted">@L["Admin_TotalLabel"] @Model.Users.Count</small>
+        <h5 class="mb-1 fw-bold" style="letter-spacing:-.3px;">@L["Admin_ManageUsers"]</h5>
+        <span class="small" style="color:var(--text-muted);">@L["Admin_TotalLabel"] @Model.Users.Count</span>
     </div>
 </div>
 
 <!-- Filters -->
 <div class="card mb-3">
-    <div class="card-body py-2">
-        <form method="get" class="row g-2 align-items-center">
-            <div class="col-auto">
-                <input asp-for="Search" type="text" class="form-control form-control-sm"
-                       placeholder="@L["Admin_SearchUsers"]" style="min-width:220px" />
+    <div class="card-body filter-card">
+        <form method="get" class="d-flex gap-2 align-items-center flex-wrap">
+            <div class="position-relative" style="min-width:260px;">
+                <i class="bi bi-search position-absolute" style="left:12px;top:50%;transform:translateY(-50%);color:var(--text-muted);font-size:.85rem;"></i>
+                <input asp-for="Search" type="text" class="form-control form-control-sm ps-5"
+                       placeholder="@L["Admin_SearchUsers"]" />
             </div>
-            <div class="col-auto">
-                <button type="submit" class="btn btn-sm btn-outline-primary">
-                    <i class="bi bi-search"></i>
-                </button>
-                <a href="/Admin/Users" class="btn btn-sm btn-outline-secondary ms-1">@L["Admin_Reset"]</a>
-            </div>
+            <button type="submit" class="btn btn-sm btn-primary" style="border-radius:8px;">
+                <i class="bi bi-search"></i>
+            </button>
+            <a href="/Admin/Users" class="btn btn-sm btn-outline-secondary" style="border-radius:8px;">@L["Admin_Reset"]</a>
         </form>
     </div>
 </div>
@@ -45,7 +44,7 @@
         {
             <div class="table-responsive">
                 <table class="table table-hover align-middle mb-0">
-                    <thead class="table-light">
+                    <thead>
                         <tr>
                             <th>@L["Admin_ColName"]</th>
                             <th>@L["Admin_ColEmail"]</th>
@@ -64,49 +63,52 @@
                             var isSuperAdmin = u.Email.Trim().ToLowerInvariant() == Model.SuperAdminEmail;
                             var currentEmail = User.FindFirstValue(System.Security.Claims.ClaimTypes.Email)?.Trim().ToLowerInvariant();
                             var currentIsSuperAdmin = currentEmail == Model.SuperAdminEmail;
-                            <tr class="@(isSelf ? "table-light" : "")">
-                                <td class="fw-medium">
+                            <tr style="@(isSelf ? "background:var(--accent-soft);" : "")">
+                                <td class="fw-semibold">
                                     @u.FirstName @u.LastName
                                     @if (isSelf)
                                     {
-                                        <span class="badge bg-secondary ms-1" style="font-size:.65rem;">@L["Admin_You"]</span>
+                                        <span class="badge ms-1" style="font-size:.6rem; background:var(--accent-soft); color:var(--accent);">@L["Admin_You"]</span>
                                     }
                                     @if (isSuperAdmin)
                                     {
-                                        <span class="badge bg-danger ms-1" style="font-size:.65rem;"><i class="bi bi-star-fill me-1"></i>@L["Admin_SuperAdmin"]</span>
+                                        <span class="badge bg-danger ms-1" style="font-size:.6rem;"><i class="bi bi-star-fill me-1"></i>@L["Admin_SuperAdmin"]</span>
                                     }
                                 </td>
-                                <td class="small text-muted">@u.Email</td>
+                                <td class="small" style="color:var(--text-muted);">@u.Email</td>
                                 <td class="small">@(string.IsNullOrEmpty(u.PhoneNumber) ? "—" : u.PhoneNumber)</td>
                                 <td>
                                     @if (isAdmin)
                                     {
-                                        <span class="badge bg-danger">
+                                        <span class="badge" style="background:linear-gradient(135deg,#6366f1,#8b5cf6); color:#fff;">
                                             <i class="bi bi-shield-fill me-1"></i>@L["Admin_RoleAdmin"]
                                         </span>
                                     }
                                     else
                                     {
-                                        <span class="badge bg-secondary">@L["Admin_RoleUser"]</span>
+                                        <span class="badge bg-secondary-subtle text-secondary">@L["Admin_RoleUser"]</span>
                                     }
                                 </td>
                                 <td>
                                     @if (u.IsActive)
                                     {
-                                        <span class="badge bg-success-subtle text-success">@L["Admin_UserActive"]</span>
+                                        <span class="badge bg-success-subtle text-success">
+                                            <i class="bi bi-check-circle me-1"></i>@L["Admin_UserActive"]
+                                        </span>
                                     }
                                     else
                                     {
-                                        <span class="badge bg-danger-subtle text-danger">@L["Admin_UserInactive"]</span>
+                                        <span class="badge bg-danger-subtle text-danger">
+                                            <i class="bi bi-x-circle me-1"></i>@L["Admin_UserInactive"]
+                                        </span>
                                     }
                                 </td>
-                                <td class="small text-muted">@u.CreatedDate.ToString("dd.MM.yyyy")</td>
+                                <td class="small" style="color:var(--text-muted);">@u.CreatedDate.ToString("dd.MM.yyyy")</td>
                                 <td>
                                     <div class="d-flex gap-1 flex-wrap">
-
                                         @if (isSuperAdmin)
                                         {
-                                            <span class="text-muted small fst-italic">@L["Admin_Protected"]</span>
+                                            <span class="small fst-italic" style="color:var(--text-muted);">@L["Admin_Protected"]</span>
                                         }
                                         else if (!isSelf)
                                         {
@@ -172,7 +174,7 @@
                                         }
                                         else
                                         {
-                                            <span class="text-muted small fst-italic">—</span>
+                                            <span class="small fst-italic" style="color:var(--text-muted);">—</span>
                                         }
                                     </div>
                                 </td>
@@ -184,9 +186,3 @@
         }
     </div>
 </div>
-
-@section Styles {
-<style>
-    .btn-action { width: 30px; height: 30px; padding: 0; display: inline-flex; align-items: center; justify-content: center; }
-</style>
-}

@@ -7,14 +7,14 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 namespace EcommersProject.Pages.Seller;
 
 [Authorize]
-public class OrdersModel(IMessageService messageService) : PageModel
+public class OrdersModel(IPurchaseService purchaseService) : PageModel
 {
-    public IReadOnlyList<ConversationGetDto> Conversations { get; private set; } = [];
+    public IReadOnlyList<PurchaseGetDto> Orders { get; private set; } = [];
 
     public async Task OnGetAsync(CancellationToken cancellationToken)
     {
         var userIdStr = User.FindFirstValue(ClaimTypes.NameIdentifier);
         if (!Guid.TryParse(userIdStr, out var userId)) return;
-        Conversations = await messageService.GetUserConversationsAsync(userId, cancellationToken);
+        Orders = await purchaseService.GetBySellerAsync(userId);
     }
 }

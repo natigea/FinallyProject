@@ -1,28 +1,28 @@
 @{
     var code = ViewData["Code"] as int? ?? 500;
-    ViewData["Title"] = $"Ошибка {code}";
-    var (title, message, icon) = code switch {
-        404 => ("Страница не найдена", "Страница, которую вы ищете, не существует или была удалена.", "bi-compass"),
-        403 => ("Доступ запрещён", "У вас нет прав для просмотра этой страницы.", "bi-shield-x"),
-        _ => ("Что-то пошло не так", "Произошла внутренняя ошибка сервера. Попробуйте обновить страницу.", "bi-exclamation-triangle")
+    ViewData["Title"] = $"Error {code}";
+    var (titleKey, descKey, icon) = code switch {
+        404 => ("Error_404Title", "Error_404Desc", "bi-compass"),
+        403 => ("Error_403Title", "Error_403Desc", "bi-shield-x"),
+        _ =>   ("Error_500Title", "Error_500Desc", "bi-exclamation-triangle")
     };
 }
 
 <div class="container py-5">
     <div class="row justify-content-center">
         <div class="col-md-6 text-center py-5">
-            <div style="font-size: 6rem; font-weight: 900; background: linear-gradient(135deg, #6366f1, #8b5cf6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; line-height: 1; margin-bottom: 1rem;">
+            <div style="font-size:6rem;font-weight:900;background:linear-gradient(135deg,#6366f1,#8b5cf6);-webkit-background-clip:text;-webkit-text-fill-color:transparent;line-height:1;margin-bottom:1rem;">
                 @code
             </div>
             <i class="bi @icon fs-1 text-muted mb-3 d-block"></i>
-            <h3 class="fw-bold mb-2">@title</h3>
-            <p class="text-muted mb-4">@message</p>
+            <h3 class="fw-bold mb-2">@L[titleKey]</h3>
+            <p class="text-muted mb-4">@L[descKey]</p>
             <div class="d-flex gap-3 justify-content-center">
                 <a href="/" class="btn btn-primary px-4">
-                    <i class="bi bi-house me-2"></i>На главную
+                    <i class="bi bi-house me-2"></i>@L["Error_Home"]
                 </a>
-                <a href="/Shop" class="btn btn-outline-secondary px-4">
-                    <i class="bi bi-grid me-2"></i>В каталог
+                <a href="/Listing" class="btn btn-outline-secondary px-4">
+                    <i class="bi bi-grid me-2"></i>@L["Error_Catalog"]
                 </a>
             </div>
         </div>

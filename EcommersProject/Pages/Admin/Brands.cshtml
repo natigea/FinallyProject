@@ -6,8 +6,8 @@
 
 <div class="d-flex justify-content-between align-items-center mb-4">
     <div>
-        <h5 class="mb-0 fw-bold">Модерация объявлений</h5>
-        <small class="text-muted">Всего: @Model.TotalCount</small>
+        <h5 class="mb-1 fw-bold" style="letter-spacing:-.3px;">Модерация объявлений</h5>
+        <span class="small" style="color:var(--text-muted);">Всего: @Model.TotalCount</span>
     </div>
 </div>
 
@@ -24,7 +24,7 @@
         {
             <div class="table-responsive">
                 <table class="table table-hover align-middle mb-0">
-                    <thead class="table-light">
+                    <thead>
                         <tr>
                             <th>Название</th>
                             <th>Категория</th>
@@ -40,17 +40,19 @@
                         @foreach (var l in Model.Listings)
                         {
                             <tr>
-                                <td class="fw-medium">
-                                    <a href="/Listing/Detail/@l.Id" class="text-decoration-none text-dark">@l.Title</a>
+                                <td class="fw-semibold">
+                                    <a href="/Listing/Detail/@l.Id" class="text-decoration-none" style="color:var(--text-primary);">@l.Title</a>
                                 </td>
-                                <td class="small text-muted">@(l.CategoryName ?? "—")</td>
+                                <td class="small" style="color:var(--text-muted);">@(l.CategoryName ?? "—")</td>
                                 <td class="small">@l.City</td>
-                                <td class="fw-medium">@l.Price.ToString("N0") ₼</td>
-                                <td class="small">@(l.UserName ?? "—")</td>
+                                <td class="fw-semibold">@l.Price.ToString("N0") ₼</td>
+                                <td class="small" style="color:var(--text-secondary);">@(l.UserName ?? "—")</td>
                                 <td>
                                     @if (l.Status == "Active")
                                     {
-                                        <span class="badge bg-success-subtle text-success">Активно</span>
+                                        <span class="badge bg-success-subtle text-success">
+                                            <i class="bi bi-check-circle me-1"></i>Активно
+                                        </span>
                                     }
                                     else if (l.Status == "Closed")
                                     {
@@ -58,10 +60,12 @@
                                     }
                                     else
                                     {
-                                        <span class="badge bg-warning-subtle text-warning">@l.Status</span>
+                                        <span class="badge bg-warning-subtle text-warning">
+                                            <i class="bi bi-clock me-1"></i>@l.Status
+                                        </span>
                                     }
                                 </td>
-                                <td class="small text-muted">@l.CreatedDate.ToString("dd.MM.yyyy")</td>
+                                <td class="small" style="color:var(--text-muted);">@l.CreatedDate.ToString("dd.MM.yyyy")</td>
                                 <td>
                                     <form method="post" asp-page-handler="Delete"
                                           onsubmit="return confirm('Удалить объявление «@l.Title»?')">
