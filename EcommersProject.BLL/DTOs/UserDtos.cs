@@ -8,7 +8,8 @@ public record UserGetDto(
     string PhoneNumber,
     bool IsActive,
     string Role,
-    DateTimeOffset CreatedDate);
+    DateTimeOffset CreatedDate,
+    string? PhotoUrl = null);
 
 public record UserCreateDto(
     string Email,
@@ -20,4 +21,5 @@ public record UserCreateDto(
 public record UserUpdateDto(
     string FirstName,
     string LastName,
-    string PhoneNumber);
+    string PhoneNumber,
+    string? PhotoUrl = null);

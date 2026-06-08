@@ -7,4 +7,5 @@ public record NotificationGetDto(
     string? Link,
     bool IsRead,
     Guid? PurchaseId,
-    DateTimeOffset CreatedDate);
+    DateTimeOffset CreatedDate,
+    string? TitleKey = null);

@@ -59,24 +59,24 @@
         <!-- Sidebar -->
         <aside class="browse-sidebar d-none d-lg-block">
             <div class="surface p-3">
-                <h6 class="filter-head">Фильтры</h6>
+                <h6 class="filter-head">@L["Browse_Filters"]</h6>
                 <form method="get" action="/Listing">
                     <input type="hidden" name="q" value="@Model.Query" />
                     <input type="hidden" name="categoryId" value="@Model.CategoryId" />
                     <input type="hidden" name="city" value="@Model.City" />
 
                     <div class="mb-3">
-                        <label class="filter-lbl">Цена, ₼</label>
+                        <label class="filter-lbl">@L["Browse_Price"]</label>
                         <div class="d-flex gap-2">
                             <input type="number" name="priceMin" value="@Model.PriceMin"
-                                   class="form-control form-control-sm" placeholder="от" min="0" />
+                                   class="form-control form-control-sm" placeholder="@L["Browse_From"]" min="0" />
                             <input type="number" name="priceMax" value="@Model.PriceMax"
-                                   class="form-control form-control-sm" placeholder="до" min="0" />
+                                   class="form-control form-control-sm" placeholder="@L["Browse_PriceTo"]" min="0" />
                         </div>
                     </div>
 
                     <div class="mb-3">
-                        <label class="filter-lbl">Сортировка</label>
+                        <label class="filter-lbl">@L["Browse_Sort"]</label>
                         <select name="sortBy" class="form-select form-select-sm">
                             <option value="newest" selected="@(Model.SortBy == "newest" || Model.SortBy == null)">@L["Browse_SortNewest"]</option>
                             <option value="price_asc" selected="@(Model.SortBy == "price_asc")">@L["Browse_SortCheapest"]</option>
@@ -84,8 +84,8 @@
                         </select>
                     </div>
 
-                    <button type="submit" class="btn-dark-custom w-100 py-2">Применить</button>
-                    <a href="/Listing" class="btn btn-outline-secondary w-100 mt-2 py-2" style="font-size:.85rem;">Сбросить</a>
+                    <button type="submit" class="btn-dark-custom w-100 py-2">@L["Browse_Apply"]</button>
+                    <a href="/Listing" class="btn btn-outline-secondary w-100 mt-2 py-2" style="font-size:.85rem;">@L["Browse_Clear"]</a>
                 </form>
             </div>
         </aside>

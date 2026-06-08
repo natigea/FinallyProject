@@ -94,6 +94,11 @@
   <data name="Browse_NothingFound"   xml:space="preserve"><value>Nothing found</value></data>
   <data name="Browse_TryChange"      xml:space="preserve"><value>Try changing your search parameters</value></data>
   <data name="Browse_ShowAll"        xml:space="preserve"><value>Show all listings</value></data>
+  <data name="Browse_Filters"        xml:space="preserve"><value>Filters</value></data>
+  <data name="Browse_Price"          xml:space="preserve"><value>Price, ₼</value></data>
+  <data name="Browse_Sort"           xml:space="preserve"><value>Sort</value></data>
+  <data name="Browse_Apply"          xml:space="preserve"><value>Apply</value></data>
+  <data name="Browse_From"           xml:space="preserve"><value>from</value></data>
 
   <!-- ── LISTING DETAIL ────────────────────────────────── -->
   <data name="Detail_Description"       xml:space="preserve"><value>Description</value></data>
@@ -123,9 +128,19 @@
   <data name="Create_City"              xml:space="preserve"><value>City</value></data>
   <data name="Create_Phone"             xml:space="preserve"><value>Contact phone</value></data>
   <data name="Create_SectionPhotos"     xml:space="preserve"><value>Photos</value></data>
-  <data name="Create_PhotosHint"        xml:space="preserve"><value>Up to 5 photos (JPG, PNG, WebP). First photo will be the cover.</value></data>
+  <data name="Create_PhotosHint"        xml:space="preserve"><value>Up to 10 photos (JPG, PNG, WebP). First photo will be the cover.</value></data>
   <data name="Create_Publish"           xml:space="preserve"><value>Publish</value></data>
   <data name="Create_Cancel"            xml:space="preserve"><value>Cancel</value></data>
+  <data name="Create_HeroSub"          xml:space="preserve"><value>Fill in the form and your listing will appear after moderation</value></data>
+  <data name="Create_StepMain"         xml:space="preserve"><value>Main</value></data>
+  <data name="Create_StepPrice"        xml:space="preserve"><value>Price</value></data>
+  <data name="Create_StepPhotos"       xml:space="preserve"><value>Photos</value></data>
+  <data name="Create_SectionMainSub"   xml:space="preserve"><value>Category, title and description</value></data>
+  <data name="Create_SectionPriceSub"  xml:space="preserve"><value>Price, city and contacts</value></data>
+  <data name="Create_SelectCity"       xml:space="preserve"><value>— Select city —</value></data>
+  <data name="Create_DropHere"         xml:space="preserve"><value>Drag photos here</value></data>
+  <data name="Create_DropHint"         xml:space="preserve"><value>JPG, PNG or WebP · up to 10 photos</value></data>
+  <data name="Create_BrowseFiles"      xml:space="preserve"><value>Browse files</value></data>
 
   <!-- ── EDIT LISTING ──────────────────────────────────── -->
   <data name="Edit_PageTitle"       xml:space="preserve"><value>Edit listing</value></data>
@@ -143,6 +158,7 @@
   <data name="Edit_AddPhotos"       xml:space="preserve"><value>Add photos</value></data>
   <data name="Edit_Save"            xml:space="preserve"><value>Save</value></data>
   <data name="Edit_Cancel"          xml:space="preserve"><value>Cancel</value></data>
+  <data name="Edit_HeroSub"         xml:space="preserve"><value>Update the details and save your listing</value></data>
 
   <!-- ── MY LISTINGS ───────────────────────────────────── -->
   <data name="MyListings_Title"      xml:space="preserve"><value>My Listings</value></data>
@@ -316,7 +332,13 @@
   <data name="Admin_UserActivatedMsg"    xml:space="preserve"><value>User activated.</value></data>
   <data name="Admin_UserDeactivatedMsg"  xml:space="preserve"><value>User deactivated.</value></data>
   <data name="Admin_UserDeletedMsg"      xml:space="preserve"><value>User deleted.</value></data>
-  <data name="Admin_CannotDeleteSelf"    xml:space="preserve"><value>You cannot delete yourself.</value></data>
+  <data name="Admin_CannotDeleteSelf"         xml:space="preserve"><value>You cannot delete yourself.</value></data>
+  <data name="Admin_CannotDeleteSuperAdmin"  xml:space="preserve"><value>The super admin account cannot be deleted.</value></data>
+  <data name="Admin_CannotDemoteSuperAdmin"  xml:space="preserve"><value>The super admin role cannot be changed.</value></data>
+  <data name="Admin_CannotDemoteAdmin"       xml:space="preserve"><value>Only the super admin can remove admin rights from other admins.</value></data>
+  <data name="Admin_SuperAdmin"              xml:space="preserve"><value>Super</value></data>
+  <data name="Admin_Protected"               xml:space="preserve"><value>Protected</value></data>
+  <data name="Common_Back"                   xml:space="preserve"><value>Back</value></data>
 
   <!-- Admin – Categories management -->
   <data name="Admin_CatSectionTitle"     xml:space="preserve"><value>Product categories</value></data>
@@ -401,6 +423,25 @@
   <data name="Contact_Faq5Q"            xml:space="preserve"><value>Can I edit my listing?</value></data>
   <data name="Contact_Faq5A"            xml:space="preserve"><value>Yes, in 'Profile → My Listings' you can edit any of your listings.</value></data>
 
+  <!-- ── PROFILE SETTINGS ───────────────────────────────── -->
+  <data name="Profile_EditTitle"          xml:space="preserve"><value>Profile settings</value></data>
+  <data name="Profile_Avatar"             xml:space="preserve"><value>Profile photo</value></data>
+  <data name="Profile_ChangePhoto"        xml:space="preserve"><value>Change photo</value></data>
+  <data name="Profile_RemovePhoto"        xml:space="preserve"><value>Remove photo</value></data>
+  <data name="Profile_PersonalInfo"       xml:space="preserve"><value>Personal info</value></data>
+  <data name="Profile_FirstName"          xml:space="preserve"><value>First name</value></data>
+  <data name="Profile_LastName"           xml:space="preserve"><value>Last name</value></data>
+  <data name="Profile_Phone"              xml:space="preserve"><value>Phone</value></data>
+  <data name="Profile_Email"              xml:space="preserve"><value>Email</value></data>
+  <data name="Profile_EmailHint"          xml:space="preserve"><value>Email cannot be changed</value></data>
+  <data name="Profile_SaveChanges"        xml:space="preserve"><value>Save changes</value></data>
+  <data name="Profile_ChangePassword"     xml:space="preserve"><value>Change password</value></data>
+  <data name="Profile_CurrentPassword"    xml:space="preserve"><value>Current password</value></data>
+  <data name="Profile_NewPassword"        xml:space="preserve"><value>New password</value></data>
+  <data name="Profile_ConfirmPassword"    xml:space="preserve"><value>Confirm new password</value></data>
+  <data name="Profile_UpdatePassword"     xml:space="preserve"><value>Update password</value></data>
+  <data name="Profile_Purchases"          xml:space="preserve"><value>Purchases &amp; VIP</value></data>
+
   <!-- ── PROFILE ───────────────────────────────────────── -->
   <data name="Profile_Title"         xml:space="preserve"><value>My Profile</value></data>
   <data name="Profile_Since"         xml:space="preserve"><value>Member since</value></data>
@@ -411,4 +452,160 @@
   <data name="Profile_SeeAll"        xml:space="preserve"><value>See all</value></data>
   <data name="Profile_NoActive"      xml:space="preserve"><value>You have no active listings</value></data>
   <data name="Profile_PrivatePerson" xml:space="preserve"><value>Private person</value></data>
+
+  <!-- ── NOTIFICATIONS ───────────────────────────────────── -->
+  <data name="Nav_Notifications"           xml:space="preserve"><value>Notifications</value></data>
+  <data name="Notifications_Empty"         xml:space="preserve"><value>No notifications yet</value></data>
+  <data name="Notifications_Approve"       xml:space="preserve"><value>Approve</value></data>
+  <data name="Notifications_Reject"        xml:space="preserve"><value>Decline</value></data>
+  <data name="Notifications_ViewDetails"       xml:space="preserve"><value>View details</value></data>
+  <data name="Notif_NewOrder_Title"            xml:space="preserve"><value>🛒 New order for your item</value></data>
+  <data name="Notif_NewOrder_Body"             xml:space="preserve"><value>A buyer wants to purchase «{0}». Please confirm or reject the order.</value></data>
+  <data name="Notif_OrderPending_Title"        xml:space="preserve"><value>⏳ Order awaiting confirmation</value></data>
+  <data name="Notif_OrderPending_Body"         xml:space="preserve"><value>Your order {0} has been placed. Waiting for the seller's confirmation.</value></data>
+  <data name="Notif_OrderApproved_Title"       xml:space="preserve"><value>✅ Order confirmed</value></data>
+  <data name="Notif_OrderApproved_Body"        xml:space="preserve"><value>The seller confirmed your order «{0}». Expect delivery soon.</value></data>
+  <data name="Notif_OrderRejected_Title"       xml:space="preserve"><value>❌ Order rejected</value></data>
+  <data name="Notif_OrderRejected_Body"        xml:space="preserve"><value>Unfortunately, the seller rejected your order «{0}».</value></data>
+
+  <!-- ── CHECKOUT – DELIVERY ─────────────────────────────── -->
+  <data name="Checkout_DeliveryTitle"      xml:space="preserve"><value>Order with Delivery</value></data>
+  <data name="Checkout_DeliveryAddrSection" xml:space="preserve"><value>Delivery Address</value></data>
+  <data name="Checkout_AddressLabel"       xml:space="preserve"><value>Address</value></data>
+  <data name="Checkout_CityLabel"          xml:space="preserve"><value>City</value></data>
+  <data name="Checkout_PhoneLabel"         xml:space="preserve"><value>Phone</value></data>
+  <data name="Checkout_CardSection"        xml:space="preserve"><value>Card Details</value></data>
+  <data name="Checkout_CardNumberLabel"    xml:space="preserve"><value>Card Number</value></data>
+  <data name="Checkout_CardHolderLabel"    xml:space="preserve"><value>Card Holder</value></data>
+  <data name="Checkout_ExpiryLabel"        xml:space="preserve"><value>Expiry Date</value></data>
+  <data name="Checkout_PayBtn"             xml:space="preserve"><value>Pay</value></data>
+  <data name="Checkout_DemoNotice"         xml:space="preserve"><value>Demo system — no real charge occurs</value></data>
+  <data name="Checkout_OrderSummary"       xml:space="preserve"><value>Order Summary</value></data>
+  <data name="Checkout_ItemPrice"          xml:space="preserve"><value>Item Price</value></data>
+  <data name="Checkout_DeliveryFeeLabel"   xml:space="preserve"><value>Delivery (5%)</value></data>
+  <data name="Checkout_TotalLabel"         xml:space="preserve"><value>Total</value></data>
+  <data name="Checkout_TestCards"          xml:space="preserve"><value>Test Cards</value></data>
+  <data name="Checkout_TestSuccess"        xml:space="preserve"><value>Success</value></data>
+  <data name="Checkout_TestFail"           xml:space="preserve"><value>Declined</value></data>
+  <data name="Checkout_TestHint"           xml:space="preserve"><value>CVV and expiry — any valid values</value></data>
+
+  <!-- ── CHECKOUT – VIP ──────────────────────────────────── -->
+  <data name="Checkout_VipTitle"           xml:space="preserve"><value>VIP Promotion</value></data>
+  <data name="Checkout_VipPlanSection"     xml:space="preserve"><value>Choose a Plan</value></data>
+  <data name="Checkout_VipGoodDeal"        xml:space="preserve"><value>Best Value</value></data>
+  <data name="Checkout_VipBenefit1"        xml:space="preserve"><value>Listing shown first in search results</value></data>
+  <data name="Checkout_VipBenefit2"        xml:space="preserve"><value>⭐ VIP badge on listing card</value></data>
+  <data name="Checkout_VipBenefit3"        xml:space="preserve"><value>More views from buyers</value></data>
+  <data name="Checkout_VipActivateBtn"     xml:space="preserve"><value>Activate VIP</value></data>
+  <data name="Checkout_YourListing"        xml:space="preserve"><value>Your Listing</value></data>
+  <data name="Checkout_VipUntil"           xml:space="preserve"><value>VIP until</value></data>
+
+  <!-- ── CHECKOUT – RESULT ───────────────────────────────── -->
+  <data name="Checkout_Result_VipTitle"    xml:space="preserve"><value>VIP Status Activated!</value></data>
+  <data name="Checkout_Result_DeliveryTitle" xml:space="preserve"><value>Order Accepted!</value></data>
+  <data name="Checkout_Result_AwaitingTitle" xml:space="preserve"><value>Awaiting Confirmation</value></data>
+  <data name="Checkout_Result_FailTitle"   xml:space="preserve"><value>Payment Declined</value></data>
+  <data name="Checkout_Result_VipDesc"     xml:space="preserve"><value>Your listing has been promoted for {0} days.</value></data>
+  <data name="Checkout_Result_AwaitDesc"   xml:space="preserve"><value>Your order is placed. The seller was notified and must confirm the order.</value></data>
+  <data name="Checkout_Result_FailDesc"    xml:space="preserve"><value>Card declined by bank. Try another card or check your details.</value></data>
+  <data name="Checkout_Result_OrderNumber" xml:space="preserve"><value>Order Number</value></data>
+  <data name="Checkout_Result_Listing"     xml:space="preserve"><value>Listing</value></data>
+  <data name="Checkout_Result_Item"        xml:space="preserve"><value>Item</value></data>
+  <data name="Checkout_Result_Duration"    xml:space="preserve"><value>Duration</value></data>
+  <data name="Checkout_Result_Days"        xml:space="preserve"><value>{0} days</value></data>
+  <data name="Checkout_Result_DeliveryFee" xml:space="preserve"><value>Delivery Fee</value></data>
+  <data name="Checkout_Result_DeliveryCity" xml:space="preserve"><value>Delivery City</value></data>
+  <data name="Checkout_Result_Amount"      xml:space="preserve"><value>Amount</value></data>
+  <data name="Checkout_Result_Card"        xml:space="preserve"><value>Card</value></data>
+  <data name="Checkout_Result_Paid"        xml:space="preserve"><value>Paid at</value></data>
+  <data name="Checkout_Result_History"     xml:space="preserve"><value>Purchase History</value></data>
+  <data name="Checkout_Result_GoListing"   xml:space="preserve"><value>Go to Listing</value></data>
+  <data name="Checkout_Result_TryAgain"    xml:space="preserve"><value>Try Again</value></data>
+  <data name="Checkout_Result_BackListing" xml:space="preserve"><value>Back to Listing</value></data>
+
+  <!-- ── CHECKOUT – HISTORY ──────────────────────────────── -->
+  <data name="Checkout_History_Title"         xml:space="preserve"><value>Purchase History</value></data>
+  <data name="Checkout_History_Empty"         xml:space="preserve"><value>No purchases or promotions yet</value></data>
+  <data name="Checkout_History_Browse"        xml:space="preserve"><value>Browse Listings</value></data>
+  <data name="Checkout_History_Vip"           xml:space="preserve"><value>VIP</value></data>
+  <data name="Checkout_History_Delivery"      xml:space="preserve"><value>Delivery</value></data>
+  <data name="Checkout_History_StatusPaid"    xml:space="preserve"><value>Paid</value></data>
+  <data name="Checkout_History_StatusDeclined" xml:space="preserve"><value>Declined</value></data>
+  <data name="Checkout_History_StatusPending" xml:space="preserve"><value>Pending</value></data>
+  <data name="Checkout_History_SellerPending" xml:space="preserve"><value>Awaiting seller</value></data>
+  <data name="Checkout_History_SellerApproved" xml:space="preserve"><value>Seller approved</value></data>
+  <data name="Checkout_History_SellerRejected" xml:space="preserve"><value>Seller declined</value></data>
+  <data name="Checkout_History_GoListing"     xml:space="preserve"><value>Listing</value></data>
+
+  <data name="Login_ForgotPassword"    xml:space="preserve"><value>Forgot password?</value></data>
+  <data name="ForgotPwd_Title"         xml:space="preserve"><value>Forgot password?</value></data>
+  <data name="ForgotPwd_Sub"           xml:space="preserve"><value>Enter your account email — we'll generate a password reset code.</value></data>
+  <data name="ForgotPwd_Submit"        xml:space="preserve"><value>Get reset code</value></data>
+  <data name="ForgotPwd_BackToLogin"   xml:space="preserve"><value>Back to sign in</value></data>
+  <data name="ForgotPwd_LeftHeading"   xml:space="preserve"><value>Account Recovery</value></data>
+  <data name="ForgotPwd_Feat1"         xml:space="preserve"><value>Secure password reset</value></data>
+  <data name="ForgotPwd_Feat2"         xml:space="preserve"><value>Code valid for 30 minutes</value></data>
+  <data name="ForgotPwd_Feat3"         xml:space="preserve"><value>Can be requested again</value></data>
+  <data name="ForgotPwd_SentTitle"     xml:space="preserve"><value>Your reset code</value></data>
+  <data name="ForgotPwd_SentSub"       xml:space="preserve"><value>Password reset code for account</value></data>
+  <data name="ForgotPwd_NoAccountSub"  xml:space="preserve"><value>If an account with this email exists, the code has been generated.</value></data>
+  <data name="ForgotPwd_CodeLabel"     xml:space="preserve"><value>Password reset code</value></data>
+  <data name="ForgotPwd_CodeHint"      xml:space="preserve"><value>Click to copy</value></data>
+  <data name="ForgotPwd_NoticeText"    xml:space="preserve"><value>Save this code. Valid for 30 minutes.</value></data>
+  <data name="ForgotPwd_GoToReset"     xml:space="preserve"><value>Go to reset password</value></data>
+  <data name="ForgotPwd_Copied"        xml:space="preserve"><value>Copied!</value></data>
+  <data name="ResetPwd_Title"          xml:space="preserve"><value>Reset password</value></data>
+  <data name="ResetPwd_Sub"            xml:space="preserve"><value>Enter your email, reset code and new password.</value></data>
+  <data name="ResetPwd_TokenLabel"     xml:space="preserve"><value>Reset code</value></data>
+  <data name="ResetPwd_NewPwdLabel"    xml:space="preserve"><value>New password</value></data>
+  <data name="ResetPwd_ConfirmLabel"   xml:space="preserve"><value>Confirm password</value></data>
+  <data name="ResetPwd_Submit"         xml:space="preserve"><value>Set new password</value></data>
+  <data name="ResetPwd_RequestNew"     xml:space="preserve"><value>Request new code</value></data>
+  <data name="ResetPwd_LeftHeading"    xml:space="preserve"><value>Create new password</value></data>
+  <data name="Detail_Photos"           xml:space="preserve"><value>{0} photos</value></data>
+  <data name="Detail_Characteristics"  xml:space="preserve"><value>Characteristics</value></data>
+  <data name="Detail_Category"         xml:space="preserve"><value>Category</value></data>
+  <data name="Detail_City"             xml:space="preserve"><value>City</value></data>
+  <data name="Detail_Status"           xml:space="preserve"><value>Status</value></data>
+  <data name="Detail_Date"             xml:space="preserve"><value>Date</value></data>
+  <data name="Detail_StatusActive"     xml:space="preserve"><value>Active</value></data>
+  <data name="Detail_StatusPending"    xml:space="preserve"><value>Pending</value></data>
+  <data name="Detail_OrderDelivery"    xml:space="preserve"><value>Order with delivery</value></data>
+  <data name="Detail_VipActiveUntil"   xml:space="preserve"><value>VIP active until</value></data>
+  <data name="Detail_ExtendVip"        xml:space="preserve"><value>Extend VIP</value></data>
+  <data name="Detail_MakeVip"          xml:space="preserve"><value>Make VIP</value></data>
+  <data name="Detail_Seller"           xml:space="preserve"><value>Seller</value></data>
+  <data name="Detail_SafetyTip"        xml:space="preserve"><value>Meet the seller in person. Don't send prepayments.</value></data>
+  <data name="Checkout_CardProtected"  xml:space="preserve"><value>Card data is protected by Stripe. We don't store card details.</value></data>
+  <data name="Checkout_StripeSSL"      xml:space="preserve"><value>Powered by Stripe · SSL encryption</value></data>
+  <data name="Checkout_TestCards"      xml:space="preserve"><value>Stripe test cards</value></data>
+  <data name="Checkout_TestSuccess"    xml:space="preserve"><value>Success</value></data>
+  <data name="Checkout_TestDeclined"   xml:space="preserve"><value>Declined</value></data>
+  <data name="Checkout_TestCardHint"   xml:space="preserve"><value>Expiry: any future · CVV: any 3 digits</value></data>
+  <data name="Checkout_Result_SuccessTitle"    xml:space="preserve"><value>Order successfully placed!</value></data>
+  <data name="Checkout_Result_SellerNotified"  xml:space="preserve"><value>The seller was notified and will contact you soon</value></data>
+  <data name="Checkout_Result_Copy"            xml:space="preserve"><value>Copy</value></data>
+  <data name="Checkout_Result_Copied"          xml:space="preserve"><value>Copied!</value></data>
+  <data name="Checkout_Result_DeliverySection" xml:space="preserve"><value>Delivery</value></data>
+  <data name="Checkout_Result_DeliveryAddress" xml:space="preserve"><value>Address</value></data>
+  <data name="Checkout_Result_PaymentSection"  xml:space="preserve"><value>Payment</value></data>
+  <data name="Checkout_Result_Total"           xml:space="preserve"><value>Total</value></data>
+  <data name="Checkout_Result_WhatNext"        xml:space="preserve"><value>What's next?</value></data>
+  <data name="Checkout_Result_Step1Label"      xml:space="preserve"><value>Order created</value></data>
+  <data name="Checkout_Result_Step1Sub"        xml:space="preserve"><value>Payment confirmed via Stripe</value></data>
+  <data name="Checkout_Result_Step2Label"      xml:space="preserve"><value>Seller notified</value></data>
+  <data name="Checkout_Result_Step2Sub"        xml:space="preserve"><value>Wait for seller's confirmation</value></data>
+  <data name="Checkout_Result_Step3Label"      xml:space="preserve"><value>Confirmation</value></data>
+  <data name="Checkout_Result_Step3Sub"        xml:space="preserve"><value>Seller will contact you to arrange delivery</value></data>
+  <data name="Checkout_Result_Step4Label"      xml:space="preserve"><value>Delivery</value></data>
+  <data name="Checkout_Result_Step4Sub"        xml:space="preserve"><value>Item will be delivered to the specified address</value></data>
+  <data name="Checkout_Result_Continue"        xml:space="preserve"><value>Continue shopping</value></data>
+  <data name="Error_404Title"    xml:space="preserve"><value>Page not found</value></data>
+  <data name="Error_404Desc"     xml:space="preserve"><value>The page you're looking for doesn't exist or has been removed.</value></data>
+  <data name="Error_403Title"    xml:space="preserve"><value>Access denied</value></data>
+  <data name="Error_403Desc"     xml:space="preserve"><value>You don't have permission to view this page.</value></data>
+  <data name="Error_500Title"    xml:space="preserve"><value>Something went wrong</value></data>
+  <data name="Error_500Desc"     xml:space="preserve"><value>An internal server error occurred. Try refreshing the page.</value></data>
+  <data name="Error_Home"        xml:space="preserve"><value>Back to home</value></data>
+  <data name="Error_Catalog"     xml:space="preserve"><value>Browse listings</value></data>
 </root>

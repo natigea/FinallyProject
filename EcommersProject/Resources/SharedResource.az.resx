@@ -94,6 +94,11 @@
   <data name="Browse_NothingFound"   xml:space="preserve"><value>Heç nə tapılmadı</value></data>
   <data name="Browse_TryChange"      xml:space="preserve"><value>Axtarış parametrlərini dəyişdirməyə çalışın</value></data>
   <data name="Browse_ShowAll"        xml:space="preserve"><value>Bütün elanları göstər</value></data>
+  <data name="Browse_Filters"        xml:space="preserve"><value>Filtrlər</value></data>
+  <data name="Browse_Price"          xml:space="preserve"><value>Qiymət, ₼</value></data>
+  <data name="Browse_Sort"           xml:space="preserve"><value>Sıralama</value></data>
+  <data name="Browse_Apply"          xml:space="preserve"><value>Tətbiq et</value></data>
+  <data name="Browse_From"           xml:space="preserve"><value>dan</value></data>
 
   <!-- ── LISTING DETAIL ────────────────────────────────── -->
   <data name="Detail_Description"       xml:space="preserve"><value>Təsvir</value></data>
@@ -126,6 +131,16 @@
   <data name="Create_PhotosHint"        xml:space="preserve"><value>5-ə qədər şəkil (JPG, PNG, WebP). İlk şəkil üz olacaq.</value></data>
   <data name="Create_Publish"           xml:space="preserve"><value>Dərc et</value></data>
   <data name="Create_Cancel"            xml:space="preserve"><value>Ləğv et</value></data>
+  <data name="Create_HeroSub"          xml:space="preserve"><value>Formanı doldurun və elanınız moderasiyadan sonra görünəcək</value></data>
+  <data name="Create_StepMain"         xml:space="preserve"><value>Əsas</value></data>
+  <data name="Create_StepPrice"        xml:space="preserve"><value>Qiymət</value></data>
+  <data name="Create_StepPhotos"       xml:space="preserve"><value>Şəkillər</value></data>
+  <data name="Create_SectionMainSub"   xml:space="preserve"><value>Kateqoriya, başlıq və təsvir</value></data>
+  <data name="Create_SectionPriceSub"  xml:space="preserve"><value>Qiymət, şəhər və əlaqə</value></data>
+  <data name="Create_SelectCity"       xml:space="preserve"><value>— Şəhər seçin —</value></data>
+  <data name="Create_DropHere"         xml:space="preserve"><value>Şəkilləri bura sürükləyin</value></data>
+  <data name="Create_DropHint"         xml:space="preserve"><value>JPG, PNG və ya WebP · 10 şəkilə qədər</value></data>
+  <data name="Create_BrowseFiles"      xml:space="preserve"><value>Faylları seçin</value></data>
 
   <!-- ── EDIT LISTING ──────────────────────────────────── -->
   <data name="Edit_PageTitle"       xml:space="preserve"><value>Elanı redaktə et</value></data>
@@ -143,6 +158,7 @@
   <data name="Edit_AddPhotos"       xml:space="preserve"><value>Şəkil əlavə et</value></data>
   <data name="Edit_Save"            xml:space="preserve"><value>Saxla</value></data>
   <data name="Edit_Cancel"          xml:space="preserve"><value>Ləğv et</value></data>
+  <data name="Edit_HeroSub"         xml:space="preserve"><value>Məlumatları dəyişin və elanı yadda saxlayın</value></data>
 
   <!-- ── MY LISTINGS ───────────────────────────────────── -->
   <data name="MyListings_Title"      xml:space="preserve"><value>Elanlarım</value></data>
@@ -316,7 +332,13 @@
   <data name="Admin_UserActivatedMsg"    xml:space="preserve"><value>İstifadəçi aktivləşdirildi.</value></data>
   <data name="Admin_UserDeactivatedMsg"  xml:space="preserve"><value>İstifadəçi deaktiv edildi.</value></data>
   <data name="Admin_UserDeletedMsg"      xml:space="preserve"><value>İstifadəçi silindi.</value></data>
-  <data name="Admin_CannotDeleteSelf"    xml:space="preserve"><value>Özünüzü silə bilməzsiniz.</value></data>
+  <data name="Admin_CannotDeleteSelf"         xml:space="preserve"><value>Özünüzü silə bilməzsiniz.</value></data>
+  <data name="Admin_CannotDeleteSuperAdmin"  xml:space="preserve"><value>Baş admin hesabını silmək olmaz.</value></data>
+  <data name="Admin_CannotDemoteSuperAdmin"  xml:space="preserve"><value>Baş adminin rolu dəyişdirilə bilməz.</value></data>
+  <data name="Admin_CannotDemoteAdmin"       xml:space="preserve"><value>Yalnız baş admin digər adminlərin hüquqlarını ala bilər.</value></data>
+  <data name="Admin_SuperAdmin"              xml:space="preserve"><value>Baş</value></data>
+  <data name="Admin_Protected"               xml:space="preserve"><value>Qorunur</value></data>
+  <data name="Common_Back"                   xml:space="preserve"><value>Geri</value></data>
 
   <!-- Admin – Categories management -->
   <data name="Admin_CatSectionTitle"     xml:space="preserve"><value>Məhsul kateqoriyaları</value></data>
@@ -401,6 +423,25 @@
   <data name="Contact_Faq5Q"            xml:space="preserve"><value>Elanımı redaktə edə bilərəmmi?</value></data>
   <data name="Contact_Faq5A"            xml:space="preserve"><value>Bəli. 'Profilim → Elanlarım' bölməsindən istənilən elanı redaktə edə bilərsiniz.</value></data>
 
+  <!-- ── PROFILE SETTINGS ───────────────────────────────── -->
+  <data name="Profile_EditTitle"          xml:space="preserve"><value>Profil parametrləri</value></data>
+  <data name="Profile_Avatar"             xml:space="preserve"><value>Profil şəkli</value></data>
+  <data name="Profile_ChangePhoto"        xml:space="preserve"><value>Şəkli dəyişdir</value></data>
+  <data name="Profile_RemovePhoto"        xml:space="preserve"><value>Şəkli sil</value></data>
+  <data name="Profile_PersonalInfo"       xml:space="preserve"><value>Şəxsi məlumat</value></data>
+  <data name="Profile_FirstName"          xml:space="preserve"><value>Ad</value></data>
+  <data name="Profile_LastName"           xml:space="preserve"><value>Soyad</value></data>
+  <data name="Profile_Phone"              xml:space="preserve"><value>Telefon</value></data>
+  <data name="Profile_Email"              xml:space="preserve"><value>Email</value></data>
+  <data name="Profile_EmailHint"          xml:space="preserve"><value>Email dəyişdirilə bilməz</value></data>
+  <data name="Profile_SaveChanges"        xml:space="preserve"><value>Dəyişiklikləri saxla</value></data>
+  <data name="Profile_ChangePassword"     xml:space="preserve"><value>Şifrəni dəyişdir</value></data>
+  <data name="Profile_CurrentPassword"    xml:space="preserve"><value>Cari şifrə</value></data>
+  <data name="Profile_NewPassword"        xml:space="preserve"><value>Yeni şifrə</value></data>
+  <data name="Profile_ConfirmPassword"    xml:space="preserve"><value>Yeni şifrəni təsdiqlə</value></data>
+  <data name="Profile_UpdatePassword"     xml:space="preserve"><value>Şifrəni yenilə</value></data>
+  <data name="Profile_Purchases"          xml:space="preserve"><value>Alışlar və VİP</value></data>
+
   <!-- ── PROFILE ───────────────────────────────────────── -->
   <data name="Profile_Title"         xml:space="preserve"><value>Mənim profilim</value></data>
   <data name="Profile_Since"         xml:space="preserve"><value>Saytda</value></data>
@@ -411,4 +452,160 @@
   <data name="Profile_SeeAll"        xml:space="preserve"><value>Hamısı</value></data>
   <data name="Profile_NoActive"      xml:space="preserve"><value>Aktiv elanınız yoxdur</value></data>
   <data name="Profile_PrivatePerson" xml:space="preserve"><value>Şəxsi şəxs</value></data>
+
+  <!-- ── NOTIFICATIONS ───────────────────────────────────── -->
+  <data name="Nav_Notifications"           xml:space="preserve"><value>Bildirişlər</value></data>
+  <data name="Notifications_Empty"         xml:space="preserve"><value>Bildiriş yoxdur</value></data>
+  <data name="Notifications_Approve"       xml:space="preserve"><value>Təsdiq et</value></data>
+  <data name="Notifications_Reject"        xml:space="preserve"><value>Rədd et</value></data>
+  <data name="Notifications_ViewDetails"       xml:space="preserve"><value>Ətraflı</value></data>
+  <data name="Notif_NewOrder_Title"            xml:space="preserve"><value>🛒 Məhsulunuz üçün yeni sifariş</value></data>
+  <data name="Notif_NewOrder_Body"             xml:space="preserve"><value>Alıcı «{0}» məhsulunu almaq istəyir. Sifarişi təsdiqləyin və ya rədd edin.</value></data>
+  <data name="Notif_OrderPending_Title"        xml:space="preserve"><value>⏳ Sifariş təsdiq gözləyir</value></data>
+  <data name="Notif_OrderPending_Body"         xml:space="preserve"><value>{0} sifariş nömrəniz qeydiyyata alındı. Satıcının təsdiqini gözləyin.</value></data>
+  <data name="Notif_OrderApproved_Title"       xml:space="preserve"><value>✅ Sifariş təsdiqləndi</value></data>
+  <data name="Notif_OrderApproved_Body"        xml:space="preserve"><value>Satıcı «{0}» sifarişinizi təsdiqlədi. Çatdırılmanı gözləyin.</value></data>
+  <data name="Notif_OrderRejected_Title"       xml:space="preserve"><value>❌ Sifariş rədd edildi</value></data>
+  <data name="Notif_OrderRejected_Body"        xml:space="preserve"><value>Təəssüf ki, satıcı «{0}» sifarişinizi rədd etdi.</value></data>
+
+  <!-- ── CHECKOUT – DELIVERY ─────────────────────────────── -->
+  <data name="Checkout_DeliveryTitle"      xml:space="preserve"><value>Çatdırılma ilə sifariş</value></data>
+  <data name="Checkout_DeliveryAddrSection" xml:space="preserve"><value>Çatdırılma ünvanı</value></data>
+  <data name="Checkout_AddressLabel"       xml:space="preserve"><value>Ünvan</value></data>
+  <data name="Checkout_CityLabel"          xml:space="preserve"><value>Şəhər</value></data>
+  <data name="Checkout_PhoneLabel"         xml:space="preserve"><value>Telefon</value></data>
+  <data name="Checkout_CardSection"        xml:space="preserve"><value>Kart məlumatları</value></data>
+  <data name="Checkout_CardNumberLabel"    xml:space="preserve"><value>Kart nömrəsi</value></data>
+  <data name="Checkout_CardHolderLabel"    xml:space="preserve"><value>Kart sahibinin adı</value></data>
+  <data name="Checkout_ExpiryLabel"        xml:space="preserve"><value>Bitmə tarixi</value></data>
+  <data name="Checkout_PayBtn"             xml:space="preserve"><value>Ödə</value></data>
+  <data name="Checkout_DemoNotice"         xml:space="preserve"><value>Demo sistem — real ödəniş baş vermir</value></data>
+  <data name="Checkout_OrderSummary"       xml:space="preserve"><value>Sifarişin tərkibi</value></data>
+  <data name="Checkout_ItemPrice"          xml:space="preserve"><value>Malın qiyməti</value></data>
+  <data name="Checkout_DeliveryFeeLabel"   xml:space="preserve"><value>Çatdırılma (5%)</value></data>
+  <data name="Checkout_TotalLabel"         xml:space="preserve"><value>Cəmi</value></data>
+  <data name="Checkout_TestCards"          xml:space="preserve"><value>Test kartlar</value></data>
+  <data name="Checkout_TestSuccess"        xml:space="preserve"><value>Uğurlu</value></data>
+  <data name="Checkout_TestFail"           xml:space="preserve"><value>Rədd</value></data>
+  <data name="Checkout_TestHint"           xml:space="preserve"><value>CVV və tarix — hər hansı düzgün dəyərlər</value></data>
+
+  <!-- ── CHECKOUT – VIP ──────────────────────────────────── -->
+  <data name="Checkout_VipTitle"           xml:space="preserve"><value>VIP irəliləmə</value></data>
+  <data name="Checkout_VipPlanSection"     xml:space="preserve"><value>Plan seçin</value></data>
+  <data name="Checkout_VipGoodDeal"        xml:space="preserve"><value>Sərfəli</value></data>
+  <data name="Checkout_VipBenefit1"        xml:space="preserve"><value>Elan axtarışda birinci göstərilir</value></data>
+  <data name="Checkout_VipBenefit2"        xml:space="preserve"><value>Elan kartında ⭐ VIP nişanı</value></data>
+  <data name="Checkout_VipBenefit3"        xml:space="preserve"><value>Alıcılardan daha çox baxış</value></data>
+  <data name="Checkout_VipActivateBtn"     xml:space="preserve"><value>VIP-ni aktivləşdir</value></data>
+  <data name="Checkout_YourListing"        xml:space="preserve"><value>Sizin elanınız</value></data>
+  <data name="Checkout_VipUntil"           xml:space="preserve"><value>VIP-ə qədər</value></data>
+
+  <!-- ── CHECKOUT – RESULT ───────────────────────────────── -->
+  <data name="Checkout_Result_VipTitle"    xml:space="preserve"><value>VIP status aktivləşdirildi!</value></data>
+  <data name="Checkout_Result_DeliveryTitle" xml:space="preserve"><value>Sifariş qəbul edildi!</value></data>
+  <data name="Checkout_Result_AwaitingTitle" xml:space="preserve"><value>Təsdiq gözlənilir</value></data>
+  <data name="Checkout_Result_FailTitle"   xml:space="preserve"><value>Ödəniş rədd edildi</value></data>
+  <data name="Checkout_Result_VipDesc"     xml:space="preserve"><value>Elanınız {0} günlük irəliləndi.</value></data>
+  <data name="Checkout_Result_AwaitDesc"   xml:space="preserve"><value>Sifarişiniz verildi. Satıcı bildiriş aldı və sifarişi təsdiq etməlidir.</value></data>
+  <data name="Checkout_Result_FailDesc"    xml:space="preserve"><value>Kart bank tərəfindən rədd edildi. Başqa kart cəhd edin.</value></data>
+  <data name="Checkout_Result_OrderNumber" xml:space="preserve"><value>Sifariş nömrəsi</value></data>
+  <data name="Checkout_Result_Listing"     xml:space="preserve"><value>Elan</value></data>
+  <data name="Checkout_Result_Item"        xml:space="preserve"><value>Mal</value></data>
+  <data name="Checkout_Result_Duration"    xml:space="preserve"><value>Müddət</value></data>
+  <data name="Checkout_Result_Days"        xml:space="preserve"><value>{0} gün</value></data>
+  <data name="Checkout_Result_DeliveryFee" xml:space="preserve"><value>Çatdırılma</value></data>
+  <data name="Checkout_Result_DeliveryCity" xml:space="preserve"><value>Çatdırılma şəhəri</value></data>
+  <data name="Checkout_Result_Amount"      xml:space="preserve"><value>Məbləğ</value></data>
+  <data name="Checkout_Result_Card"        xml:space="preserve"><value>Kart</value></data>
+  <data name="Checkout_Result_Paid"        xml:space="preserve"><value>Ödənildi</value></data>
+  <data name="Checkout_Result_History"     xml:space="preserve"><value>Alışlar tarixi</value></data>
+  <data name="Checkout_Result_GoListing"   xml:space="preserve"><value>Elana keç</value></data>
+  <data name="Checkout_Result_TryAgain"    xml:space="preserve"><value>Yenidən cəhd et</value></data>
+  <data name="Checkout_Result_BackListing" xml:space="preserve"><value>Elana qayıt</value></data>
+
+  <!-- ── CHECKOUT – HISTORY ──────────────────────────────── -->
+  <data name="Checkout_History_Title"         xml:space="preserve"><value>Alışlar tarixi</value></data>
+  <data name="Checkout_History_Empty"         xml:space="preserve"><value>Alış və irəliləmə yoxdur</value></data>
+  <data name="Checkout_History_Browse"        xml:space="preserve"><value>Elanlara keç</value></data>
+  <data name="Checkout_History_Vip"           xml:space="preserve"><value>VIP</value></data>
+  <data name="Checkout_History_Delivery"      xml:space="preserve"><value>Çatdırılma</value></data>
+  <data name="Checkout_History_StatusPaid"    xml:space="preserve"><value>Ödənildi</value></data>
+  <data name="Checkout_History_StatusDeclined" xml:space="preserve"><value>Rədd edildi</value></data>
+  <data name="Checkout_History_StatusPending" xml:space="preserve"><value>Gözlənilir</value></data>
+  <data name="Checkout_History_SellerPending" xml:space="preserve"><value>Satıcının baxışındadır</value></data>
+  <data name="Checkout_History_SellerApproved" xml:space="preserve"><value>Satıcı təsdiq etdi</value></data>
+  <data name="Checkout_History_SellerRejected" xml:space="preserve"><value>Satıcı rədd etdi</value></data>
+  <data name="Checkout_History_GoListing"     xml:space="preserve"><value>Elan</value></data>
+
+  <data name="Login_ForgotPassword"    xml:space="preserve"><value>Şifrəni unutmusunuz?</value></data>
+  <data name="ForgotPwd_Title"         xml:space="preserve"><value>Şifrəni unutmusunuz?</value></data>
+  <data name="ForgotPwd_Sub"           xml:space="preserve"><value>Hesabınızın e-poçtunu daxil edin — şifrəni sıfırlamaq üçün kod göndərəcəyik.</value></data>
+  <data name="ForgotPwd_Submit"        xml:space="preserve"><value>Sıfırlama kodu al</value></data>
+  <data name="ForgotPwd_BackToLogin"   xml:space="preserve"><value>Girişə qayıt</value></data>
+  <data name="ForgotPwd_LeftHeading"   xml:space="preserve"><value>Giriş bərpası</value></data>
+  <data name="ForgotPwd_Feat1"         xml:space="preserve"><value>Təhlükəsiz şifrə sıfırlama</value></data>
+  <data name="ForgotPwd_Feat2"         xml:space="preserve"><value>Kod 30 dəqiqə etibarlıdır</value></data>
+  <data name="ForgotPwd_Feat3"         xml:space="preserve"><value>Yenidən tələb etmək olar</value></data>
+  <data name="ForgotPwd_SentTitle"     xml:space="preserve"><value>Sıfırlama kodunuz</value></data>
+  <data name="ForgotPwd_SentSub"       xml:space="preserve"><value>Hesab şifrəsi sıfırlama kodu</value></data>
+  <data name="ForgotPwd_NoAccountSub"  xml:space="preserve"><value>Bu e-poçtla hesab varsa, kod artıq yaradılıb.</value></data>
+  <data name="ForgotPwd_CodeLabel"     xml:space="preserve"><value>Şifrə sıfırlama kodu</value></data>
+  <data name="ForgotPwd_CodeHint"      xml:space="preserve"><value>Kopyalamaq üçün klikləyin</value></data>
+  <data name="ForgotPwd_NoticeText"    xml:space="preserve"><value>Bu kodu saxlayın. 30 dəqiqə etibarlıdır.</value></data>
+  <data name="ForgotPwd_GoToReset"     xml:space="preserve"><value>Şifrə sıfırlamaya keç</value></data>
+  <data name="ForgotPwd_Copied"        xml:space="preserve"><value>Kopyalandı!</value></data>
+  <data name="ResetPwd_Title"          xml:space="preserve"><value>Şifrəni sıfırla</value></data>
+  <data name="ResetPwd_Sub"            xml:space="preserve"><value>E-poçt, sıfırlama kodu və yeni şifrəni daxil edin.</value></data>
+  <data name="ResetPwd_TokenLabel"     xml:space="preserve"><value>Sıfırlama kodu</value></data>
+  <data name="ResetPwd_NewPwdLabel"    xml:space="preserve"><value>Yeni şifrə</value></data>
+  <data name="ResetPwd_ConfirmLabel"   xml:space="preserve"><value>Şifrəni təsdiqləyin</value></data>
+  <data name="ResetPwd_Submit"         xml:space="preserve"><value>Yeni şifrəni təyin et</value></data>
+  <data name="ResetPwd_RequestNew"     xml:space="preserve"><value>Yeni kod tələb et</value></data>
+  <data name="ResetPwd_LeftHeading"    xml:space="preserve"><value>Yeni şifrə yaratma</value></data>
+  <data name="Detail_Photos"           xml:space="preserve"><value>{0} şəkil</value></data>
+  <data name="Detail_Characteristics"  xml:space="preserve"><value>Xüsusiyyətlər</value></data>
+  <data name="Detail_Category"         xml:space="preserve"><value>Kateqoriya</value></data>
+  <data name="Detail_City"             xml:space="preserve"><value>Şəhər</value></data>
+  <data name="Detail_Status"           xml:space="preserve"><value>Status</value></data>
+  <data name="Detail_Date"             xml:space="preserve"><value>Tarix</value></data>
+  <data name="Detail_StatusActive"     xml:space="preserve"><value>Aktiv</value></data>
+  <data name="Detail_StatusPending"    xml:space="preserve"><value>Yoxlamada</value></data>
+  <data name="Detail_OrderDelivery"    xml:space="preserve"><value>Çatdırılma ilə sifariş et</value></data>
+  <data name="Detail_VipActiveUntil"   xml:space="preserve"><value>VIP aktivdir</value></data>
+  <data name="Detail_ExtendVip"        xml:space="preserve"><value>VIP-i uzat</value></data>
+  <data name="Detail_MakeVip"          xml:space="preserve"><value>VIP et</value></data>
+  <data name="Detail_Seller"           xml:space="preserve"><value>Satıcı</value></data>
+  <data name="Detail_SafetyTip"        xml:space="preserve"><value>Satıcı ilə şəxsən görüşün. Avans ödəməyin.</value></data>
+  <data name="Checkout_CardProtected"  xml:space="preserve"><value>Kart məlumatları Stripe tərəfindən qorunur. Kart məlumatlarını saxlamırıq.</value></data>
+  <data name="Checkout_StripeSSL"      xml:space="preserve"><value>Stripe vasitəsilə ödəniş · SSL şifrələnməsi</value></data>
+  <data name="Checkout_TestCards"      xml:space="preserve"><value>Stripe test kartları</value></data>
+  <data name="Checkout_TestSuccess"    xml:space="preserve"><value>Uğur</value></data>
+  <data name="Checkout_TestDeclined"   xml:space="preserve"><value>Rədd edildi</value></data>
+  <data name="Checkout_TestCardHint"   xml:space="preserve"><value>Son tarix: gələcək · CVV: istənilən 3 rəqəm</value></data>
+  <data name="Checkout_Result_SuccessTitle"    xml:space="preserve"><value>Sifariş uğurla verildi!</value></data>
+  <data name="Checkout_Result_SellerNotified"  xml:space="preserve"><value>Satıcı bildiriş aldı və tezliklə sizinlə əlaqə saxlayacaq</value></data>
+  <data name="Checkout_Result_Copy"            xml:space="preserve"><value>Kopyala</value></data>
+  <data name="Checkout_Result_Copied"          xml:space="preserve"><value>Kopyalandı!</value></data>
+  <data name="Checkout_Result_DeliverySection" xml:space="preserve"><value>Çatdırılma</value></data>
+  <data name="Checkout_Result_DeliveryAddress" xml:space="preserve"><value>Ünvan</value></data>
+  <data name="Checkout_Result_PaymentSection"  xml:space="preserve"><value>Ödəniş</value></data>
+  <data name="Checkout_Result_Total"           xml:space="preserve"><value>Cəmi</value></data>
+  <data name="Checkout_Result_WhatNext"        xml:space="preserve"><value>Bundan sonra nə?</value></data>
+  <data name="Checkout_Result_Step1Label"      xml:space="preserve"><value>Sifariş yaradıldı</value></data>
+  <data name="Checkout_Result_Step1Sub"        xml:space="preserve"><value>Ödəniş Stripe vasitəsilə təsdiqləndi</value></data>
+  <data name="Checkout_Result_Step2Label"      xml:space="preserve"><value>Satıcı bildirilib</value></data>
+  <data name="Checkout_Result_Step2Sub"        xml:space="preserve"><value>Satıcıdan təsdiq gözləyin</value></data>
+  <data name="Checkout_Result_Step3Label"      xml:space="preserve"><value>Təsdiq</value></data>
+  <data name="Checkout_Result_Step3Sub"        xml:space="preserve"><value>Satıcı çatdırılmanı təşkil etmək üçün sizinlə əlaqə saxlayacaq</value></data>
+  <data name="Checkout_Result_Step4Label"      xml:space="preserve"><value>Çatdırılma</value></data>
+  <data name="Checkout_Result_Step4Sub"        xml:space="preserve"><value>Mal göstərilən ünvana çatdırılacaq</value></data>
+  <data name="Checkout_Result_Continue"        xml:space="preserve"><value>Alış-verişə davam et</value></data>
+  <data name="Error_404Title"    xml:space="preserve"><value>Səhifə tapılmadı</value></data>
+  <data name="Error_404Desc"     xml:space="preserve"><value>Axtardığınız səhifə mövcud deyil və ya silinib.</value></data>
+  <data name="Error_403Title"    xml:space="preserve"><value>Giriş qadağandır</value></data>
+  <data name="Error_403Desc"     xml:space="preserve"><value>Bu səhifəyə baxmaq üçün icazəniz yoxdur.</value></data>
+  <data name="Error_500Title"    xml:space="preserve"><value>Nəsə səhv getdi</value></data>
+  <data name="Error_500Desc"     xml:space="preserve"><value>Daxili server xətası baş verdi. Səhifəni yeniləməyə cəhd edin.</value></data>
+  <data name="Error_Home"        xml:space="preserve"><value>Ana səhifəyə</value></data>
+  <data name="Error_Catalog"     xml:space="preserve"><value>Kataloqa</value></data>
 </root>

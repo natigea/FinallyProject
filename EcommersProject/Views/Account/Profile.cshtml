@@ -1,423 +1,262 @@
-@model ProfileViewModel
+@model ProfileEditViewModel
+@using EcommersProject.Models
 @{
-    ViewData["Title"] = L["Profile_Title"].Value;
-    var u = Model.User;
-    var initials = $"{u.FirstName.FirstOrDefault()}{u.LastName.FirstOrDefault()}".ToUpper();
-    var active = Model.MyListings.Where(l => l.Status == "Active").Take(3).ToList();
+    ViewData["Title"] = L["Profile_EditTitle"].Value;
+    var email = User.FindFirst(System.Security.Claims.ClaimTypes.Email)?.Value ?? "";
 }
 
 @section Styles {
 <style>
-    .profile-wrap {
-        max-width: 1060px;
-        margin: 0 auto;
-        padding: 32px 16px 60px;
-    }
+    .settings-wrap { max-width: 860px; margin: 0 auto; padding: 32px 16px 60px; }
+    .settings-layout { display: flex; gap: 28px; align-items: flex-start; }
 
-    /* ── Sidebar ──────────────────────────────── */
-    .profile-sidebar {
-        width: 240px;
-        flex-shrink: 0;
-    }
-    .profile-avatar-ring {
-        width: 72px; height: 72px;
-        border-radius: 50%;
-        background: #1a1a1a;
-        color: #fff;
-        font-size: 1.5rem;
-        font-weight: 700;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        letter-spacing: -.5px;
-    }
-    .profile-name {
-        font-size: 1rem;
-        font-weight: 700;
-        color: #1a1a1a;
-        margin-top: 12px;
-        margin-bottom: 2px;
-    }
-    .profile-email {
-        font-size: .8rem;
-        color: #888;
-        word-break: break-all;
-    }
-    .profile-phone {
-        font-size: .8rem;
-        color: #666;
-        margin-top: 4px;
-    }
-    .profile-since {
-        font-size: .75rem;
-        color: #bbb;
-        margin-top: 6px;
-    }
-    .sidebar-nav {
-        margin-top: 20px;
-        display: flex;
-        flex-direction: column;
-        gap: 2px;
-    }
-    .sidebar-nav a {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        padding: 10px 12px;
-        border-radius: 9px;
-        font-size: .875rem;
-        font-weight: 500;
-        color: #555;
-        text-decoration: none;
-        transition: background .15s, color .15s;
-        position: relative;
-    }
-    .sidebar-nav a:hover { background: #f4f5f7; color: #1a1a1a; }
-    .sidebar-nav a.active { background: #f4f5f7; color: #1a1a1a; font-weight: 600; }
-    .sidebar-nav a .nav-icon { width: 18px; text-align: center; font-size: .95rem; flex-shrink: 0; }
-    .sidebar-nav .nav-badge {
-        margin-left: auto;
-        font-size: .68rem;
-        font-weight: 700;
-        padding: 2px 7px;
-        border-radius: 20px;
-        background: #1a1a1a;
-        color: #fff;
-        line-height: 1.4;
-    }
-    .sidebar-nav .nav-badge-warn { background: #f97316; }
-    .sidebar-add {
-        margin-top: 12px;
-        display: block;
-        text-align: center;
-        padding: 11px;
-        border-radius: 9px;
-        background: #1a1a1a;
-        color: #fff;
-        font-size: .875rem;
-        font-weight: 600;
-        text-decoration: none;
-        transition: opacity .15s;
-    }
-    .sidebar-add:hover { opacity: .85; color: #fff; }
-
-    /* ── Main content ─────────────────────────── */
-    .profile-main { flex: 1; min-width: 0; }
-
-    .section-card {
+    /* ── Section card ──────────────────────────────── */
+    .settings-card {
         background: #fff;
         border: 1.5px solid #e8eaed;
         border-radius: 14px;
-        padding: 24px;
+        padding: 28px;
         margin-bottom: 20px;
     }
-    .section-head {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        margin-bottom: 18px;
-    }
-    .section-title {
-        font-size: 1rem;
-        font-weight: 700;
-        color: #1a1a1a;
-    }
-    .section-link {
-        font-size: .8rem;
-        font-weight: 600;
-        color: #1a1a1a;
-        text-decoration: none;
-        display: flex;
-        align-items: center;
-        gap: 4px;
-    }
-    .section-link:hover { text-decoration: underline; }
-
-    /* Listing row */
-    .listing-row {
-        display: flex;
-        align-items: center;
-        gap: 14px;
-        padding: 12px 0;
-        border-bottom: 1px solid #f0f0f0;
-    }
-    .listing-row:last-child { border-bottom: none; padding-bottom: 0; }
-    .listing-row:first-child { padding-top: 0; }
-    .listing-thumb {
-        width: 72px; height: 60px;
-        border-radius: 8px;
-        object-fit: cover;
-        flex-shrink: 0;
-        background: #f4f5f7;
-    }
-    .listing-thumb-ph {
-        width: 72px; height: 60px;
-        border-radius: 8px;
-        flex-shrink: 0;
-        background: #f4f5f7;
-        display: flex; align-items: center; justify-content: center;
-        color: #d1d5db; font-size: 1.3rem;
-    }
-    .listing-info { flex: 1; min-width: 0; }
-    .listing-row-title {
+    .settings-card-title {
         font-size: .9rem;
-        font-weight: 600;
-        color: #1a1a1a;
-        text-decoration: none;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        display: block;
-    }
-    .listing-row-title:hover { text-decoration: underline; }
-    .listing-row-meta {
-        font-size: .78rem;
-        color: #888;
-        margin-top: 3px;
-    }
-    .listing-row-price {
-        font-size: .95rem;
         font-weight: 700;
         color: #1a1a1a;
-        flex-shrink: 0;
+        margin-bottom: 20px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
     }
-    .row-actions { display: flex; gap: 6px; flex-shrink: 0; }
-    .row-btn {
-        width: 32px; height: 32px;
-        border-radius: 7px;
-        border: 1.5px solid #e0e4ec;
+    .settings-card-title i { color: #666; font-size: 1rem; }
+
+    /* ── Avatar block ──────────────────────────────── */
+    .avatar-block { display: flex; align-items: center; gap: 20px; }
+    .avatar-circle {
+        width: 80px; height: 80px; border-radius: 50%;
+        background: #1a1a1a; color: #fff;
+        font-size: 1.7rem; font-weight: 700;
+        display: flex; align-items: center; justify-content: center;
+        flex-shrink: 0; overflow: hidden;
+        border: 3px solid #e8eaed;
+    }
+    .avatar-circle img { width: 100%; height: 100%; object-fit: cover; }
+    .avatar-actions { display: flex; flex-direction: column; gap: 8px; }
+    .avatar-upload-btn {
+        display: inline-flex; align-items: center; gap: 6px;
+        padding: 8px 16px; border-radius: 8px;
+        border: 1.5px solid #1a1a1a; background: #1a1a1a;
+        color: #fff; font-size: .82rem; font-weight: 600;
+        cursor: pointer; transition: opacity .15s;
+    }
+    .avatar-upload-btn:hover { opacity: .85; }
+    .avatar-remove-btn {
+        display: inline-flex; align-items: center; gap: 6px;
+        padding: 7px 14px; border-radius: 8px;
+        border: 1.5px solid #e8eaed; background: transparent;
+        color: #888; font-size: .82rem; font-weight: 500;
+        cursor: pointer; transition: all .15s;
+        text-decoration: none;
+    }
+    .avatar-remove-btn:hover { border-color: #ef4444; color: #ef4444; }
+    .avatar-hint { font-size: .74rem; color: #aaa; margin-top: 4px; }
+
+    /* ── Form ──────────────────────────────────────── */
+    .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .form-group { display: flex; flex-direction: column; gap: 5px; }
+    .form-group.full { grid-column: 1 / -1; }
+    .form-label { font-size: .8rem; font-weight: 600; color: #555; }
+    .form-input {
+        border: 1.5px solid #e0e4ec; border-radius: 8px;
+        padding: 10px 14px; font-size: .875rem; font-family: inherit;
+        color: #1a1a1a; outline: none; transition: border-color .15s;
         background: #fff;
-        color: #666;
-        display: flex; align-items: center; justify-content: center;
-        font-size: .85rem;
-        cursor: pointer;
-        text-decoration: none;
-        transition: border-color .15s, color .15s;
     }
-    .row-btn:hover { border-color: #aaa; color: #1a1a1a; }
-    .row-btn-danger:hover { border-color: #ef4444; color: #ef4444; }
+    .form-input:focus { border-color: #999; }
+    .form-input:disabled { background: #f8f9fa; color: #999; cursor: not-allowed; }
+    .form-hint { font-size: .74rem; color: #aaa; }
+    .validation-msg { font-size: .75rem; color: #ef4444; margin-top: 2px; }
 
-    /* Status pill */
-    .status-pill {
-        font-size: .68rem;
-        font-weight: 600;
-        padding: 2px 8px;
-        border-radius: 20px;
-        display: inline-block;
-        margin-top: 4px;
+    /* ── Save button ───────────────────────────────── */
+    .save-btn {
+        display: inline-flex; align-items: center; gap: 8px;
+        padding: 11px 28px; border-radius: 9px;
+        background: #1a1a1a; color: #fff;
+        border: none; font-size: .875rem; font-weight: 600;
+        font-family: inherit; cursor: pointer; transition: opacity .15s;
+        margin-top: 8px;
     }
-    .status-active  { background: #d1fae5; color: #065f46; }
-    .status-pending { background: #fef3c7; color: #92400e; }
-    .status-closed  { background: #f3f4f6; color: #6b7280; }
+    .save-btn:hover { opacity: .85; }
 
-    /* Favorites grid */
-    .fav-grid {
-        display: grid;
-        grid-template-columns: repeat(4, 1fr);
-        gap: 12px;
-    }
-    .fav-card {
-        border-radius: 10px;
-        border: 1.5px solid #e8eaed;
-        overflow: hidden;
-        text-decoration: none;
-        display: block;
-        transition: box-shadow .2s;
-    }
-    .fav-card:hover { box-shadow: 0 4px 16px rgba(0,0,0,.08); }
-    .fav-img {
-        width: 100%; aspect-ratio: 4/3;
-        object-fit: cover;
-        display: block;
-    }
-    .fav-img-ph {
-        width: 100%; aspect-ratio: 4/3;
-        background: #f4f5f7;
-        display: flex; align-items: center; justify-content: center;
-        color: #d1d5db; font-size: 1.6rem;
-    }
-    .fav-body { padding: 8px 10px; }
-    .fav-price { font-size: .88rem; font-weight: 700; color: #1a1a1a; }
-    .fav-title { font-size: .72rem; color: #888; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-top: 2px; }
+    /* ── Password section ──────────────────────────── */
+    .pwd-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; }
 
-    /* Empty state */
-    .empty-state {
-        text-align: center;
-        padding: 32px 0;
-        color: #aaa;
+    /* ── Alerts ────────────────────────────────────── */
+    .settings-alert {
+        border-radius: 9px; padding: 11px 16px;
+        font-size: .84rem; display: flex; align-items: center; gap: 9px;
+        margin-bottom: 16px;
     }
-    .empty-state i { font-size: 2rem; display: block; margin-bottom: 8px; }
-    .empty-state p { font-size: .875rem; margin-bottom: 12px; }
-
-    /* Layout */
-    .profile-layout { display: flex; gap: 28px; align-items: flex-start; }
+    .settings-alert-success { background: #f0fdf4; border: 1px solid #bbf7d0; color: #166534; }
+    .settings-alert-error   { background: #fff5f5; border: 1px solid #fecaca; color: #dc2626; }
 
     @@media (max-width: 768px) {
-        .profile-layout { flex-direction: column; }
-        .profile-sidebar { width: 100%; }
-        .fav-grid { grid-template-columns: repeat(2, 1fr); }
+        .settings-layout { flex-direction: column; }
+        .form-grid { grid-template-columns: 1fr; }
+        .pwd-grid  { grid-template-columns: 1fr; }
     }
 </style>
 }
 
-<div class="profile-wrap">
-    <div class="profile-layout">
+<div class="settings-wrap">
+    <div class="settings-layout">
 
-        <!-- ── Sidebar ──────────────────────────── -->
-        <aside class="profile-sidebar">
-            <div class="section-card text-center" style="padding: 24px 20px;">
-                <div class="profile-avatar-ring mx-auto">@initials</div>
-                <div class="profile-name">@u.FirstName @u.LastName</div>
-                <div class="profile-email">@u.Email</div>
-                @if (!string.IsNullOrEmpty(u.PhoneNumber))
-                {
-                    <div class="profile-phone"><i class="bi bi-telephone me-1"></i>@u.PhoneNumber</div>
-                }
-                <div class="profile-since"><i class="bi bi-calendar3 me-1"></i>@L["Profile_Since"] @u.CreatedDate.ToString("MMMM yyyy")</div>
-            </div>
+        @await Html.PartialAsync("_ProfileSidebar")
 
-            <nav class="sidebar-nav">
-                <a href="/Account/Profile" class="active">
-                    <i class="bi bi-person nav-icon"></i>@L["Profile_Title"]
-                </a>
-                <a href="/Listing/MyListings">
-                    <i class="bi bi-card-list nav-icon"></i>@L["Profile_MyListings"]
-                    @{var cnt = Model.MyListings.Count(l => l.Status == "Active");}
-                    @if (cnt > 0) { <span class="nav-badge">@cnt</span> }
-                </a>
-                <a href="/Favorites">
-                    <i class="bi bi-heart nav-icon"></i>@L["Profile_Favorites"]
-                    @if (Model.Favorites.Count > 0) { <span class="nav-badge nav-badge-warn">@Model.Favorites.Count</span> }
-                </a>
-                <a href="/Messages">
-                    <i class="bi bi-chat nav-icon"></i>@L["Profile_Messages"]
-                    @if (Model.UnreadMessages > 0) { <span class="nav-badge nav-badge-warn">@Model.UnreadMessages</span> }
-                </a>
-            </nav>
+        <main style="flex:1;min-width:0;">
 
-            <a href="/Listing/Create" class="sidebar-add">
-                <i class="bi bi-plus-lg me-1"></i>@L["Profile_AddListing"]
-            </a>
-        </aside>
-
-        <!-- ── Main content ─────────────────────── -->
-        <main class="profile-main">
-
-            <!-- My active listings -->
-            <div class="section-card">
-                <div class="section-head">
-                    <span class="section-title">@L["Profile_MyListings"]</span>
-                    <a href="/Listing/MyListings" class="section-link">@L["Profile_SeeAll"] <i class="bi bi-arrow-right"></i></a>
+            @if (TempData["Success"] != null)
+            {
+                <div class="settings-alert settings-alert-success">
+                    <i class="bi bi-check-circle-fill"></i>@TempData["Success"]
                 </div>
+            }
+            @if (TempData["PwdSuccess"] != null)
+            {
+                <div class="settings-alert settings-alert-success">
+                    <i class="bi bi-check-circle-fill"></i>@TempData["PwdSuccess"]
+                </div>
+            }
+            @if (TempData["PwdError"] != null)
+            {
+                <div class="settings-alert settings-alert-error">
+                    <i class="bi bi-exclamation-circle-fill"></i>@TempData["PwdError"]
+                </div>
+            }
 
-                @if (!active.Any())
-                {
-                    <div class="empty-state">
-                        <i class="bi bi-card-list"></i>
-                        <p>@L["Profile_NoActive"]</p>
-                        <a href="/Listing/Create" class="sidebar-add" style="max-width:200px;margin:0 auto;">
-                            <i class="bi bi-plus-lg me-1"></i>@L["Profile_AddListing"]
-                        </a>
+            <!-- ── Avatar + personal info ── -->
+            <form asp-controller="Account" asp-action="Profile" method="post"
+                  enctype="multipart/form-data">
+                @Html.AntiForgeryToken()
+                <input type="hidden" asp-for="PhotoUrl" />
+
+                <div class="settings-card">
+                    <div class="settings-card-title">
+                        <i class="bi bi-person-circle"></i>@L["Profile_Avatar"]
                     </div>
-                }
-                else
-                {
-                    @foreach (var l in active)
-                    {
-                        var img = l.Images.FirstOrDefault()?.Url;
-                        var statusLabel = l.Status switch {
-                            "Active"  => L["Status_Active"].Value,
-                            "Closed"  => L["Status_Closed"].Value,
-                            "Pending" => L["Status_Pending"].Value,
-                            _         => l.Status
-                        };
-                        var statusCss = l.Status switch {
-                            "Active"  => "status-active",
-                            "Pending" => "status-pending",
-                            _         => "status-closed"
-                        };
-                        <div class="listing-row">
-                            @if (img != null)
+
+                    <div class="avatar-block">
+                        <div class="avatar-circle" id="avatarPreview">
+                            @if (!string.IsNullOrEmpty(Model.PhotoUrl))
                             {
-                                <img src="@img" class="listing-thumb" alt="@l.Title" />
+                                <img src="@Model.PhotoUrl" alt="avatar" id="avatarImg" />
                             }
                             else
                             {
-                                <div class="listing-thumb-ph"><i class="bi bi-image"></i></div>
+                                <span id="avatarInitials">@(Model.FirstName.FirstOrDefault().ToString().ToUpper())@(Model.LastName.FirstOrDefault().ToString().ToUpper())</span>
                             }
-                            <div class="listing-info">
-                                <a href="/Listing/Detail/@l.Id" class="listing-row-title">@l.Title</a>
-                                <div class="listing-row-meta">
-                                    <i class="bi bi-geo-alt me-1"></i>@l.City &nbsp;·&nbsp;
-                                    <i class="bi bi-clock me-1"></i>@l.CreatedDate.ToString("dd.MM.yyyy")
-                                </div>
-                                <span class="status-pill @statusCss">@statusLabel</span>
-                            </div>
-                            <div class="listing-row-price">@l.Price.ToString("N0") ₼</div>
-                            <div class="row-actions">
-                                @if (l.Status != "Pending")
-                                {
-                                    <a href="/Listing/Edit/@l.Id" class="row-btn" title="@L["Common_Edit"]">
-                                        <i class="bi bi-pencil"></i>
-                                    </a>
-                                }
-                                @if (l.Status == "Active")
-                                {
-                                    <form asp-controller="Listing" asp-action="Close" method="post" style="display:contents">
-                                        @Html.AntiForgeryToken()
-                                        <input type="hidden" name="id" value="@l.Id" />
-                                        <button type="submit" class="row-btn" title="@L["MyListings_CloseTitle"]">
-                                            <i class="bi bi-check-circle"></i>
-                                        </button>
-                                    </form>
-                                }
-                                @if (l.Status != "Pending")
-                                {
-                                    <form asp-controller="Listing" asp-action="Delete" method="post" style="display:contents"
-                                          onsubmit="return confirm('@L["MyListings_DeleteConfirm"]')">
-                                        @Html.AntiForgeryToken()
-                                        <input type="hidden" name="id" value="@l.Id" />
-                                        <button type="submit" class="row-btn row-btn-danger" title="@L["Common_Delete"]">
-                                            <i class="bi bi-trash"></i>
-                                        </button>
-                                    </form>
-                                }
-                            </div>
                         </div>
-                    }
-                }
-            </div>
-
-            <!-- Favorites -->
-            @if (Model.Favorites.Any())
-            {
-                <div class="section-card">
-                    <div class="section-head">
-                        <span class="section-title">@L["Profile_Favorites"]</span>
-                        <a href="/Favorites" class="section-link">@L["Profile_SeeAll"] <i class="bi bi-arrow-right"></i></a>
-                    </div>
-                    <div class="fav-grid">
-                        @foreach (var fav in Model.Favorites.Take(4))
-                        {
-                            <a href="/Listing/Detail/@fav.ListingId" class="fav-card">
-                                @if (fav.ListingImage != null)
-                                {
-                                    <img src="@fav.ListingImage" class="fav-img" alt="@fav.ListingTitle" />
-                                }
-                                else
-                                {
-                                    <div class="fav-img-ph"><i class="bi bi-image"></i></div>
-                                }
-                                <div class="fav-body">
-                                    <div class="fav-price">@fav.ListingPrice?.ToString("N0") ₼</div>
-                                    <div class="fav-title">@fav.ListingTitle</div>
-                                </div>
-                            </a>
-                        }
+                        <div class="avatar-actions">
+                            <label class="avatar-upload-btn">
+                                <i class="bi bi-camera"></i>@L["Profile_ChangePhoto"]
+                                <input type="file" asp-for="Photo" accept="image/*"
+                                       style="display:none;" id="photoInput"
+                                       onchange="previewAvatar(this)" />
+                            </label>
+                            @if (!string.IsNullOrEmpty(Model.PhotoUrl))
+                            {
+                                <a href="/Account/RemovePhoto" class="avatar-remove-btn">
+                                    <i class="bi bi-trash"></i>@L["Profile_RemovePhoto"]
+                                </a>
+                            }
+                            <span class="avatar-hint">JPG, PNG, WebP · до 5 МБ</span>
+                        </div>
                     </div>
                 </div>
-            }
+
+                <div class="settings-card">
+                    <div class="settings-card-title">
+                        <i class="bi bi-person"></i>@L["Profile_PersonalInfo"]
+                    </div>
+
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label class="form-label">@L["Profile_FirstName"]</label>
+                            <input asp-for="FirstName" class="form-input" />
+                            <span asp-validation-for="FirstName" class="validation-msg"></span>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">@L["Profile_LastName"]</label>
+                            <input asp-for="LastName" class="form-input" />
+                            <span asp-validation-for="LastName" class="validation-msg"></span>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">@L["Profile_Phone"]</label>
+                            <input asp-for="PhoneNumber" class="form-input" placeholder="+994 XX XXX XX XX" />
+                            <span asp-validation-for="PhoneNumber" class="validation-msg"></span>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">@L["Profile_Email"]</label>
+                            <input type="email" value="@email" class="form-input" disabled />
+                            <span class="form-hint">@L["Profile_EmailHint"]</span>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="save-btn">
+                        <i class="bi bi-check-lg"></i>@L["Profile_SaveChanges"]
+                    </button>
+                </div>
+            </form>
+
+            <!-- ── Change password ── -->
+            <form asp-controller="Account" asp-action="ChangePassword" method="post">
+                @Html.AntiForgeryToken()
+                <div class="settings-card">
+                    <div class="settings-card-title">
+                        <i class="bi bi-lock"></i>@L["Profile_ChangePassword"]
+                    </div>
+
+                    <div class="pwd-grid">
+                        <div class="form-group">
+                            <label class="form-label">@L["Profile_CurrentPassword"]</label>
+                            <input asp-for="@(new ChangePasswordViewModel().CurrentPassword)"
+                                   name="CurrentPassword" type="password" class="form-input"
+                                   autocomplete="current-password" />
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">@L["Profile_NewPassword"]</label>
+                            <input asp-for="@(new ChangePasswordViewModel().NewPassword)"
+                                   name="NewPassword" type="password" class="form-input"
+                                   autocomplete="new-password" />
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">@L["Profile_ConfirmPassword"]</label>
+                            <input asp-for="@(new ChangePasswordViewModel().ConfirmPassword)"
+                                   name="ConfirmPassword" type="password" class="form-input"
+                                   autocomplete="new-password" />
+                        </div>
+                    </div>
+
+                    <button type="submit" class="save-btn" style="margin-top:16px;">
+                        <i class="bi bi-shield-lock"></i>@L["Profile_UpdatePassword"]
+                    </button>
+                </div>
+            </form>
 
         </main>
     </div>
 </div>
+
+@section Scripts {
+<script>
+    function previewAvatar(input) {
+        if (!input.files?.length) return;
+        const file = input.files[0];
+        const reader = new FileReader();
+        reader.onload = e => {
+            const preview = document.getElementById('avatarPreview');
+            preview.innerHTML = `<img src="${e.target.result}" style="width:100%;height:100%;object-fit:cover;" />`;
+        };
+        reader.readAsDataURL(file);
+    }
+</script>
+}

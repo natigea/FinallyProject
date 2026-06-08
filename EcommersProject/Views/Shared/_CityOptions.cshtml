@@ -1,0 +1,68 @@
+@* Localized city options for Azerbaijan. Value = canonical name, label = localized. *@
+@{
+    var lang = System.Globalization.CultureInfo.CurrentUICulture.TwoLetterISOLanguageName;
+
+    // (value stored in DB, label_ru, label_az, label_en)
+    var cities = new[]
+    {
+        ("Bakı",       "Баку",         "Bakı",       "Baku"),
+        ("Sumqayıt",   "Сумгаит",      "Sumqayıt",   "Sumgait"),
+        ("Gəncə",      "Гянджа",       "Gəncə",      "Ganja"),
+        ("Mingəçevir", "Мингечевир",   "Mingəçevir", "Mingachevir"),
+        ("Naxçıvan",   "Нахичевань",   "Naxçıvan",   "Nakhchivan"),
+        ("Lənkəran",   "Ленкорань",    "Lənkəran",   "Lankaran"),
+        ("Şəki",       "Шеки",         "Şəki",       "Sheki"),
+        ("Quba",       "Куба",         "Quba",       "Quba"),
+        ("Şirvan",     "Ширван",       "Şirvan",     "Shirvan"),
+        ("Masallı",    "Масаллы",      "Masallı",    "Masally"),
+        ("Ağcabədi",   "Агджабеди",    "Ağcabədi",   "Aghjabadi"),
+        ("Ağdaş",      "Агдаш",        "Ağdaş",      "Agdash"),
+        ("Ağstafa",    "Акстафа",      "Ağstafa",    "Agstafa"),
+        ("Astara",     "Астара",       "Astara",     "Astara"),
+        ("Balakən",    "Балакен",      "Balakən",    "Balakan"),
+        ("Bərdə",      "Барда",        "Bərdə",      "Barda"),
+        ("Beyləqan",   "Бейлаган",     "Beyləqan",   "Beylagan"),
+        ("Biləsuvar",  "Билясувар",    "Biləsuvar",  "Bilasuvar"),
+        ("Cəlilabad",  "Джалилабад",   "Cəlilabad",  "Jalilabad"),
+        ("Daşkəsən",   "Дашкесан",     "Daşkəsən",   "Dashkasan"),
+        ("Füzuli",     "Физули",       "Füzuli",     "Fuzuli"),
+        ("Gədəbəy",    "Кедабек",      "Gədəbəy",    "Gadabay"),
+        ("Goranboy",   "Горанбой",     "Goranboy",   "Goranboy"),
+        ("Göyçay",     "Геокчай",      "Göyçay",     "Goychay"),
+        ("Göygöl",     "Гейгёль",      "Göygöl",     "Goygol"),
+        ("Hacıqabul",  "Гаджигабул",   "Hacıqabul",  "Hajigabul"),
+        ("İmişli",     "Имишли",       "İmişli",     "Imishli"),
+        ("İsmayıllı",  "Исмаиллы",     "İsmayıllı",  "Ismayilli"),
+        ("Kəlbəcər",   "Кельбаджар",   "Kəlbəcər",   "Kalbajar"),
+        ("Kürdəmir",   "Кюрдамир",     "Kürdəmir",   "Kurdamir"),
+        ("Laçın",      "Лачин",        "Laçın",      "Lachin"),
+        ("Lerik",      "Лерик",        "Lerik",      "Lerik"),
+        ("Neftçala",   "Нефтчала",     "Neftçala",   "Neftchala"),
+        ("Oğuz",       "Огуз",         "Oğuz",       "Oguz"),
+        ("Saatlı",     "Саатлы",       "Saatlı",     "Saatly"),
+        ("Sabirabad",  "Сабирабад",    "Sabirabad",  "Sabirabad"),
+        ("Salyan",     "Сальян",       "Salyan",     "Salyan"),
+        ("Şamaxı",     "Шемаха",       "Şamaxı",     "Shamakhi"),
+        ("Şəmkir",     "Шамкир",       "Şəmkir",     "Shamkir"),
+        ("Samux",      "Самух",        "Samux",      "Samukh"),
+        ("Siyəzən",    "Сиазань",      "Siyəzən",    "Siyazan"),
+        ("Tovuz",      "Товуз",        "Tovuz",      "Tovuz"),
+        ("Ucar",       "Уджары",       "Ucar",       "Ujar"),
+        ("Xaçmaz",     "Хачмаз",       "Xaçmaz",     "Khachmaz"),
+        ("Xızı",       "Хызы",         "Xızı",       "Khizi"),
+        ("Yardımlı",   "Ярдымлы",      "Yardımlı",   "Yardimli"),
+        ("Zaqatala",   "Закаталы",     "Zaqatala",   "Zagatala"),
+        ("Zərdab",     "Зердаб",       "Zərdab",     "Zardab"),
+    };
+
+    string Label((string val, string ru, string az, string en) c) => lang switch
+    {
+        "az" => c.az,
+        "en" => c.en,
+        _    => c.ru
+    };
+}
+@foreach (var c in cities)
+{
+    <option value="@c.Item1">@Label(c)</option>
+}

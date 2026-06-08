@@ -9,6 +9,9 @@ public class User : BaseEntity
     public bool IsActive { get; set; } = true;
     public string PasswordHash { get; set; } = string.Empty;
     public UserRole Role { get; set; } = UserRole.Customer;
+    public string? PhotoUrl { get; set; }
+    public string? ResetToken { get; set; }
+    public DateTimeOffset? ResetTokenExpiry { get; set; }
 
     public ICollection<Listing> Listings { get; set; } = new List<Listing>();
     public ICollection<Favorite> Favorites { get; set; } = new List<Favorite>();

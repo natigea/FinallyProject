@@ -32,9 +32,10 @@ public class NotificationsController(
 
         await notifications.CreateAsync(
             purchase.UserId,
-            "✅ Заказ подтверждён",
-            $"Продавец подтвердил ваш заказ «{purchase.ListingTitle}». Ожидайте доставку.",
-            "/Checkout/History");
+            title: purchase.ListingTitle,
+            body: purchase.ListingTitle,
+            link: "/Checkout/History",
+            titleKey: "Notif_OrderApproved");
 
         TempData["Success"] = "Заказ подтверждён.";
         return RedirectToAction(nameof(Index));
@@ -52,9 +53,10 @@ public class NotificationsController(
 
         await notifications.CreateAsync(
             purchase.UserId,
-            "❌ Заказ отклонён",
-            $"К сожалению, продавец отклонил ваш заказ «{purchase.ListingTitle}».",
-            "/Checkout/History");
+            title: purchase.ListingTitle,
+            body: purchase.ListingTitle,
+            link: "/Checkout/History",
+            titleKey: "Notif_OrderRejected");
 
         TempData["Info"] = "Заказ отклонён.";
         return RedirectToAction(nameof(Index));

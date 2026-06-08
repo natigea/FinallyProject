@@ -21,6 +21,9 @@ public class MappingProfile : Profile
             .ForMember(d => d.Email, o => o.MapFrom(s => s.Email.Trim().ToLowerInvariant()))
             .ForMember(d => d.PasswordHash, o => o.Ignore())
             .ForMember(d => d.Role, o => o.MapFrom(_ => UserRole.Customer))
+            .ForMember(d => d.PhotoUrl, o => o.Ignore())
+            .ForMember(d => d.ResetToken, o => o.Ignore())
+            .ForMember(d => d.ResetTokenExpiry, o => o.Ignore())
             .ForMember(d => d.Listings, o => o.Ignore())
             .ForMember(d => d.Favorites, o => o.Ignore())
             .ForMember(d => d.BuyerConversations, o => o.Ignore())
@@ -36,11 +39,16 @@ public class MappingProfile : Profile
             .ForMember(d => d.IsDeleted, o => o.Ignore())
             .ForMember(d => d.PasswordHash, o => o.Ignore())
             .ForMember(d => d.Role, o => o.Ignore())
+            .ForMember(d => d.ResetToken, o => o.Ignore())
+            .ForMember(d => d.ResetTokenExpiry, o => o.Ignore())
             .ForMember(d => d.Listings, o => o.Ignore())
             .ForMember(d => d.Favorites, o => o.Ignore())
             .ForMember(d => d.BuyerConversations, o => o.Ignore())
             .ForMember(d => d.SellerConversations, o => o.Ignore())
-            .ForMember(d => d.SentMessages, o => o.Ignore());
+            .ForMember(d => d.SentMessages, o => o.Ignore())
+            .ForMember(d => d.PhotoUrl, o => o.MapFrom((src, dest) =>
+                src.PhotoUrl == null ? dest.PhotoUrl :
+                src.PhotoUrl == "" ? null : src.PhotoUrl));
 
         // Category
         CreateMap<Category, CategoryGetDto>();

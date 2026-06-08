@@ -145,6 +145,14 @@ using (var scope = app.Services.CreateScope())
             IF NOT EXISTS (SELECT * FROM sys.columns WHERE Name = N'ResetTokenExpiry' AND Object_ID = OBJECT_ID(N'Users'))
                 ALTER TABLE [Users] ADD [ResetTokenExpiry] DATETIMEOFFSET NULL;
 
+            -- Photo column on Users
+            IF NOT EXISTS (SELECT * FROM sys.columns WHERE Name = N'PhotoUrl' AND Object_ID = OBJECT_ID(N'Users'))
+                ALTER TABLE [Users] ADD [PhotoUrl] NVARCHAR(500) NULL;
+
+            -- TitleKey column on Notifications (for i18n template keys)
+            IF NOT EXISTS (SELECT * FROM sys.columns WHERE Name = N'TitleKey' AND Object_ID = OBJECT_ID(N'Notifications'))
+                ALTER TABLE [Notifications] ADD [TitleKey] NVARCHAR(100) NULL;
+
             -- Notifications table
             IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='Notifications' AND xtype='U')
             CREATE TABLE [Notifications] (

@@ -2,20 +2,43 @@
 @{
     var fullName  = User.Identity?.Name ?? "";
     var email     = User.FindFirst(ClaimTypes.Email)?.Value ?? "";
+    var userId    = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
     var parts     = fullName.Trim().Split(' ', 2, StringSplitOptions.RemoveEmptyEntries);
     var initials  = parts.Length >= 2
         ? $"{parts[0][0]}{parts[1][0]}".ToUpper()
         : fullName.Length > 0 ? fullName[0].ToString().ToUpper() : "?";
+
+    // Load photo from DB-backed claim or fallback to initials
+    string? photoUrl = null;
+    if (userId != null && Guid.TryParse(userId, out var uid))
+    {
+        var userSvc = ViewContext.HttpContext.RequestServices.GetService<EcommersProject.BLL.Interfaces.IUserService>();
+        if (userSvc != null)
+        {
+            var u = await userSvc.GetByIdAsync(uid);
+            photoUrl = u?.PhotoUrl;
+        }
+    }
 
     var path         = Context.Request.Path.Value ?? "";
     bool isProfile   = path.Equals("/Account/Profile",    StringComparison.OrdinalIgnoreCase);
     bool isListings  = path.StartsWith("/Listing/MyListings", StringComparison.OrdinalIgnoreCase);
     bool isFavorites = path.StartsWith("/Favorites",      StringComparison.OrdinalIgnoreCase);
     bool isMessages  = path.StartsWith("/Messages",       StringComparison.OrdinalIgnoreCase);
+    bool isPurchases = path.StartsWith("/Checkout/History", StringComparison.OrdinalIgnoreCase);
 }
 <aside class="profile-sidebar">
     <div class="section-card text-center" style="padding:24px 20px;">
-        <div class="profile-avatar-ring mx-auto">@initials</div>
+        <div class="profile-avatar-ring mx-auto" style="overflow:hidden;">
+            @if (!string.IsNullOrEmpty(photoUrl))
+            {
+                <img src="@photoUrl" style="width:100%;height:100%;object-fit:cover;border-radius:50%;" alt="avatar" />
+            }
+            else
+            {
+                @initials
+            }
+        </div>
         <div class="profile-name">@fullName</div>
         <div class="profile-email">@email</div>
     </div>
@@ -32,6 +55,9 @@
         </a>
         <a href="/Messages" class="@(isMessages ? "active" : "")">
             <i class="bi bi-chat snav-icon"></i>@L["Profile_Messages"]
+        </a>
+        <a href="/Checkout/History" class="@(isPurchases ? "active" : "")">
+            <i class="bi bi-bag-check snav-icon"></i>@L["Profile_Purchases"]
         </a>
     </nav>
 

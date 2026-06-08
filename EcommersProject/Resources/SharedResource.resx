@@ -94,6 +94,11 @@
   <data name="Browse_NothingFound"   xml:space="preserve"><value>Ничего не найдено</value></data>
   <data name="Browse_TryChange"      xml:space="preserve"><value>Попробуйте изменить параметры поиска</value></data>
   <data name="Browse_ShowAll"        xml:space="preserve"><value>Показать все объявления</value></data>
+  <data name="Browse_Filters"        xml:space="preserve"><value>Фильтры</value></data>
+  <data name="Browse_Price"          xml:space="preserve"><value>Цена, ₼</value></data>
+  <data name="Browse_Sort"           xml:space="preserve"><value>Сортировка</value></data>
+  <data name="Browse_Apply"          xml:space="preserve"><value>Применить</value></data>
+  <data name="Browse_From"           xml:space="preserve"><value>от</value></data>
 
   <!-- ── LISTING DETAIL ────────────────────────────────── -->
   <data name="Detail_Description"       xml:space="preserve"><value>Описание</value></data>
@@ -123,9 +128,19 @@
   <data name="Create_City"              xml:space="preserve"><value>Город</value></data>
   <data name="Create_Phone"             xml:space="preserve"><value>Контактный телефон</value></data>
   <data name="Create_SectionPhotos"     xml:space="preserve"><value>Фотографии</value></data>
-  <data name="Create_PhotosHint"        xml:space="preserve"><value>До 5 фото (JPG, PNG, WebP). Первое фото будет главным.</value></data>
+  <data name="Create_PhotosHint"        xml:space="preserve"><value>До 10 фото (JPG, PNG, WebP). Первое фото будет главным.</value></data>
   <data name="Create_Publish"           xml:space="preserve"><value>Опубликовать</value></data>
   <data name="Create_Cancel"            xml:space="preserve"><value>Отмена</value></data>
+  <data name="Create_HeroSub"          xml:space="preserve"><value>Заполните форму и ваше объявление появится после модерации</value></data>
+  <data name="Create_StepMain"         xml:space="preserve"><value>Основное</value></data>
+  <data name="Create_StepPrice"        xml:space="preserve"><value>Цена</value></data>
+  <data name="Create_StepPhotos"       xml:space="preserve"><value>Фото</value></data>
+  <data name="Create_SectionMainSub"   xml:space="preserve"><value>Категория, название и описание</value></data>
+  <data name="Create_SectionPriceSub"  xml:space="preserve"><value>Цена, город и контакты</value></data>
+  <data name="Create_SelectCity"       xml:space="preserve"><value>— Выберите город —</value></data>
+  <data name="Create_DropHere"         xml:space="preserve"><value>Перетащите фото сюда</value></data>
+  <data name="Create_DropHint"         xml:space="preserve"><value>JPG, PNG или WebP · до 10 фото</value></data>
+  <data name="Create_BrowseFiles"      xml:space="preserve"><value>Выбрать файлы</value></data>
 
   <!-- ── EDIT LISTING ──────────────────────────────────── -->
   <data name="Edit_PageTitle"       xml:space="preserve"><value>Редактировать объявление</value></data>
@@ -143,6 +158,7 @@
   <data name="Edit_AddPhotos"       xml:space="preserve"><value>Добавить фото</value></data>
   <data name="Edit_Save"            xml:space="preserve"><value>Сохранить</value></data>
   <data name="Edit_Cancel"          xml:space="preserve"><value>Отмена</value></data>
+  <data name="Edit_HeroSub"         xml:space="preserve"><value>Измените данные и сохраните объявление</value></data>
 
   <!-- ── MY LISTINGS ───────────────────────────────────── -->
   <data name="MyListings_Title"      xml:space="preserve"><value>Мои объявления</value></data>
@@ -316,7 +332,13 @@
   <data name="Admin_UserActivatedMsg"    xml:space="preserve"><value>Пользователь активирован.</value></data>
   <data name="Admin_UserDeactivatedMsg"  xml:space="preserve"><value>Пользователь деактивирован.</value></data>
   <data name="Admin_UserDeletedMsg"      xml:space="preserve"><value>Пользователь удалён.</value></data>
-  <data name="Admin_CannotDeleteSelf"    xml:space="preserve"><value>Нельзя удалить самого себя.</value></data>
+  <data name="Admin_CannotDeleteSelf"         xml:space="preserve"><value>Нельзя удалить самого себя.</value></data>
+  <data name="Admin_CannotDeleteSuperAdmin"  xml:space="preserve"><value>Нельзя удалить главного администратора.</value></data>
+  <data name="Admin_CannotDemoteSuperAdmin"  xml:space="preserve"><value>Нельзя изменить роль главного администратора.</value></data>
+  <data name="Admin_CannotDemoteAdmin"       xml:space="preserve"><value>Только главный администратор может снимать права у других администраторов.</value></data>
+  <data name="Admin_SuperAdmin"              xml:space="preserve"><value>Главный</value></data>
+  <data name="Admin_Protected"               xml:space="preserve"><value>Защищено</value></data>
+  <data name="Common_Back"                   xml:space="preserve"><value>Назад</value></data>
 
   <!-- Admin – Categories management -->
   <data name="Admin_CatSectionTitle"     xml:space="preserve"><value>Категории товаров</value></data>
@@ -402,13 +424,197 @@
   <data name="Contact_Faq5A"            xml:space="preserve"><value>Да, в разделе «Профиль → Мои объявления» можно редактировать любое объявление.</value></data>
 
   <!-- ── PROFILE ───────────────────────────────────────── -->
-  <data name="Profile_Title"         xml:space="preserve"><value>Мой профиль</value></data>
-  <data name="Profile_Since"         xml:space="preserve"><value>На сайте с</value></data>
-  <data name="Profile_MyListings"    xml:space="preserve"><value>Мои объявления</value></data>
-  <data name="Profile_Favorites"     xml:space="preserve"><value>Избранное</value></data>
-  <data name="Profile_Messages"      xml:space="preserve"><value>Сообщения</value></data>
-  <data name="Profile_AddListing"    xml:space="preserve"><value>Подать объявление</value></data>
-  <data name="Profile_SeeAll"        xml:space="preserve"><value>Все</value></data>
-  <data name="Profile_NoActive"      xml:space="preserve"><value>У вас нет активных объявлений</value></data>
-  <data name="Profile_PrivatePerson" xml:space="preserve"><value>Частное лицо</value></data>
+  <data name="Profile_Title"              xml:space="preserve"><value>Мой профиль</value></data>
+  <data name="Profile_Since"              xml:space="preserve"><value>На сайте с</value></data>
+  <data name="Profile_MyListings"         xml:space="preserve"><value>Мои объявления</value></data>
+  <data name="Profile_Favorites"          xml:space="preserve"><value>Избранное</value></data>
+  <data name="Profile_Messages"           xml:space="preserve"><value>Сообщения</value></data>
+  <data name="Profile_AddListing"         xml:space="preserve"><value>Подать объявление</value></data>
+  <data name="Profile_SeeAll"             xml:space="preserve"><value>Все</value></data>
+  <data name="Profile_NoActive"           xml:space="preserve"><value>У вас нет активных объявлений</value></data>
+  <data name="Profile_PrivatePerson"      xml:space="preserve"><value>Частное лицо</value></data>
+  <data name="Profile_EditTitle"          xml:space="preserve"><value>Настройки профиля</value></data>
+  <data name="Profile_Avatar"             xml:space="preserve"><value>Фото профиля</value></data>
+  <data name="Profile_ChangePhoto"        xml:space="preserve"><value>Изменить фото</value></data>
+  <data name="Profile_RemovePhoto"        xml:space="preserve"><value>Удалить фото</value></data>
+  <data name="Profile_PersonalInfo"       xml:space="preserve"><value>Личные данные</value></data>
+  <data name="Profile_FirstName"          xml:space="preserve"><value>Имя</value></data>
+  <data name="Profile_LastName"           xml:space="preserve"><value>Фамилия</value></data>
+  <data name="Profile_Phone"              xml:space="preserve"><value>Телефон</value></data>
+  <data name="Profile_Email"              xml:space="preserve"><value>Email</value></data>
+  <data name="Profile_EmailHint"          xml:space="preserve"><value>Email нельзя изменить</value></data>
+  <data name="Profile_SaveChanges"        xml:space="preserve"><value>Сохранить изменения</value></data>
+  <data name="Profile_ChangePassword"     xml:space="preserve"><value>Изменить пароль</value></data>
+  <data name="Profile_CurrentPassword"    xml:space="preserve"><value>Текущий пароль</value></data>
+  <data name="Profile_NewPassword"        xml:space="preserve"><value>Новый пароль</value></data>
+  <data name="Profile_ConfirmPassword"    xml:space="preserve"><value>Подтвердите новый пароль</value></data>
+  <data name="Profile_UpdatePassword"     xml:space="preserve"><value>Обновить пароль</value></data>
+  <data name="Profile_Purchases"          xml:space="preserve"><value>Покупки и ВИП</value></data>
+
+  <!-- ── NOTIFICATIONS ───────────────────────────────────── -->
+  <data name="Nav_Notifications"               xml:space="preserve"><value>Уведомления</value></data>
+  <data name="Notifications_Empty"             xml:space="preserve"><value>Уведомлений пока нет</value></data>
+  <data name="Notifications_Approve"           xml:space="preserve"><value>Одобрить</value></data>
+  <data name="Notifications_Reject"            xml:space="preserve"><value>Отклонить</value></data>
+  <data name="Notifications_ViewDetails"       xml:space="preserve"><value>Подробнее</value></data>
+  <data name="Notif_NewOrder_Title"            xml:space="preserve"><value>🛒 Новый заказ на ваш товар</value></data>
+  <data name="Notif_NewOrder_Body"             xml:space="preserve"><value>Покупатель хочет купить «{0}». Подтвердите или отклоните заказ.</value></data>
+  <data name="Notif_OrderPending_Title"        xml:space="preserve"><value>⏳ Заказ ожидает подтверждения</value></data>
+  <data name="Notif_OrderPending_Body"         xml:space="preserve"><value>Ваш заказ {0} оформлен. Ожидайте подтверждения от продавца.</value></data>
+  <data name="Notif_OrderApproved_Title"       xml:space="preserve"><value>✅ Заказ подтверждён</value></data>
+  <data name="Notif_OrderApproved_Body"        xml:space="preserve"><value>Продавец подтвердил ваш заказ «{0}». Ожидайте доставку.</value></data>
+  <data name="Notif_OrderRejected_Title"       xml:space="preserve"><value>❌ Заказ отклонён</value></data>
+  <data name="Notif_OrderRejected_Body"        xml:space="preserve"><value>К сожалению, продавец отклонил ваш заказ «{0}».</value></data>
+
+  <!-- ── CHECKOUT – DELIVERY ─────────────────────────────── -->
+  <data name="Checkout_DeliveryTitle"      xml:space="preserve"><value>Заказ с доставкой</value></data>
+  <data name="Checkout_DeliveryAddrSection" xml:space="preserve"><value>Адрес доставки</value></data>
+  <data name="Checkout_AddressLabel"       xml:space="preserve"><value>Адрес</value></data>
+  <data name="Checkout_CityLabel"          xml:space="preserve"><value>Город</value></data>
+  <data name="Checkout_PhoneLabel"         xml:space="preserve"><value>Телефон</value></data>
+  <data name="Checkout_CardSection"        xml:space="preserve"><value>Данные карты</value></data>
+  <data name="Checkout_CardNumberLabel"    xml:space="preserve"><value>Номер карты</value></data>
+  <data name="Checkout_CardHolderLabel"    xml:space="preserve"><value>Имя держателя</value></data>
+  <data name="Checkout_ExpiryLabel"        xml:space="preserve"><value>Срок действия</value></data>
+  <data name="Checkout_PayBtn"             xml:space="preserve"><value>Оплатить</value></data>
+  <data name="Checkout_DemoNotice"         xml:space="preserve"><value>Демонстрационная система — реальное списание не происходит</value></data>
+  <data name="Checkout_OrderSummary"       xml:space="preserve"><value>Состав заказа</value></data>
+  <data name="Checkout_ItemPrice"          xml:space="preserve"><value>Цена товара</value></data>
+  <data name="Checkout_DeliveryFeeLabel"   xml:space="preserve"><value>Доставка (5%)</value></data>
+  <data name="Checkout_TotalLabel"         xml:space="preserve"><value>Итого</value></data>
+  <data name="Checkout_TestCards"          xml:space="preserve"><value>Тестовые карты</value></data>
+  <data name="Checkout_TestSuccess"        xml:space="preserve"><value>Успешно</value></data>
+  <data name="Checkout_TestFail"           xml:space="preserve"><value>Отказ</value></data>
+  <data name="Checkout_TestHint"           xml:space="preserve"><value>CVV и срок — любые корректные значения</value></data>
+
+  <!-- ── CHECKOUT – VIP ──────────────────────────────────── -->
+  <data name="Checkout_VipTitle"           xml:space="preserve"><value>ВИП-продвижение</value></data>
+  <data name="Checkout_VipPlanSection"     xml:space="preserve"><value>Выберите план</value></data>
+  <data name="Checkout_VipGoodDeal"        xml:space="preserve"><value>Выгодно</value></data>
+  <data name="Checkout_VipBenefit1"        xml:space="preserve"><value>Объявление показывается первым в поиске</value></data>
+  <data name="Checkout_VipBenefit2"        xml:space="preserve"><value>Значок ⭐ ВИП на карточке объявления</value></data>
+  <data name="Checkout_VipBenefit3"        xml:space="preserve"><value>Больше просмотров от покупателей</value></data>
+  <data name="Checkout_VipActivateBtn"     xml:space="preserve"><value>Активировать ВИП</value></data>
+  <data name="Checkout_YourListing"        xml:space="preserve"><value>Ваше объявление</value></data>
+  <data name="Checkout_VipUntil"           xml:space="preserve"><value>ВИП до</value></data>
+
+  <!-- ── CHECKOUT – RESULT ───────────────────────────────── -->
+  <data name="Checkout_Result_VipTitle"    xml:space="preserve"><value>ВИП-статус активирован!</value></data>
+  <data name="Checkout_Result_DeliveryTitle" xml:space="preserve"><value>Заказ принят!</value></data>
+  <data name="Checkout_Result_AwaitingTitle" xml:space="preserve"><value>Ожидает подтверждения</value></data>
+  <data name="Checkout_Result_FailTitle"   xml:space="preserve"><value>Оплата отклонена</value></data>
+  <data name="Checkout_Result_VipDesc"     xml:space="preserve"><value>Ваше объявление продвинуто на {0} дней.</value></data>
+  <data name="Checkout_Result_AwaitDesc"   xml:space="preserve"><value>Ваш заказ оформлен. Продавец получил уведомление и должен подтвердить заказ.</value></data>
+  <data name="Checkout_Result_FailDesc"    xml:space="preserve"><value>Карта отклонена банком. Попробуйте другую карту или проверьте данные.</value></data>
+  <data name="Checkout_Result_OrderNumber" xml:space="preserve"><value>Номер заказа</value></data>
+  <data name="Checkout_Result_Listing"     xml:space="preserve"><value>Объявление</value></data>
+  <data name="Checkout_Result_Item"        xml:space="preserve"><value>Товар</value></data>
+  <data name="Checkout_Result_Duration"    xml:space="preserve"><value>Длительность</value></data>
+  <data name="Checkout_Result_Days"        xml:space="preserve"><value>{0} дней</value></data>
+  <data name="Checkout_Result_DeliveryFee" xml:space="preserve"><value>Доставка</value></data>
+  <data name="Checkout_Result_DeliveryCity" xml:space="preserve"><value>Город доставки</value></data>
+  <data name="Checkout_Result_Amount"      xml:space="preserve"><value>Сумма</value></data>
+  <data name="Checkout_Result_Card"        xml:space="preserve"><value>Карта</value></data>
+  <data name="Checkout_Result_Paid"        xml:space="preserve"><value>Оплачено</value></data>
+  <data name="Checkout_Result_History"     xml:space="preserve"><value>История покупок</value></data>
+  <data name="Checkout_Result_GoListing"   xml:space="preserve"><value>Перейти к объявлению</value></data>
+  <data name="Checkout_Result_TryAgain"    xml:space="preserve"><value>Попробовать снова</value></data>
+  <data name="Checkout_Result_BackListing" xml:space="preserve"><value>Вернуться к объявлению</value></data>
+
+  <!-- ── CHECKOUT – HISTORY ──────────────────────────────── -->
+  <data name="Checkout_History_Title"         xml:space="preserve"><value>История покупок</value></data>
+  <data name="Checkout_History_Empty"         xml:space="preserve"><value>Покупок и продвижений пока нет</value></data>
+  <data name="Checkout_History_Browse"        xml:space="preserve"><value>Перейти к объявлениям</value></data>
+  <data name="Checkout_History_Vip"           xml:space="preserve"><value>ВИП</value></data>
+  <data name="Checkout_History_Delivery"      xml:space="preserve"><value>Доставка</value></data>
+  <data name="Checkout_History_StatusPaid"    xml:space="preserve"><value>Оплачено</value></data>
+  <data name="Checkout_History_StatusDeclined" xml:space="preserve"><value>Отклонено</value></data>
+  <data name="Checkout_History_StatusPending" xml:space="preserve"><value>Ожидание</value></data>
+  <data name="Checkout_History_SellerPending" xml:space="preserve"><value>На рассмотрении у продавца</value></data>
+  <data name="Checkout_History_SellerApproved" xml:space="preserve"><value>Подтверждён продавцом</value></data>
+  <data name="Checkout_History_SellerRejected" xml:space="preserve"><value>Отклонён продавцом</value></data>
+  <data name="Checkout_History_GoListing"     xml:space="preserve"><value>Объявление</value></data>
+
+  <!-- ── LOGIN ─────────────────────────────────────────────── -->
+  <data name="Login_ForgotPassword"    xml:space="preserve"><value>Забыли пароль?</value></data>
+
+  <!-- ── FORGOT / RESET PASSWORD ───────────────────────────── -->
+  <data name="ForgotPwd_Title"         xml:space="preserve"><value>Забыли пароль?</value></data>
+  <data name="ForgotPwd_Sub"           xml:space="preserve"><value>Укажите email аккаунта — мы сгенерируем код для сброса пароля.</value></data>
+  <data name="ForgotPwd_Submit"        xml:space="preserve"><value>Получить код сброса</value></data>
+  <data name="ForgotPwd_BackToLogin"   xml:space="preserve"><value>Вернуться ко входу</value></data>
+  <data name="ForgotPwd_LeftHeading"   xml:space="preserve"><value>Восстановление доступа</value></data>
+  <data name="ForgotPwd_Feat1"         xml:space="preserve"><value>Безопасный сброс пароля</value></data>
+  <data name="ForgotPwd_Feat2"         xml:space="preserve"><value>Код действителен 30 минут</value></data>
+  <data name="ForgotPwd_Feat3"         xml:space="preserve"><value>Можно запросить повторно</value></data>
+  <data name="ForgotPwd_SentTitle"     xml:space="preserve"><value>Ваш код сброса</value></data>
+  <data name="ForgotPwd_SentSub"       xml:space="preserve"><value>Код для сброса пароля аккаунта</value></data>
+  <data name="ForgotPwd_NoAccountSub"  xml:space="preserve"><value>Если аккаунт с таким email существует, код уже сгенерирован.</value></data>
+  <data name="ForgotPwd_CodeLabel"     xml:space="preserve"><value>Код сброса пароля</value></data>
+  <data name="ForgotPwd_CodeHint"      xml:space="preserve"><value>Нажмите чтобы скопировать</value></data>
+  <data name="ForgotPwd_NoticeText"    xml:space="preserve"><value>Сохраните этот код. Он действителен 30 минут.</value></data>
+  <data name="ForgotPwd_GoToReset"     xml:space="preserve"><value>Перейти к сбросу пароля</value></data>
+  <data name="ForgotPwd_Copied"        xml:space="preserve"><value>Скопировано!</value></data>
+  <data name="ResetPwd_Title"          xml:space="preserve"><value>Сброс пароля</value></data>
+  <data name="ResetPwd_Sub"            xml:space="preserve"><value>Введите email, код сброса и новый пароль.</value></data>
+  <data name="ResetPwd_TokenLabel"     xml:space="preserve"><value>Код сброса</value></data>
+  <data name="ResetPwd_NewPwdLabel"    xml:space="preserve"><value>Новый пароль</value></data>
+  <data name="ResetPwd_ConfirmLabel"   xml:space="preserve"><value>Подтвердите пароль</value></data>
+  <data name="ResetPwd_Submit"         xml:space="preserve"><value>Установить новый пароль</value></data>
+  <data name="ResetPwd_RequestNew"     xml:space="preserve"><value>Запросить новый код</value></data>
+  <data name="ResetPwd_LeftHeading"    xml:space="preserve"><value>Создание нового пароля</value></data>
+
+  <!-- ── DETAIL – MISSING KEYS ─────────────────────────────── -->
+  <data name="Detail_Photos"           xml:space="preserve"><value>{0} фото</value></data>
+  <data name="Detail_Characteristics"  xml:space="preserve"><value>Характеристики</value></data>
+  <data name="Detail_Category"         xml:space="preserve"><value>Категория</value></data>
+  <data name="Detail_City"             xml:space="preserve"><value>Город</value></data>
+  <data name="Detail_Status"           xml:space="preserve"><value>Статус</value></data>
+  <data name="Detail_Date"             xml:space="preserve"><value>Дата</value></data>
+  <data name="Detail_StatusActive"     xml:space="preserve"><value>Активно</value></data>
+  <data name="Detail_StatusPending"    xml:space="preserve"><value>На проверке</value></data>
+  <data name="Detail_OrderDelivery"    xml:space="preserve"><value>Заказать с доставкой</value></data>
+  <data name="Detail_VipActiveUntil"   xml:space="preserve"><value>ВИП активен до</value></data>
+  <data name="Detail_ExtendVip"        xml:space="preserve"><value>Продлить ВИП</value></data>
+  <data name="Detail_MakeVip"          xml:space="preserve"><value>Сделать ВИП</value></data>
+  <data name="Detail_Seller"           xml:space="preserve"><value>Продавец</value></data>
+  <data name="Detail_SafetyTip"        xml:space="preserve"><value>Встречайтесь с продавцом лично. Не переводите предоплату.</value></data>
+
+  <!-- ── CHECKOUT – STRIPE / CARD ──────────────────────────── -->
+  <data name="Checkout_CardProtected"  xml:space="preserve"><value>Данные карты защищены Stripe. Мы не храним реквизиты карты.</value></data>
+  <data name="Checkout_StripeSSL"      xml:space="preserve"><value>Оплата через Stripe · SSL шифрование</value></data>
+  <data name="Checkout_TestCards"      xml:space="preserve"><value>Тестовые карты Stripe</value></data>
+  <data name="Checkout_TestSuccess"    xml:space="preserve"><value>Успех</value></data>
+  <data name="Checkout_TestDeclined"   xml:space="preserve"><value>Отклонена</value></data>
+  <data name="Checkout_TestCardHint"   xml:space="preserve"><value>Срок: любой будущий · CVV: любые 3 цифры</value></data>
+
+  <!-- ── CHECKOUT – RESULT MISSING KEYS ────────────────────── -->
+  <data name="Checkout_Result_SuccessTitle"  xml:space="preserve"><value>Заказ успешно оформлен!</value></data>
+  <data name="Checkout_Result_SellerNotified" xml:space="preserve"><value>Продавец получил уведомление и скоро свяжется с вами</value></data>
+  <data name="Checkout_Result_Copy"          xml:space="preserve"><value>Скопировать</value></data>
+  <data name="Checkout_Result_Copied"        xml:space="preserve"><value>Скопировано!</value></data>
+  <data name="Checkout_Result_DeliverySection" xml:space="preserve"><value>Доставка</value></data>
+  <data name="Checkout_Result_DeliveryAddress" xml:space="preserve"><value>Адрес</value></data>
+  <data name="Checkout_Result_PaymentSection"  xml:space="preserve"><value>Оплата</value></data>
+  <data name="Checkout_Result_Total"           xml:space="preserve"><value>Итого</value></data>
+  <data name="Checkout_Result_WhatNext"        xml:space="preserve"><value>Что дальше?</value></data>
+  <data name="Checkout_Result_Step1Label"      xml:space="preserve"><value>Заказ создан</value></data>
+  <data name="Checkout_Result_Step1Sub"        xml:space="preserve"><value>Платёж подтверждён через Stripe</value></data>
+  <data name="Checkout_Result_Step2Label"      xml:space="preserve"><value>Продавец уведомлён</value></data>
+  <data name="Checkout_Result_Step2Sub"        xml:space="preserve"><value>Ожидайте подтверждения от продавца</value></data>
+  <data name="Checkout_Result_Step3Label"      xml:space="preserve"><value>Подтверждение</value></data>
+  <data name="Checkout_Result_Step3Sub"        xml:space="preserve"><value>Продавец свяжется с вами для организации доставки</value></data>
+  <data name="Checkout_Result_Step4Label"      xml:space="preserve"><value>Доставка</value></data>
+  <data name="Checkout_Result_Step4Sub"        xml:space="preserve"><value>Товар будет доставлен по указанному адресу</value></data>
+  <data name="Checkout_Result_Continue"        xml:space="preserve"><value>Продолжить покупки</value></data>
+
+  <!-- ── ERROR PAGES ───────────────────────────────────────── -->
+  <data name="Error_404Title"    xml:space="preserve"><value>Страница не найдена</value></data>
+  <data name="Error_404Desc"     xml:space="preserve"><value>Страница, которую вы ищете, не существует или была удалена.</value></data>
+  <data name="Error_403Title"    xml:space="preserve"><value>Доступ запрещён</value></data>
+  <data name="Error_403Desc"     xml:space="preserve"><value>У вас нет прав для просмотра этой страницы.</value></data>
+  <data name="Error_500Title"    xml:space="preserve"><value>Что-то пошло не так</value></data>
+  <data name="Error_500Desc"     xml:space="preserve"><value>Произошла внутренняя ошибка сервера. Попробуйте обновить страницу.</value></data>
+  <data name="Error_Home"        xml:space="preserve"><value>На главную</value></data>
+  <data name="Error_Catalog"     xml:space="preserve"><value>В каталог</value></data>
 </root>

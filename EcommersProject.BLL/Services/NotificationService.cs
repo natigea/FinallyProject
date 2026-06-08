@@ -7,7 +7,7 @@ namespace EcommersProject.BLL.Services;
 
 public class NotificationService(IUnitOfWork uow) : INotificationService
 {
-    public async Task CreateAsync(Guid userId, string title, string body, string? link = null, Guid? purchaseId = null)
+    public async Task CreateAsync(Guid userId, string title, string body, string? link = null, Guid? purchaseId = null, string? titleKey = null)
     {
         var n = new Notification
         {
@@ -15,7 +15,8 @@ public class NotificationService(IUnitOfWork uow) : INotificationService
             Title      = title,
             Body       = body,
             Link       = link,
-            PurchaseId = purchaseId
+            PurchaseId = purchaseId,
+            TitleKey   = titleKey
         };
         await uow.Notifications.AddAsync(n);
         await uow.SaveChangesAsync();
@@ -60,5 +61,5 @@ public class NotificationService(IUnitOfWork uow) : INotificationService
     }
 
     private static NotificationGetDto ToDto(Notification n) => new(
-        n.Id, n.Title, n.Body, n.Link, n.IsRead, n.PurchaseId, n.CreatedDate);
+        n.Id, n.Title, n.Body, n.Link, n.IsRead, n.PurchaseId, n.CreatedDate, n.TitleKey);
 }

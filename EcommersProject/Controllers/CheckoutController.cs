@@ -96,16 +96,18 @@ public class CheckoutController(
         {
             await notifications.CreateAsync(
                 purchase.SellerId.Value,
-                "🛒 Новый заказ на ваш товар",
-                $"Покупатель хочет купить «{listing.Title}». Подтвердите или отклоните заказ.",
-                "/Notifications",
-                purchase.Id);
+                title: listing.Title,
+                body: listing.Title,
+                link: "/Notifications",
+                purchaseId: purchase.Id,
+                titleKey: "Notif_NewOrder");
 
             await notifications.CreateAsync(
                 userId,
-                "⏳ Заказ ожидает подтверждения",
-                $"Ваш заказ {purchase.OrderNumber} оформлен. Ожидайте подтверждения от продавца.",
-                "/Checkout/History");
+                title: purchase.OrderNumber,
+                body: purchase.OrderNumber,
+                link: "/Checkout/History",
+                titleKey: "Notif_OrderPending");
         }
 
         return RedirectToAction(nameof(Result), new { id = purchase.Id });

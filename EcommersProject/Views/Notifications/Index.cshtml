@@ -22,8 +22,16 @@
                     <div class="d-flex align-items-start gap-3">
                         <div class="notif-dot @(n.IsRead ? "dot-read" : "dot-unread")"></div>
                         <div class="flex-grow-1 min-w-0">
-                            <div class="fw-semibold" style="font-size:.9rem;">@n.Title</div>
-                            <div class="text-muted mt-1" style="font-size:.84rem;">@n.Body</div>
+                            @if (!string.IsNullOrEmpty(n.TitleKey))
+                            {
+                                <div class="fw-semibold" style="font-size:.9rem;">@L[n.TitleKey + "_Title"]</div>
+                                <div class="text-muted mt-1" style="font-size:.84rem;">@string.Format(L[n.TitleKey + "_Body"].Value, n.Body)</div>
+                            }
+                            else
+                            {
+                                <div class="fw-semibold" style="font-size:.9rem;">@n.Title</div>
+                                <div class="text-muted mt-1" style="font-size:.84rem;">@n.Body</div>
+                            }
                             <div class="text-muted mt-2" style="font-size:.74rem;">
                                 <i class="bi bi-clock me-1"></i>@n.CreatedDate.ToString("dd.MM.yyyy HH:mm")
                             </div>
