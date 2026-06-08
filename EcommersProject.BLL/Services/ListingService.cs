@@ -110,6 +110,7 @@ public class ListingService(IUnitOfWork uow) : IListingService
             CategoryId        = dto.CategoryId,
             UserId            = dto.UserId,
             Status            = ListingStatus.Pending,
+            Condition         = dto.Condition,
             DeliveryAvailable = dto.DeliveryAvailable
         };
         await uow.Listings.AddAsync(listing, ct);
@@ -133,6 +134,7 @@ public class ListingService(IUnitOfWork uow) : IListingService
         listing.City              = dto.City;
         listing.ContactPhone      = dto.ContactPhone;
         listing.CategoryId        = dto.CategoryId;
+        listing.Condition         = dto.Condition;
         listing.DeliveryAvailable = dto.DeliveryAvailable;
 
         if (!isAdminEdit)
@@ -238,6 +240,7 @@ public class ListingService(IUnitOfWork uow) : IListingService
             l.CreatedDate,
             isVipActive,
             l.VipExpiresAt,
-            l.DeliveryAvailable);
+            l.DeliveryAvailable,
+            l.Condition);
     }
 }

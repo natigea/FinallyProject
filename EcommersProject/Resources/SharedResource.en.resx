@@ -11,6 +11,7 @@
   <data name="Nav_Favorites"          xml:space="preserve"><value>Favorites</value></data>
   <data name="Nav_Messages"           xml:space="preserve"><value>Messages</value></data>
   <data name="Nav_Profile"            xml:space="preserve"><value>My Profile</value></data>
+  <data name="Nav_Support"            xml:space="preserve"><value>Support</value></data>
   <data name="Nav_MyListings"         xml:space="preserve"><value>My Listings</value></data>
   <data name="Nav_AdminPanel"         xml:space="preserve"><value>Admin Panel</value></data>
   <data name="Nav_Login"              xml:space="preserve"><value>Sign In</value></data>
@@ -68,6 +69,7 @@
   <data name="Home_City"             xml:space="preserve"><value>City</value></data>
   <data name="Home_AllCities"        xml:space="preserve"><value>All cities</value></data>
   <data name="Home_Find"             xml:space="preserve"><value>Find</value></data>
+  <data name="Home_SupportHours"     xml:space="preserve"><value>08:00 — 23:00</value></data>
   <data name="Home_Categories"       xml:space="preserve"><value>Categories</value></data>
   <data name="Home_FreshListings"    xml:space="preserve"><value>Fresh listings</value></data>
   <data name="Home_ViewAll"          xml:space="preserve"><value>View all</value></data>
@@ -136,6 +138,9 @@
   <data name="Create_SectionPhotos"     xml:space="preserve"><value>Photos</value></data>
   <data name="Create_PhotosHint"        xml:space="preserve"><value>Up to 10 photos (JPG, PNG, WebP). First photo will be the cover.</value></data>
   <data name="Create_Publish"           xml:space="preserve"><value>Publish</value></data>
+  <data name="Create_Condition"          xml:space="preserve"><value>Condition</value></data>
+  <data name="Create_ConditionNew"       xml:space="preserve"><value>New</value></data>
+  <data name="Create_ConditionUsed"      xml:space="preserve"><value>Used</value></data>
   <data name="Create_Cancel"            xml:space="preserve"><value>Cancel</value></data>
   <data name="Create_HeroSub"          xml:space="preserve"><value>Fill in the form and your listing will appear after moderation</value></data>
   <data name="Create_StepMain"         xml:space="preserve"><value>Main</value></data>
@@ -689,4 +694,155 @@
   <data name="Error_500Desc"     xml:space="preserve"><value>An internal server error occurred. Try refreshing the page.</value></data>
   <data name="Error_Home"        xml:space="preserve"><value>Back to home</value></data>
   <data name="Error_Catalog"     xml:space="preserve"><value>Browse listings</value></data>
+  <data name="Acc_InvalidLogin" xml:space="preserve"><value>Invalid email or password.</value></data>
+  <data name="Acc_RegisterSuccess" xml:space="preserve"><value>Registration successful! Welcome!</value></data>
+  <data name="Acc_ResetCodeInvalid" xml:space="preserve"><value>Invalid or expired code. Please request a new one.</value></data>
+  <data name="Acc_PasswordChanged" xml:space="preserve"><value>Password changed successfully. Please log in with your new password.</value></data>
+  <data name="Acc_ProfileUpdated" xml:space="preserve"><value>Profile updated successfully.</value></data>
+  <data name="Acc_AccountDeleted" xml:space="preserve"><value>Your account has been deleted.</value></data>
+  <data name="Acc_WrongPassword" xml:space="preserve"><value>Incorrect current password.</value></data>
+  <data name="Acc_PasswordChangedShort" xml:space="preserve"><value>Password changed successfully.</value></data>
+  <data name="Acc_PhotoFormatError" xml:space="preserve"><value>Allowed formats: JPG, PNG, WebP</value></data>
+  <data name="Chk_OwnListingVip" xml:space="preserve"><value>You can only promote your own listings.</value></data>
+  <data name="Chk_PaymentNotCompleted" xml:space="preserve"><value>Payment was not completed.</value></data>
+  <data name="Chk_PaymentFailed" xml:space="preserve"><value>Payment failed. Please try again.</value></data>
+  <data name="Chk_PaymentVerifyError" xml:space="preserve"><value>Payment verification error.</value></data>
+  <data name="Chk_OwnListingOrder" xml:space="preserve"><value>You cannot order your own listing.</value></data>
+  <data name="Chk_Processing" xml:space="preserve"><value>Processing...</value></data>
+  <data name="Chk_FillAllFields" xml:space="preserve"><value>Please fill in all delivery fields before paying.</value></data>
+  <data name="Chk_PaymentCreateError" xml:space="preserve"><value>Payment creation error</value></data>
+  <data name="Chk_UnknownError" xml:space="preserve"><value>Unknown error. Please try again.</value></data>
+  <data name="Chk_StripeSSL" xml:space="preserve"><value>Payment via Stripe · SSL encryption</value></data>
+  <data name="Lst_SentForReview" xml:space="preserve"><value>Listing sent for admin review. It will be visible after approval.</value></data>
+  <data name="Lst_Updated" xml:space="preserve"><value>Listing updated.</value></data>
+  <data name="Lst_Closed" xml:space="preserve"><value>Listing closed.</value></data>
+  <data name="Lst_Deleted" xml:space="preserve"><value>Listing deleted.</value></data>
+  <data name="Ntf_OrderConfirmed" xml:space="preserve"><value>Order confirmed.</value></data>
+  <data name="Ntf_OrderRejected" xml:space="preserve"><value>Order rejected.</value></data>
+  <data name="Rev_InvalidRating" xml:space="preserve"><value>Invalid rating.</value></data>
+  <data name="Auth_InvalidLogin" xml:space="preserve"><value>Invalid email or password.</value></data>
+  <data name="Auth_AccessDeniedPanel" xml:space="preserve"><value>Access denied. Panel is available only for admins and sellers.</value></data>
+  <data name="Auth_AccessDenied" xml:space="preserve"><value>Access denied</value></data>
+  <data name="Auth_NoPermission" xml:space="preserve"><value>You don't have permission to view this page.</value></data>
+  <data name="Auth_Login" xml:space="preserve"><value>Log in</value></data>
+  <data name="Admin_NameRequired" xml:space="preserve"><value>Name is required.</value></data>
+  <data name="Admin_CategoryCreated" xml:space="preserve"><value>Category created.</value></data>
+  <data name="Admin_CategoryDeleted" xml:space="preserve"><value>Category deleted.</value></data>
+  <data name="SP_MyListings" xml:space="preserve"><value>My listings</value></data>
+  <data name="SP_Total" xml:space="preserve"><value>Total</value></data>
+  <data name="SP_CreateListing" xml:space="preserve"><value>Create listing</value></data>
+  <data name="SP_NoListings" xml:space="preserve"><value>You have no listings yet.</value></data>
+  <data name="SP_CreateFirst" xml:space="preserve"><value>Create your first!</value></data>
+  <data name="SP_Photo" xml:space="preserve"><value>Photo</value></data>
+  <data name="SP_Title" xml:space="preserve"><value>Title</value></data>
+  <data name="SP_Category" xml:space="preserve"><value>Category</value></data>
+  <data name="SP_City" xml:space="preserve"><value>City</value></data>
+  <data name="SP_Price" xml:space="preserve"><value>Price</value></data>
+  <data name="SP_Status" xml:space="preserve"><value>Status</value></data>
+  <data name="SP_Date" xml:space="preserve"><value>Date</value></data>
+  <data name="SP_Actions" xml:space="preserve"><value>Actions</value></data>
+  <data name="SP_Active" xml:space="preserve"><value>Active</value></data>
+  <data name="SP_ClosedStatus" xml:space="preserve"><value>Closed</value></data>
+  <data name="SP_Edit" xml:space="preserve"><value>Edit</value></data>
+  <data name="SP_Delete" xml:space="preserve"><value>Delete</value></data>
+  <data name="SP_ConfirmDelete" xml:space="preserve"><value>Delete listing?</value></data>
+  <data name="SP_Close" xml:space="preserve"><value>Close</value></data>
+  <data name="SP_TotalListings" xml:space="preserve"><value>Total listings</value></data>
+  <data name="SP_ActiveCount" xml:space="preserve"><value>Active</value></data>
+  <data name="SP_ClosedCount" xml:space="preserve"><value>Closed</value></data>
+  <data name="SP_AllMyListings" xml:space="preserve"><value>All my listings</value></data>
+  <data name="SP_Messages" xml:space="preserve"><value>Messages</value></data>
+  <data name="SP_RecentListings" xml:space="preserve"><value>My recent listings</value></data>
+  <data name="SP_All" xml:space="preserve"><value>All</value></data>
+  <data name="SP_Author" xml:space="preserve"><value>Author</value></data>
+  <data name="SP_Found" xml:space="preserve"><value>Found</value></data>
+  <data name="SP_SearchPlaceholder" xml:space="preserve"><value>Search by title...</value></data>
+  <data name="SP_Reset" xml:space="preserve"><value>Reset</value></data>
+  <data name="SP_NotFound" xml:space="preserve"><value>No listings found.</value></data>
+  <data name="SP_AllListings" xml:space="preserve"><value>All listings</value></data>
+  <data name="SP_Moderation" xml:space="preserve"><value>Listing moderation</value></data>
+  <data name="SP_NoListingsYet" xml:space="preserve"><value>No listings yet.</value></data>
+  <data name="SP_Categories" xml:space="preserve"><value>Categories</value></data>
+  <data name="SP_NoCategoriesYet" xml:space="preserve"><value>No categories yet. Add the first one!</value></data>
+  <data name="SP_VipUntil" xml:space="preserve"><value>VIP until</value></data>
+  <data name="SP_ExtendVip" xml:space="preserve"><value>Extend VIP</value></data>
+  <data name="SP_MakeVip" xml:space="preserve"><value>Make VIP</value></data>
+  <data name="SP_CancelTimeExpired" xml:space="preserve"><value>Cancellation time expired.</value></data>
+  <data name="SP_PendingOrders" xml:space="preserve"><value>orders need your response</value></data>
+  <data name="SP_PendingHint" xml:space="preserve"><value>Approve or reject — the buyer is waiting</value></data>
+  <data name="SP_Respond" xml:space="preserve"><value>Respond</value></data>
+  <data name="SP_EmptyOrders" xml:space="preserve"><value>When buyers order delivery of your items, orders will appear here</value></data>
+  <data name="SP_Icon" xml:space="preserve"><value>Icon</value></data>
+  <data name="SP_Name" xml:space="preserve"><value>Name</value></data>
+  <data name="SP_Description" xml:space="preserve"><value>Description</value></data>
+  <data name="SP_NewCategory" xml:space="preserve"><value>New category</value></data>
+  <data name="SP_CategoryNamePlaceholder" xml:space="preserve"><value>E.g.: Electronics</value></data>
+  <data name="SP_CategoryDescPlaceholder" xml:space="preserve"><value>Short category description...</value></data>
+  <data name="SP_IconExamples" xml:space="preserve"><value>E.g.: bi-phone, bi-car-front, bi-house</value></data>
+  <data name="SP_AddCategory" xml:space="preserve"><value>Add category</value></data>
+  <data name="SP_ConfirmDeleteCategory" xml:space="preserve"><value>Delete this category?</value></data>
+
+  <!-- ── VALIDATION ────────────────────────────────────────── -->
+  <data name="Val_EmailRequired" xml:space="preserve"><value>Enter email</value></data>
+  <data name="Val_EmailInvalid" xml:space="preserve"><value>Invalid email</value></data>
+  <data name="Val_PasswordRequired" xml:space="preserve"><value>Enter password</value></data>
+  <data name="Val_FirstNameRequired" xml:space="preserve"><value>Enter first name</value></data>
+  <data name="Val_LastNameRequired" xml:space="preserve"><value>Enter last name</value></data>
+  <data name="Val_MinLength2" xml:space="preserve"><value>Minimum 2 characters</value></data>
+  <data name="Val_PhoneRequired" xml:space="preserve"><value>Enter phone number</value></data>
+  <data name="Val_PhoneInvalid" xml:space="preserve"><value>Invalid phone number</value></data>
+  <data name="Val_MinLength6" xml:space="preserve"><value>Minimum 6 characters</value></data>
+  <data name="Val_ConfirmPasswordRequired" xml:space="preserve"><value>Confirm password</value></data>
+  <data name="Val_PasswordsMismatch" xml:space="preserve"><value>Passwords do not match</value></data>
+  <data name="Val_CodeRequired" xml:space="preserve"><value>Enter the code from the message</value></data>
+  <data name="Val_CodeLength8" xml:space="preserve"><value>Code must be 8 characters</value></data>
+  <data name="Val_NewPasswordRequired" xml:space="preserve"><value>Enter new password</value></data>
+  <data name="Val_CurrentPasswordRequired" xml:space="preserve"><value>Enter current password</value></data>
+  <data name="Val_TitleRequired" xml:space="preserve"><value>Enter title</value></data>
+  <data name="Val_TitleLength" xml:space="preserve"><value>3 to 200 characters</value></data>
+  <data name="Val_DescriptionRequired" xml:space="preserve"><value>Enter description</value></data>
+  <data name="Val_DescriptionLength" xml:space="preserve"><value>10 to 5000 characters</value></data>
+  <data name="Val_PriceRequired" xml:space="preserve"><value>Enter price</value></data>
+  <data name="Val_PricePositive" xml:space="preserve"><value>Price must not be negative</value></data>
+  <data name="Val_CityRequired" xml:space="preserve"><value>Select city</value></data>
+  <data name="Val_ContactPhoneRequired" xml:space="preserve"><value>Enter contact phone</value></data>
+  <data name="Val_CategoryRequired" xml:space="preserve"><value>Select category</value></data>
+  <data name="Val_AddressRequired" xml:space="preserve"><value>Enter delivery address</value></data>
+  <data name="Val_PlanRequired" xml:space="preserve"><value>Select plan</value></data>
+
+  <!-- ── AUTH (Admin Login Page) ───────────────────────────── -->
+  <data name="Auth_LoginTitle" xml:space="preserve"><value>Login</value></data>
+  <data name="Auth_PanelSubtitle" xml:space="preserve"><value>Store management panel</value></data>
+  <data name="Auth_Password" xml:space="preserve"><value>Password</value></data>
+  <data name="Auth_LoginBtn" xml:space="preserve"><value>Log in</value></data>
+  <data name="Auth_AccessOnly" xml:space="preserve"><value>Access for administrators and sellers only</value></data>
+
+  <!-- ── CHAT ──────────────────────────────────────────────── -->
+  <data name="Chat_PhotoBtn" xml:space="preserve"><value>Photo</value></data>
+  <data name="Chat_VoiceBtn" xml:space="preserve"><value>Voice</value></data>
+  <data name="Chat_Speaker" xml:space="preserve"><value>Speaker</value></data>
+  <data name="Chat_SpeakerLoud" xml:space="preserve"><value>Loud</value></data>
+  <data name="Chat_SpeakerEarpiece" xml:space="preserve"><value>Earpiece</value></data>
+
+  <!-- ── FCM / MESSAGES PUSH ───────────────────────────────── -->
+  <data name="Msg_VoiceMessage" xml:space="preserve"><value>🎤 Voice message</value></data>
+  <data name="Msg_Photo" xml:space="preserve"><value>📷 Photo</value></data>
+  <data name="Fcm_Calling" xml:space="preserve"><value>📞 {0} is calling</value></data>
+  <data name="Fcm_TapToAnswer" xml:space="preserve"><value>Tap to answer</value></data>
+
+  <!-- ── TWO-FACTOR AUTH ───────────────────────────────────── -->
+  <data name="TwoFactor_Title" xml:space="preserve"><value>Verify your login</value></data>
+  <data name="TwoFactor_Subtitle" xml:space="preserve"><value>Enter the 6-digit code sent to</value></data>
+  <data name="TwoFactor_Submit" xml:space="preserve"><value>Verify</value></data>
+  <data name="TwoFactor_NoCode" xml:space="preserve"><value>Didn't receive the code?</value></data>
+  <data name="TwoFactor_ResendBtn" xml:space="preserve"><value>Resend code</value></data>
+  <data name="TwoFactor_BackToLogin" xml:space="preserve"><value>Back to login</value></data>
+  <data name="TwoFactor_CodeSent" xml:space="preserve"><value>Verification code sent to your email.</value></data>
+  <data name="TwoFactor_CodeResent" xml:space="preserve"><value>Code resent.</value></data>
+  <data name="TwoFactor_InvalidCode" xml:space="preserve"><value>Invalid or expired code.</value></data>
+  <data name="TwoFactor_SendError" xml:space="preserve"><value>Failed to send code. Try again later.</value></data>
+
+  <!-- ── PUSH NOTIFICATIONS ──────────────────────────────── -->
+  <data name="Push_BannerText"  xml:space="preserve"><value>Enable notifications to never miss messages and calls</value></data>
+  <data name="Push_BannerBtn"   xml:space="preserve"><value>Enable</value></data>
 </root>

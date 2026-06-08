@@ -1,14 +1,14 @@
 @page
 @model EcommersProject.Pages.Admin.CouponsModel
 @{
-    ViewData["Title"] = "Категории";
+    ViewData["Title"] = L["SP_Categories"];
 }
 
 <div class="row g-4">
     <div class="col-lg-8">
         <div class="card">
             <div class="card-header d-flex align-items-center justify-content-between">
-                <span><i class="bi bi-tags-fill me-2" style="color:var(--accent);"></i>Категории</span>
+                <span><i class="bi bi-tags-fill me-2" style="color:var(--accent);"></i>@L["SP_Categories"]</span>
                 <span class="badge" style="background:var(--accent-soft); color:var(--accent);">@Model.Categories.Count</span>
             </div>
             <div class="card-body p-0">
@@ -16,7 +16,7 @@
                 {
                     <div class="empty-state">
                         <i class="bi bi-tags"></i>
-                        Категорий нет. Добавьте первую!
+                        @L["SP_NoCategoriesYet"]
                     </div>
                 }
                 else
@@ -25,10 +25,10 @@
                         <thead>
                             <tr>
                                 <th style="width:48px;">#</th>
-                                <th style="width:56px;">Иконка</th>
-                                <th>Название</th>
-                                <th>Описание</th>
-                                <th style="width:64px;">Действия</th>
+                                <th style="width:56px;">@L["SP_Icon"]</th>
+                                <th>@L["SP_Name"]</th>
+                                <th>@L["SP_Description"]</th>
+                                <th style="width:64px;">@L["SP_Actions"]</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -46,7 +46,7 @@
                                     <td class="small" style="color:var(--text-muted);">@(string.IsNullOrEmpty(c.Description) ? "—" : c.Description)</td>
                                     <td>
                                         <form method="post" asp-page-handler="Delete"
-                                              onsubmit="return confirm('Удалить категорию «@c.Name»?')">
+                                              onsubmit="return confirm('@L["SP_ConfirmDeleteCategory"]')">
                                             <input type="hidden" name="id" value="@c.Id" />
                                             <button class="btn btn-sm btn-outline-danger btn-action">
                                                 <i class="bi bi-trash"></i>
@@ -65,18 +65,18 @@
     <div class="col-lg-4">
         <div class="card" style="border-top:3px solid #10b981;">
             <div class="card-header">
-                <i class="bi bi-plus-circle-fill me-2 text-success"></i>Новая категория
+                <i class="bi bi-plus-circle-fill me-2 text-success"></i>@L["SP_NewCategory"]
             </div>
             <div class="card-body">
                 <form method="post" asp-page-handler="Create">
                     <div class="mb-3">
-                        <label class="form-label">Название <span class="text-danger">*</span></label>
-                        <input asp-for="NewName" type="text" class="form-control" placeholder="Например: Электроника" required />
+                        <label class="form-label">@L["SP_Name"] <span class="text-danger">*</span></label>
+                        <input asp-for="NewName" type="text" class="form-control" placeholder="@L["SP_CategoryNamePlaceholder"]" required />
                     </div>
                     <div class="mb-3">
-                        <label class="form-label">Описание</label>
+                        <label class="form-label">@L["SP_Description"]</label>
                         <textarea asp-for="NewDescription" class="form-control" rows="2"
-                                  placeholder="Краткое описание категории..."></textarea>
+                                  placeholder="@L["SP_CategoryDescPlaceholder"]"></textarea>
                     </div>
                     <div class="mb-3">
                         <label class="form-label">Bootstrap Icon</label>
@@ -87,10 +87,10 @@
                             <input asp-for="NewIcon" type="text" class="form-control" placeholder="bi-tag"
                                    oninput="document.getElementById('iconPreview').className='bi '+this.value" />
                         </div>
-                        <div class="form-text" style="font-size:.75rem;">Например: bi-phone, bi-car-front, bi-house</div>
+                        <div class="form-text" style="font-size:.75rem;">@L["SP_IconExamples"]</div>
                     </div>
                     <button type="submit" class="btn btn-success w-100" style="border-radius:10px; font-weight:600;">
-                        <i class="bi bi-plus-lg me-1"></i>Добавить категорию
+                        <i class="bi bi-plus-lg me-1"></i>@L["SP_AddCategory"]
                     </button>
                 </form>
             </div>

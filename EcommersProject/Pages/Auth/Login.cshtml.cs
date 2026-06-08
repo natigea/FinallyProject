@@ -1,17 +1,21 @@
 using System.ComponentModel.DataAnnotations;
-using System.Security.Claims;
 using EcommersProject.BLL.DTOs;
 using EcommersProject.BLL.Interfaces;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.Cookies;
+using EcommersProject.Resources;
+using EcommersProject.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.Extensions.Localization;
 
 namespace EcommersProject.Pages.Auth;
 
 [AllowAnonymous]
-public class LoginModel(IAuthService authService) : PageModel
+public class LoginModel(
+    IAuthService authService,
+    EmailService emailService,
+    IStringLocalizer<SharedResource> localizer,
+    ILogger<LoginModel> logger) : PageModel
 {
     [BindProperty, Required, EmailAddress]
     public string Email { get; set; } = string.Empty;
@@ -40,32 +44,33 @@ public class LoginModel(IAuthService authService) : PageModel
 
         if (result is null)
         {
-            ErrorMessage = "Неверный email или пароль.";
+            ErrorMessage = localizer["Auth_InvalidLogin"].Value;
             return Page();
         }
 
         if (result.Role == "Customer")
         {
-            ErrorMessage = "Доступ запрещён. Панель доступна только для администраторов и продавцов.";
+            ErrorMessage = localizer["Auth_AccessDeniedPanel"].Value;
             return Page();
         }
 
-        var claims = new List<Claim>
+        var code = await authService.GenerateTwoFactorCodeAsync(result.Id, cancellationToken);
+
+        try
         {
-            new(ClaimTypes.NameIdentifier, result.Id.ToString()),
-            new(ClaimTypes.Email, result.Email),
-            new(ClaimTypes.Name, $"{result.FirstName} {result.LastName}"),
-            new(ClaimTypes.Role, result.Role)
-        };
+            await emailService.SendVerificationCodeAsync(result.Email, code);
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "[2FA-Admin] Failed to send code to {Email}", result.Email);
+            ErrorMessage = localizer["TwoFactor_SendError"].Value;
+            return Page();
+        }
 
-        var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
-        var principal = new ClaimsPrincipal(identity);
+        HttpContext.Session.SetString("2fa_userId", result.Id.ToString());
+        HttpContext.Session.SetString("2fa_email", result.Email);
+        HttpContext.Session.SetString("2fa_returnUrl", result.Role == "Admin" ? "/Admin/Dashboard" : "/Seller/Dashboard");
 
-        await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal,
-            new AuthenticationProperties { IsPersistent = true, ExpiresUtc = DateTimeOffset.UtcNow.AddHours(8) });
-
-        return result.Role == "Admin"
-            ? RedirectToPage("/Admin/Dashboard")
-            : RedirectToPage("/Seller/Dashboard");
+        return Redirect("/Account/TwoFactor");
     }
 }

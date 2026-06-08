@@ -43,7 +43,7 @@
             @if (Model.IsVip && Model.VipExpiresAt.HasValue)
             {
                 <span class="ms-2 text-warning fw-semibold">
-                    <i class="bi bi-star-fill me-1" style="font-size:.65rem;"></i>ВИП до @Model.VipExpiresAt.Value.ToString("dd.MM")
+                    <i class="bi bi-star-fill me-1" style="font-size:.65rem;"></i>@L["SP_VipUntil"] @Model.VipExpiresAt.Value.ToString("dd.MM")
                 </span>
             }
         </div>
@@ -52,7 +52,7 @@
         @if (Model.Status == "Active")
         {
             <a href="/Checkout/Vip?listingId=@Model.Id" class="btn btn-sm btn-vip-sm"
-               title="@(Model.IsVip ? "Продлить ВИП" : "Сделать ВИП")">
+               title="@(Model.IsVip ? L["SP_ExtendVip"].Value : L["SP_MakeVip"].Value)">
                 <i class="bi bi-star-fill"></i>
             </a>
         }

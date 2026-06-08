@@ -1,14 +1,15 @@
 using EcommersProject.BLL.DTOs;
 using EcommersProject.BLL.Interfaces;
+using EcommersProject.Resources;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.Extensions.Localization;
 
 namespace EcommersProject.Pages.Admin;
 
-// Repurposed: category management with icon
 [Authorize(Policy = "AdminOnly")]
-public class CouponsModel(ICategoryService categoryService) : PageModel
+public class CouponsModel(ICategoryService categoryService, IStringLocalizer<SharedResource> L) : PageModel
 {
     public IReadOnlyList<CategoryGetDto> Categories { get; private set; } = [];
 
@@ -25,18 +26,18 @@ public class CouponsModel(ICategoryService categoryService) : PageModel
     {
         if (string.IsNullOrWhiteSpace(NewName))
         {
-            TempData["ErrorMessage"] = "Название обязательно.";
+            TempData["ErrorMessage"] = L["Admin_NameRequired"].Value;
             return RedirectToPage();
         }
         await categoryService.CreateAsync(new CategoryCreateDto(NewName, NewDescription, NewIcon), cancellationToken);
-        TempData["SuccessMessage"] = $"Категория «{NewName}» создана.";
+        TempData["SuccessMessage"] = L["Admin_CategoryCreated"].Value;
         return RedirectToPage();
     }
 
     public async Task<IActionResult> OnPostDeleteAsync(Guid id, CancellationToken cancellationToken)
     {
         await categoryService.DeleteAsync(id, cancellationToken);
-        TempData["SuccessMessage"] = "Категория удалена.";
+        TempData["SuccessMessage"] = L["Admin_CategoryDeleted"].Value;
         return RedirectToPage();
     }
 }

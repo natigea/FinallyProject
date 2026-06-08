@@ -88,6 +88,29 @@
                 <div class="cl-counter"><span id="descCount">0</span> / 3000</div>
                 <span asp-validation-for="Description" class="text-danger small"></span>
             </div>
+
+            <!-- Condition (New / Used) -->
+            <div class="mb-2" id="conditionSection">
+                <label class="cl-label">@L["Create_Condition"]</label>
+                <div class="cl-condition-wrap">
+                    <label class="cl-condition-item">
+                        <input type="radio" name="Condition" value="New" class="cl-condition-radio"
+                               @(Model.Condition == "New" ? "checked" : "") />
+                        <span class="cl-condition-box">
+                            <i class="bi bi-stars cl-condition-icon"></i>
+                            <span>@L["Create_ConditionNew"]</span>
+                        </span>
+                    </label>
+                    <label class="cl-condition-item">
+                        <input type="radio" name="Condition" value="Used" class="cl-condition-radio"
+                               @(Model.Condition == "Used" ? "checked" : "") />
+                        <span class="cl-condition-box">
+                            <i class="bi bi-box-seam cl-condition-icon"></i>
+                            <span>@L["Create_ConditionUsed"]</span>
+                        </span>
+                    </label>
+                </div>
+            </div>
         </div>
 
         <!-- ── SECTION 2: Price & contacts ── -->
@@ -364,6 +387,25 @@
 .cl-cat-name { font-size: .72rem; font-weight: 600; color: var(--sub); line-height: 1.2; }
 .cl-cat-radio:checked + .cl-cat-box .cl-cat-name { color: #4f46e5; }
 
+/* ── Condition toggle ── */
+.cl-condition-wrap { display: flex; gap: 12px; }
+.cl-condition-item { flex: 1; cursor: pointer; }
+.cl-condition-radio { display: none; }
+.cl-condition-box {
+    display: flex; align-items: center; justify-content: center;
+    gap: 8px; padding: 12px;
+    border: 1.5px solid var(--border); border-radius: 10px;
+    font-size: .875rem; font-weight: 600; color: var(--sub);
+    background: var(--bg); transition: all .18s;
+    text-align: center; cursor: pointer;
+}
+.cl-condition-box:hover { border-color: #a5b4fc; background: #f5f3ff; }
+.cl-condition-radio:checked + .cl-condition-box {
+    border-color: #6366f1; background: #eef2ff;
+    color: #4f46e5; box-shadow: 0 0 0 3px rgba(99,102,241,.12);
+}
+.cl-condition-icon { font-size: 1.1rem; }
+
 /* ── Existing images ── */
 .cl-existing-label {
     font-size: .82rem; font-weight: 700; color: var(--text);
@@ -591,21 +633,28 @@ function syncInput() {
     fileInput.files = dt.files;
 }
 
-// ── Hide delivery for certain categories ──
+// ── Hide delivery & condition for certain categories ──
 const noDeliverySlugs = ['business','animals','services','realestate','jobs','other'];
 const deliverySection = document.getElementById('deliverySection');
 const deliveryCheckbox = document.getElementById('deliveryToggle');
+const conditionSection = document.getElementById('conditionSection');
+
+function updateCategoryDeps(slug) {
+    const hide = noDeliverySlugs.includes(slug);
+    deliverySection.style.display = hide ? 'none' : '';
+    conditionSection.style.display = hide ? 'none' : '';
+    if (hide) {
+        deliveryCheckbox.checked = false;
+        document.querySelectorAll('.cl-condition-radio').forEach(r => r.checked = false);
+    }
+}
+
 document.querySelectorAll('.cl-cat-radio').forEach(radio => {
     radio.addEventListener('change', function() {
-        const hide = noDeliverySlugs.includes(this.dataset.slug);
-        deliverySection.style.display = hide ? 'none' : '';
-        if (hide) deliveryCheckbox.checked = false;
+        updateCategoryDeps(this.dataset.slug);
     });
 });
 const checkedCat = document.querySelector('.cl-cat-radio:checked');
-if (checkedCat && noDeliverySlugs.includes(checkedCat.dataset.slug)) {
-    deliverySection.style.display = 'none';
-    deliveryCheckbox.checked = false;
-}
+if (checkedCat) updateCategoryDeps(checkedCat.dataset.slug);
 </script>
 }

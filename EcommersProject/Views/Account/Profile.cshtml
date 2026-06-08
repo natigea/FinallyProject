@@ -787,10 +787,10 @@
               <div class="sl-alert">
                 <div class="sl-alert-ico"><i class="bi bi-bell-fill"></i></div>
                 <div class="sl-alert-text">
-                  @pendingOrds.Count @(pendingOrds.Count == 1 ? "заказ требует" : "заказа требуют") вашего ответа
-                  <span>Одобрите или отклоните — покупатель ждёт</span>
+                  @pendingOrds.Count @L["SP_PendingOrders"]
+                  <span>@L["SP_PendingHint"]</span>
                 </div>
-                <button class="sl-alert-btn" onclick="slSetFilter('pending')">Ответить</button>
+                <button class="sl-alert-btn" onclick="slSetFilter('pending')">@L["SP_Respond"]</button>
               </div>
             }
 
@@ -799,7 +799,7 @@
             {
               <div class="sl-filters">
                 <button class="sl-filter-btn active" data-filter="all" onclick="slSetFilter('all')">
-                  Все <span class="sl-filter-cnt">@Model.IncomingOrders.Count</span>
+                  @L["Common_All"] <span class="sl-filter-cnt">@Model.IncomingOrders.Count</span>
                 </button>
                 @if (pendingOrds.Any())
                 {
@@ -828,7 +828,7 @@
               <div class="sl-empty">
                 <div class="sl-empty-ico"><i class="bi bi-shop"></i></div>
                 <div class="sl-empty-title">@L["Seller_NoOrders"]</div>
-                <p class="sl-empty-desc">Когда покупатели оформят доставку ваших товаров, заказы появятся здесь</p>
+                <p class="sl-empty-desc">@L["SP_EmptyOrders"]</p>
                 <a href="/Listing/Create" class="btn-dark-custom mt-3 d-inline-flex align-items-center gap-2" style="font-size:.8rem;">
                   <i class="bi bi-plus-lg"></i>@L["Profile_AddListing"]
                 </a>

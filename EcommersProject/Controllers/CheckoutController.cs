@@ -2,9 +2,11 @@ using EcommersProject.BLL.DTOs;
 using EcommersProject.BLL.Interfaces;
 using EcommersProject.BLL.Services;
 using EcommersProject.Models;
+using EcommersProject.Resources;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Localization;
 using Stripe;
 using System.Security.Claims;
 
@@ -16,7 +18,8 @@ public class CheckoutController(
     IListingService listings,
     IPurchaseService purchases,
     INotificationService notifications,
-    IConfiguration configuration) : Controller
+    IConfiguration configuration,
+    IStringLocalizer<SharedResource> localizer) : Controller
 {
     // ── Stripe: Create Payment Intent (AJAX) ─────────────────
     [HttpPost]
@@ -121,7 +124,7 @@ public class CheckoutController(
         if (listing is null) return NotFound();
         if (!IsOwner(listing))
         {
-            TempData["Error"] = "Продвигать можно только собственные объявления.";
+            TempData["Error"] = localizer["Chk_OwnListingVip"].Value;
             return RedirectToAction("Detail", "Listing", new { id = listingId });
         }
         ViewBag.StripePublishableKey = configuration["Stripe:PublishableKey"];
@@ -159,23 +162,23 @@ public class CheckoutController(
     }
 
     // ── Stripe verify helper ──────────────────────────────────
-    private static async Task<(string? cardLast4, string? error)> VerifyPaymentIntent(string paymentIntentId)
+    private async Task<(string? cardLast4, string? error)> VerifyPaymentIntent(string paymentIntentId)
     {
         if (string.IsNullOrWhiteSpace(paymentIntentId))
-            return (null, "Оплата не была завершена.");
+            return (null, localizer["Chk_PaymentNotCompleted"].Value);
         try
         {
             var svc    = new PaymentIntentService();
             var intent = await svc.GetAsync(paymentIntentId,
                 new PaymentIntentGetOptions { Expand = ["payment_method"] });
             if (intent.Status != "succeeded")
-                return (null, "Оплата не прошла. Попробуйте снова.");
+                return (null, localizer["Chk_PaymentFailed"].Value);
             var last4 = intent.PaymentMethod?.Card?.Last4 ?? "****";
             return (last4, null);
         }
         catch
         {
-            return (null, "Ошибка проверки платежа.");
+            return (null, localizer["Chk_PaymentVerifyError"].Value);
         }
     }
 
@@ -231,7 +234,7 @@ public class CheckoutController(
     private bool CanBuy(ListingGetDto l) => !IsOwner(l);
     private IActionResult BuyError(ListingGetDto l)
     {
-        TempData["Error"] = "Вы не можете заказать собственное объявление.";
+        TempData["Error"] = localizer["Chk_OwnListingOrder"].Value;
         return RedirectToAction("Detail", "Listing", new { id = l.Id });
     }
     private Guid CurrentUserId() => Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);

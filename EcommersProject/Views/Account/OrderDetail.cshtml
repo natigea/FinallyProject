@@ -178,7 +178,7 @@
                 const diff = deadline - new Date();
                 if (diff <= 0) {
                     el.textContent = '00:00';
-                    el.closest('.card').innerHTML = '<div class="card-body p-4 text-muted small">Время на отмену истекло.</div>';
+                    el.closest('.card').innerHTML = '<div class="card-body p-4 text-muted small">@L["SP_CancelTimeExpired"]</div>';
                     return;
                 }
                 const m = Math.floor(diff / 60000);

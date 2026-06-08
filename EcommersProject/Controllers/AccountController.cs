@@ -1,9 +1,12 @@
 using EcommersProject.BLL.DTOs;
 using EcommersProject.BLL.Interfaces;
 using EcommersProject.Models;
+using EcommersProject.Resources;
+using EcommersProject.Services;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Localization;
 using System.Security.Claims;
 
 namespace EcommersProject.Controllers;
@@ -14,7 +17,10 @@ public class AccountController(
     IUserService users,
     IListingService listings,
     IPurchaseService purchases,
-    IReviewService reviews) : Controller
+    IReviewService reviews,
+    EmailService emailService,
+    IStringLocalizer<SharedResource> localizer,
+    ILogger<AccountController> logger) : Controller
 {
     [HttpGet]
     public IActionResult Login(string? returnUrl)
@@ -32,17 +38,114 @@ public class AccountController(
         var result = await auth.LoginAsync(new LoginDto(vm.Email, vm.Password));
         if (result == null)
         {
-            ModelState.AddModelError("", "Неверный email или пароль.");
+            ModelState.AddModelError("", localizer["Acc_InvalidLogin"].Value);
             return View(vm);
         }
 
+        var code = await auth.GenerateTwoFactorCodeAsync(result.Id);
+
+        try
+        {
+            await emailService.SendVerificationCodeAsync(result.Email, code);
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "[2FA] Failed to send code to {Email}", result.Email);
+            ModelState.AddModelError("", localizer["TwoFactor_SendError"].Value);
+            return View(vm);
+        }
+
+        HttpContext.Session.SetString("2fa_userId", result.Id.ToString());
+        HttpContext.Session.SetString("2fa_email", result.Email);
+        HttpContext.Session.SetString("2fa_returnUrl", vm.ReturnUrl ?? "");
+
+        TempData["Info"] = localizer["TwoFactor_CodeSent"].Value;
+        return RedirectToAction(nameof(TwoFactor));
+    }
+
+    [HttpGet]
+    public IActionResult TwoFactor()
+    {
+        var userId = HttpContext.Session.GetString("2fa_userId");
+        if (string.IsNullOrEmpty(userId))
+            return RedirectToAction(nameof(Login));
+
+        var email = HttpContext.Session.GetString("2fa_email") ?? "";
+        return View(new TwoFactorViewModel { Email = MaskEmail(email) });
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> TwoFactor(TwoFactorViewModel vm)
+    {
+        var userIdStr = HttpContext.Session.GetString("2fa_userId");
+        var email = HttpContext.Session.GetString("2fa_email") ?? "";
+        var returnUrl = HttpContext.Session.GetString("2fa_returnUrl") ?? "";
+
+        logger.LogInformation("[2FA] POST — userId from session: {UserId}", userIdStr ?? "NULL");
+        logger.LogInformation("[2FA] POST — code from user (trimmed): '{Code}'", vm.Code?.Trim());
+
+        if (string.IsNullOrEmpty(userIdStr))
+        {
+            logger.LogWarning("[2FA] No userId in session — redirecting to Login");
+            return RedirectToAction(nameof(Login));
+        }
+
+        if (!ModelState.IsValid)
+        {
+            vm.Email = MaskEmail(email);
+            return View(vm);
+        }
+
+        var userId = Guid.Parse(userIdStr);
+        var result = await auth.VerifyTwoFactorCodeAsync(userId, vm.Code);
+
+        if (result == null)
+        {
+            logger.LogWarning("[2FA] Code verification FAILED for userId={UserId}", userId);
+            ModelState.AddModelError("", localizer["TwoFactor_InvalidCode"].Value);
+            vm.Email = MaskEmail(email);
+            return View(vm);
+        }
+
+        logger.LogInformation("[2FA] Code verified OK for userId={UserId}, signing in", userId);
+
+        HttpContext.Session.Remove("2fa_userId");
+        HttpContext.Session.Remove("2fa_email");
+        HttpContext.Session.Remove("2fa_returnUrl");
+
         await SignInUser(result);
 
-        if (!string.IsNullOrWhiteSpace(vm.ReturnUrl) && Url.IsLocalUrl(vm.ReturnUrl))
-            return Redirect(vm.ReturnUrl);
+        if (!string.IsNullOrWhiteSpace(returnUrl) && Url.IsLocalUrl(returnUrl))
+            return Redirect(returnUrl);
 
         if (result.Role == "Admin") return Redirect("/Admin/Dashboard");
         return RedirectToAction("Index", "Home");
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> ResendTwoFactorCode()
+    {
+        var userIdStr = HttpContext.Session.GetString("2fa_userId");
+        var email = HttpContext.Session.GetString("2fa_email") ?? "";
+
+        if (string.IsNullOrEmpty(userIdStr))
+            return RedirectToAction(nameof(Login));
+
+        var userId = Guid.Parse(userIdStr);
+        var code = await auth.GenerateTwoFactorCodeAsync(userId);
+
+        try
+        {
+            await emailService.SendVerificationCodeAsync(email, code);
+            TempData["Info"] = localizer["TwoFactor_CodeResent"].Value;
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "[2FA] Resend failed to {Email}", email);
+            TempData["Error"] = localizer["TwoFactor_SendError"].Value;
+        }
+
+        return RedirectToAction(nameof(TwoFactor));
     }
 
     [HttpGet]
@@ -62,9 +165,25 @@ public class AccountController(
             var result = await auth.RegisterAsync(new RegisterDto(
                 vm.Email, vm.FirstName, vm.LastName, vm.PhoneNumber, vm.Password));
 
-            await SignInUser(result);
-            TempData["Success"] = "Регистрация прошла успешно! Добро пожаловать!";
-            return RedirectToAction("Index", "Home");
+            var code = await auth.GenerateTwoFactorCodeAsync(result.Id);
+
+            try
+            {
+                await emailService.SendVerificationCodeAsync(result.Email, code);
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, "[2FA-Reg] Failed to send code to {Email}", result.Email);
+                ModelState.AddModelError("", localizer["TwoFactor_SendError"].Value);
+                return View(vm);
+            }
+
+            HttpContext.Session.SetString("2fa_userId", result.Id.ToString());
+            HttpContext.Session.SetString("2fa_email", result.Email);
+            HttpContext.Session.SetString("2fa_returnUrl", "");
+
+            TempData["Info"] = localizer["TwoFactor_CodeSent"].Value;
+            return RedirectToAction(nameof(TwoFactor));
         }
         catch (Exception ex)
         {
@@ -102,11 +221,11 @@ public class AccountController(
         var ok = await auth.ResetPasswordAsync(vm.Email, vm.Token, vm.NewPassword);
         if (!ok)
         {
-            ModelState.AddModelError("", "Неверный или просроченный код. Запросите новый.");
+            ModelState.AddModelError("", localizer["Acc_ResetCodeInvalid"].Value);
             return View(vm);
         }
 
-        TempData["Info"] = "Пароль успешно изменён. Войдите с новым паролем.";
+        TempData["Info"] = localizer["Acc_PasswordChanged"].Value;
         return RedirectToAction(nameof(Login));
     }
 
@@ -174,7 +293,7 @@ public class AccountController(
             var ext = Path.GetExtension(vm.Photo.FileName).ToLowerInvariant();
             if (ext is not (".jpg" or ".jpeg" or ".png" or ".webp"))
             {
-                ModelState.AddModelError("Photo", "Допустимые форматы: JPG, PNG, WebP");
+                ModelState.AddModelError("Photo", localizer["Acc_PhotoFormatError"].Value);
                 return View(vm);
             }
 
@@ -201,7 +320,7 @@ public class AccountController(
             new ClaimsPrincipal(identity),
             new AuthenticationProperties { IsPersistent = true, ExpiresUtc = DateTimeOffset.UtcNow.AddHours(8) });
 
-        TempData["Success"] = "Профиль успешно обновлён.";
+        TempData["Success"] = localizer["Acc_ProfileUpdated"].Value;
         return RedirectToAction(nameof(Profile), new { tab = "settings" });
     }
 
@@ -226,7 +345,7 @@ public class AccountController(
         var userId = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
         await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
         await users.DeleteAsync(userId);
-        TempData["Info"] = "Ваш аккаунт был удалён.";
+        TempData["Info"] = localizer["Acc_AccountDeleted"].Value;
         return RedirectToAction("Index", "Home");
     }
 
@@ -246,11 +365,11 @@ public class AccountController(
         var ok = await auth.ChangePasswordAsync(userId, vm.CurrentPassword, vm.NewPassword);
         if (!ok)
         {
-            TempData["PwdError"] = "Неверный текущий пароль.";
+            TempData["PwdError"] = localizer["Acc_WrongPassword"].Value;
             return RedirectToAction(nameof(Profile));
         }
 
-        TempData["PwdSuccess"] = "Пароль успешно изменён.";
+        TempData["PwdSuccess"] = localizer["Acc_PasswordChangedShort"].Value;
         return RedirectToAction(nameof(Profile), new { tab = "settings" });
     }
 
@@ -274,5 +393,13 @@ public class AccountController(
     {
         if (User.IsInRole("Admin")) return Redirect("/Admin/Dashboard");
         return RedirectToAction("Index", "Home");
+    }
+
+    private static string MaskEmail(string email)
+    {
+        if (string.IsNullOrEmpty(email)) return "";
+        var idx = email.IndexOf('@');
+        if (idx <= 1) return email;
+        return email[0] + new string('*', Math.Min(idx - 1, 5)) + email[idx..];
     }
 }

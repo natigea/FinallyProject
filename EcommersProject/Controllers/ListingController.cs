@@ -99,11 +99,11 @@ public class ListingController(
         var created = await listings.CreateAsync(new ListingCreateDto(
             vm.Title, vm.Description, vm.Price, vm.City,
             vm.ContactPhone, vm.CategoryId, userId,
-            vm.DeliveryAvailable));
+            vm.DeliveryAvailable, vm.Condition));
 
         await SaveImages(created.Id, vm.NewImages);
 
-        TempData["Info"] = "Объявление отправлено на проверку администратору. После проверки оно станет видно всем.";
+        TempData["Info"] = L["Lst_SentForReview"].Value;
         return RedirectToAction(nameof(MyListings));
     }
 
@@ -117,7 +117,7 @@ public class ListingController(
         if (listing.UserId != userId && !User.IsInRole("Admin"))
             return Forbid();
 
-        if (listing.Status == "Pending" && !User.IsInRole("Admin"))
+        if (listing.Status is "Pending" or "Closed" && !User.IsInRole("Admin"))
         {
             TempData["Info"] = L["Listing_SentForReview"].Value;
             return RedirectToAction(nameof(MyListings));
@@ -132,6 +132,7 @@ public class ListingController(
             City              = listing.City,
             ContactPhone      = listing.ContactPhone,
             CategoryId        = listing.CategoryId,
+            Condition         = listing.Condition,
             DeliveryAvailable = listing.DeliveryAvailable,
             Categories        = await categories.GetAllAsync(),
             ExistingImages    = listing.Images
@@ -155,10 +156,12 @@ public class ListingController(
         var listing = await listings.GetByIdAsync(id);
         if (listing.UserId != userId && !User.IsInRole("Admin"))
             return Forbid();
+        if (listing.Status is "Pending" or "Closed" && !User.IsInRole("Admin"))
+            return RedirectToAction(nameof(MyListings));
 
         bool isAdmin = User.IsInRole("Admin");
         await listings.UpdateAsync(id,
-            new ListingUpdateDto(vm.Title, vm.Description, vm.Price, vm.City, vm.ContactPhone, vm.CategoryId, vm.DeliveryAvailable),
+            new ListingUpdateDto(vm.Title, vm.Description, vm.Price, vm.City, vm.ContactPhone, vm.CategoryId, vm.DeliveryAvailable, vm.Condition),
             isAdmin);
 
         // Delete marked images
@@ -169,7 +172,7 @@ public class ListingController(
         await SaveImages(id, vm.NewImages);
 
         if (isAdmin)
-            TempData["Success"] = "Объявление обновлено.";
+            TempData["Success"] = L["Lst_Updated"].Value;
         else
             TempData["Info"] = L["Listing_SentForReview"].Value;
 
@@ -188,7 +191,7 @@ public class ListingController(
             return Forbid();
 
         await listings.CloseAsync(id);
-        TempData["Success"] = "Объявление завершено.";
+        TempData["Success"] = L["Lst_Closed"].Value;
         return RedirectToAction(nameof(MyListings));
     }
 
@@ -203,7 +206,7 @@ public class ListingController(
             return Forbid();
 
         await listings.DeleteAsync(id);
-        TempData["Success"] = "Объявление удалено.";
+        TempData["Success"] = L["Lst_Deleted"].Value;
         return RedirectToAction(nameof(MyListings));
     }
 

@@ -1,23 +1,19 @@
 using EcommersProject.DAL.Context;
+using EcommersProject.Resources;
 using Google.Apis.Auth.OAuth2;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Localization;
 using System.Text;
 using System.Text.Json;
 
 namespace EcommersProject.Services;
 
-// Sends Firebase Cloud Messaging push notifications via FCM HTTP V1 API.
-// Authentication: OAuth2 access token from a Service Account JSON file.
-//
-// Setup:
-//   Firebase Console → Project Settings → Service Accounts
-//   → Generate new private key → save as serviceaccount.json in the project root.
-//   The file path is configured in appsettings.json → Firebase:ServiceAccountPath.
 public class FcmService(
     AppDbContext db,
     IHttpClientFactory http,
     IConfiguration cfg,
-    IWebHostEnvironment env)
+    IWebHostEnvironment env,
+    IStringLocalizer<SharedResource> localizer)
 {
     private static readonly JsonSerializerOptions _j = new(JsonSerializerDefaults.Web);
     private const string FcmScope = "https://www.googleapis.com/auth/firebase.messaging";
@@ -62,8 +58,8 @@ public class FcmService(
         if (fcmToken == null) return;
 
         await PostAsync(fcmToken,
-            title: $"📞 {callerName} звонит",
-            body:  "Нажмите чтобы ответить",
+            title: string.Format(localizer["Fcm_Calling"], callerName),
+            body:  localizer["Fcm_TapToAnswer"],
             url:   $"/Messages/Chat/{conversationId}",
             data:  new Dictionary<string, string>
             {

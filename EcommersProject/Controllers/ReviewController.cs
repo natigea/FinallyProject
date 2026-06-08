@@ -39,7 +39,7 @@ public class ReviewController(
 
         if (rating < 1 || rating > 5)
         {
-            TempData["Error"] = "Неверная оценка.";
+            TempData["Error"] = localizer["Rev_InvalidRating"].Value;
             return RedirectToAction("Detail", "Listing", new { id = listingId });
         }
 

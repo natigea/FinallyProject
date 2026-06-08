@@ -1,10 +1,14 @@
 using EcommersProject.BLL.DTOs;
 using EcommersProject.BLL.Interfaces;
+using EcommersProject.DAL.Entities;
+using EcommersProject.DAL.UnitOfWork;
 using EcommersProject.Hubs;
+using EcommersProject.Resources;
 using EcommersProject.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
+using Microsoft.Extensions.Localization;
 using System.Security.Claims;
 
 namespace EcommersProject.Controllers;
@@ -13,8 +17,10 @@ namespace EcommersProject.Controllers;
 [ApiExplorerSettings(IgnoreApi = true)]
 public class MessagesController(
     IMessageService messages,
+    IUnitOfWork uow,
     IHubContext<ChatHub> hub,
-    FcmService fcm) : Controller
+    FcmService fcm,
+    IStringLocalizer<SharedResource> localizer) : Controller
 {
     public async Task<IActionResult> Index()
     {
@@ -39,6 +45,25 @@ public class MessagesController(
         var userId = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
         var conv = await messages.GetOrCreateConversationAsync(
             new ConversationStartDto(listingId, userId, text));
+        return RedirectToAction(nameof(Chat), new { id = conv.Id });
+    }
+
+    public async Task<IActionResult> Support()
+    {
+        var userId = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+
+        var admins = await uow.Users.FindAsync(u => u.Role == UserRole.Admin);
+        var admin = admins.FirstOrDefault();
+        if (admin == null || admin.Id == userId)
+            return RedirectToAction(nameof(Index));
+
+        var supportListings = await uow.Listings.FindAsync(l => l.Title == "__SUPPORT__" && l.UserId == admin.Id);
+        var supportListing = supportListings.FirstOrDefault();
+        if (supportListing == null)
+            return RedirectToAction(nameof(Index));
+
+        var conv = await messages.GetOrCreateConversationAsync(
+            new ConversationStartDto(supportListing.Id, userId, ""));
         return RedirectToAction(nameof(Chat), new { id = conv.Id });
     }
 
@@ -127,7 +152,7 @@ public class MessagesController(
             isRead         = false
         });
 
-        var preview = type == "voice" ? "🎤 Голосовое сообщение" : "📷 Фото";
+        var preview = type == "voice" ? localizer["Msg_VoiceMessage"].Value : localizer["Msg_Photo"].Value;
         await fcm.SendMessageAsync(recipientId, senderName, preview, conversationId);
 
         return Json(new

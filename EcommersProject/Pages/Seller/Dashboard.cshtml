@@ -1,7 +1,7 @@
 @page
 @model EcommersProject.Pages.Seller.DashboardModel
 @{
-    ViewData["Title"] = "Мои объявления";
+    ViewData["Title"] = L["SP_MyListings"].Value;
 }
 
 <!-- KPI Cards -->
@@ -12,7 +12,7 @@
                 <div class="kpi-icon"><i class="bi bi-grid-3x3-gap-fill"></i></div>
             </div>
             <div class="kpi-value">@Model.MyListings.Count</div>
-            <div class="kpi-label">Всего объявлений</div>
+            <div class="kpi-label">@L["SP_TotalListings"]</div>
         </div>
     </div>
     <div class="col-sm-6 col-xl-4">
@@ -21,7 +21,7 @@
                 <div class="kpi-icon"><i class="bi bi-check-circle-fill"></i></div>
             </div>
             <div class="kpi-value">@Model.ActiveCount</div>
-            <div class="kpi-label">Активных</div>
+            <div class="kpi-label">@L["SP_ActiveCount"]</div>
         </div>
     </div>
     <div class="col-sm-6 col-xl-4">
@@ -30,7 +30,7 @@
                 <div class="kpi-icon"><i class="bi bi-archive-fill"></i></div>
             </div>
             <div class="kpi-value">@Model.ClosedCount</div>
-            <div class="kpi-label">Завершённых</div>
+            <div class="kpi-label">@L["SP_ClosedCount"]</div>
         </div>
     </div>
 </div>
@@ -38,22 +38,22 @@
 <!-- Quick actions -->
 <div class="d-flex gap-2 mb-4 flex-wrap">
     <a href="/Listing/Create" class="btn btn-success" style="border-radius:10px; font-weight:600;">
-        <i class="bi bi-plus-lg me-1"></i>Подать объявление
+        <i class="bi bi-plus-lg me-1"></i>@L["SP_CreateListing"]
     </a>
     <a href="/Listing/MyListings" class="btn btn-outline-secondary" style="border-radius:10px;">
-        <i class="bi bi-list-ul me-1"></i>Все мои объявления
+        <i class="bi bi-list-ul me-1"></i>@L["SP_AllMyListings"]
     </a>
     <a href="/Messages" class="btn btn-outline-primary" style="border-radius:10px;">
-        <i class="bi bi-chat-dots me-1"></i>Сообщения
+        <i class="bi bi-chat-dots me-1"></i>@L["SP_Messages"]
     </a>
 </div>
 
 <!-- Recent listings -->
 <div class="card">
     <div class="card-header d-flex align-items-center justify-content-between">
-        <span><i class="bi bi-clock-history me-2" style="color:var(--accent);"></i>Мои последние объявления</span>
+        <span><i class="bi bi-clock-history me-2" style="color:var(--accent);"></i>@L["SP_RecentListings"]</span>
         <a href="/Listing/MyListings" class="btn btn-sm btn-outline-secondary" style="border-radius:8px; font-size:.8rem;">
-            Все <i class="bi bi-arrow-right ms-1"></i>
+            @L["SP_All"] <i class="bi bi-arrow-right ms-1"></i>
         </a>
     </div>
     <div class="card-body p-0">
@@ -61,7 +61,7 @@
         {
             <div class="empty-state">
                 <i class="bi bi-grid-3x3-gap"></i>
-                У вас ещё нет объявлений. <a href="/Listing/Create" style="color:var(--accent); font-weight:600;">Подайте первое!</a>
+                @L["SP_NoListings"] <a href="/Listing/Create" style="color:var(--accent); font-weight:600;">@L["SP_CreateFirst"]</a>
             </div>
         }
         else
@@ -70,13 +70,13 @@
                 <table class="table table-hover mb-0 align-middle">
                     <thead>
                         <tr>
-                            <th>Название</th>
-                            <th>Категория</th>
-                            <th>Город</th>
-                            <th>Цена</th>
-                            <th>Статус</th>
-                            <th>Дата</th>
-                            <th>Действия</th>
+                            <th>@L["SP_Title"]</th>
+                            <th>@L["SP_Category"]</th>
+                            <th>@L["SP_City"]</th>
+                            <th>@L["SP_Price"]</th>
+                            <th>@L["SP_Status"]</th>
+                            <th>@L["SP_Date"]</th>
+                            <th>@L["SP_Actions"]</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -93,17 +93,17 @@
                                     @if (l.Status == "Active")
                                     {
                                         <span class="badge bg-success-subtle text-success">
-                                            <i class="bi bi-check-circle me-1"></i>Активно
+                                            <i class="bi bi-check-circle me-1"></i>@L["SP_Active"]
                                         </span>
                                     }
                                     else
                                     {
-                                        <span class="badge bg-secondary-subtle text-secondary">Закрыто</span>
+                                        <span class="badge bg-secondary-subtle text-secondary">@L["SP_ClosedStatus"]</span>
                                     }
                                 </td>
                                 <td class="small" style="color:var(--text-muted);">@l.CreatedDate.ToString("dd.MM.yy")</td>
                                 <td>
-                                    <a href="/Listing/Edit/@l.Id" class="btn btn-sm btn-outline-primary btn-action" title="Редактировать">
+                                    <a href="/Listing/Edit/@l.Id" class="btn btn-sm btn-outline-primary btn-action" title="@L["SP_Edit"]">
                                         <i class="bi bi-pencil"></i>
                                     </a>
                                 </td>

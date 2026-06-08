@@ -39,6 +39,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>@(ViewData["Title"] != null ? ViewData["Title"] + " — " : "")Alıs-Veris</title>
     <link rel="icon" type="image/svg+xml" href="/img/favicon.svg" />
+    <link rel="manifest" href="/manifest.json" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet" />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
@@ -565,6 +568,22 @@
             main { padding-bottom: 68px; }
         }
         [data-theme="dark"] .mobile-bottom-nav { box-shadow: 0 -2px 12px rgba(0,0,0,.4); }
+
+        /* ─── Support FAB ───────────────────────────────── */
+        .support-fab {
+            position: fixed; bottom: 24px; right: 20px; z-index: 1001;
+            width: 48px; height: 48px; border-radius: 50%;
+            background: var(--accent); color: #fff;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.3rem; text-decoration: none;
+            box-shadow: 0 4px 16px rgba(26,86,219,.45);
+            transition: transform .15s, box-shadow .15s;
+        }
+        .support-fab:hover { transform: scale(1.1); box-shadow: 0 6px 24px rgba(26,86,219,.6); color: #fff; }
+        .support-fab:active { transform: scale(.93); }
+        @@media (max-width: 767px) {
+            .support-fab { bottom: 76px; right: 14px; width: 44px; height: 44px; font-size: 1.15rem; }
+        }
         .mob-notif-badge {
             position: absolute; top: 4px; right: calc(50% - 18px);
             background: #ef4444; color: #fff;
@@ -653,6 +672,40 @@
         .app-toast-title { font-size: .85rem; font-weight: 700; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         .app-toast-body  { font-size: .8rem;  color: var(--sub);  white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         [data-theme="dark"] .app-toast { background: var(--card); border-color: var(--border); }
+
+        /* Push permission banner */
+        #push-perm-banner {
+            position: fixed; bottom: 0; left: 0; right: 0; z-index: 9997;
+            transform: translateY(100%); opacity: 0;
+            transition: transform .35s cubic-bezier(.4,0,.2,1), opacity .35s;
+        }
+        #push-perm-banner.push-banner-show { transform: translateY(0); opacity: 1; }
+        .push-banner-inner {
+            display: flex; align-items: center; gap: 10px;
+            max-width: 600px; margin: 0 auto 12px;
+            padding: 14px 18px; border-radius: 14px;
+            background: var(--accent); color: #fff;
+            box-shadow: 0 8px 32px rgba(0,0,0,.25);
+            font-size: .88rem; font-weight: 500;
+        }
+        .push-banner-inner i { font-size: 1.2rem; flex-shrink: 0; }
+        .push-banner-inner span { flex: 1; }
+        #push-perm-btn {
+            flex-shrink: 0; padding: 7px 18px; border-radius: 8px;
+            border: 2px solid #fff; background: transparent; color: #fff;
+            font-weight: 700; font-size: .82rem; cursor: pointer;
+            transition: background .2s, color .2s;
+        }
+        #push-perm-btn:hover { background: #fff; color: var(--accent); }
+        .push-banner-close {
+            flex-shrink: 0; background: none; border: none;
+            color: rgba(255,255,255,.7); font-size: 1.3rem; cursor: pointer;
+            padding: 0 2px; line-height: 1;
+        }
+        .push-banner-close:hover { color: #fff; }
+        @@media (max-width: 576px) {
+            .push-banner-inner { margin: 0 8px 8px; padding: 12px 14px; font-size: .82rem; gap: 8px; }
+        }
 
     </style>
     @RenderSection("Styles", required: false)
@@ -874,6 +927,14 @@
 </footer>
 }
 
+<!-- Support FAB -->
+@if (User.Identity?.IsAuthenticated == true && ViewData["HideFooter"] == null)
+{
+<a href="/Messages/Support" class="support-fab" title="@L["Nav_Support"]">
+    <i class="bi bi-headset"></i>
+</a>
+}
+
 <!-- Mobile Bottom Nav -->
 <nav class="d-md-none mobile-bottom-nav">
     <a href="/Listing" class="mob-nav-item">
@@ -1028,13 +1089,12 @@
         });
         var _messaging = firebase.messaging();
 
-        async function _initFcm() {
-            if (!('serviceWorker' in navigator) || !('Notification' in window)) return;
-            if (!_fbVapid || _fbVapid.startsWith('REPLACE')) return;
+        var _swReg = null;
+
+        async function _registerFcmToken() {
             try {
-                var reg  = await navigator.serviceWorker.register('/firebase-messaging-sw.js');
-                var perm = await Notification.requestPermission();
-                if (perm !== 'granted') return;
+                var reg = _swReg || await navigator.serviceWorker.register('/firebase-messaging-sw.js');
+                _swReg = reg;
                 var token = await _messaging.getToken({ vapidKey: _fbVapid, serviceWorkerRegistration: reg });
                 if (!token) return;
                 var cached = sessionStorage.getItem('_fcmTok');
@@ -1045,11 +1105,70 @@
                         body: JSON.stringify({ token: token })
                     }).then(function() { sessionStorage.setItem('_fcmTok', token); }).catch(function(){});
                 }
-                // Foreground FCM messages (tab is open and visible)
                 _messaging.onMessage(function(payload) {
                     var n = payload.notification || {};
                     _appToast(n.title, n.body, (payload.data || {}).url);
                 });
+            } catch(e) { console.warn('FCM token:', e); }
+        }
+
+        function _showPushBanner() {
+            if (document.getElementById('push-perm-banner')) return;
+            var bar = document.createElement('div');
+            bar.id = 'push-perm-banner';
+            bar.innerHTML = '<div class="push-banner-inner">' +
+                '<i class="bi bi-bell-fill"></i>' +
+                '<span>@Html.Raw(L["Push_BannerText"].Value.Replace("'", "\\'"))</span>' +
+                '<button id="push-perm-btn">@Html.Raw(L["Push_BannerBtn"].Value.Replace("'", "\\'"))</button>' +
+                '<button class="push-banner-close" aria-label="close">&times;</button>' +
+                '</div>';
+            document.body.appendChild(bar);
+            requestAnimationFrame(function() { bar.classList.add('push-banner-show'); });
+            document.getElementById('push-perm-btn').addEventListener('click', async function() {
+                var perm = await Notification.requestPermission();
+                bar.classList.remove('push-banner-show');
+                setTimeout(function() { bar.remove(); }, 350);
+                if (perm === 'granted') {
+                    localStorage.setItem('_pushAsked', '1');
+                    await _registerFcmToken();
+                } else {
+                    localStorage.setItem('_pushAsked', '1');
+                }
+            });
+            bar.querySelector('.push-banner-close').addEventListener('click', function() {
+                bar.classList.remove('push-banner-show');
+                setTimeout(function() { bar.remove(); }, 350);
+                localStorage.setItem('_pushAsked', '1');
+            });
+        }
+
+        async function _initFcm() {
+            if (!('serviceWorker' in navigator) || !('Notification' in window)) return;
+            if (!_fbVapid || _fbVapid.startsWith('REPLACE')) return;
+            try {
+                _swReg = await navigator.serviceWorker.register('/firebase-messaging-sw.js');
+                var perm = Notification.permission;
+                if (perm === 'granted') {
+                    await _registerFcmToken();
+                } else if (perm === 'default') {
+                    var isStandalone = window.navigator.standalone === true ||
+                        window.matchMedia('(display-mode: standalone)').matches;
+                    var isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) ||
+                        (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+                    if (isIOS && isStandalone) {
+                        _showPushBanner();
+                    } else if (!isIOS) {
+                        if (localStorage.getItem('_pushAsked')) {
+                            _showPushBanner();
+                        } else {
+                            var p = await Notification.requestPermission();
+                            localStorage.setItem('_pushAsked', '1');
+                            if (p === 'granted') await _registerFcmToken();
+                        }
+                    } else {
+                        _showPushBanner();
+                    }
+                }
             } catch(e) { console.warn('FCM init:', e); }
         }
         _initFcm();
@@ -1300,5 +1419,79 @@
 @@keyframes gbl-pulse { 0% { transform:scale(1); opacity:1; } 100% { transform:scale(1.45); opacity:0; } }
 @@keyframes gbl-accept { 0%,100% { box-shadow:0 6px 24px rgba(34,197,94,.55); } 50% { box-shadow:0 6px 44px rgba(34,197,94,.9); } }
 </style>
+
+<!-- Shooting stars -->
+<canvas id="shootingStarsCanvas" style="position:fixed;inset:0;z-index:9999;pointer-events:none;"></canvas>
+<script>
+(function(){
+    var c=document.getElementById('shootingStarsCanvas'),ctx=c.getContext('2d');
+    var stars=[],COUNT=6;
+    function resize(){c.width=window.innerWidth;c.height=window.innerHeight;}
+    window.addEventListener('resize',resize);resize();
+    function isDark(){return document.documentElement.getAttribute('data-theme')==='dark';}
+    function makeStar(offscreen){
+        var goRight=Math.random()>.5;
+        return{
+            x:offscreen?(goRight?-40:c.width+40):(Math.random()*c.width),
+            y:Math.random()*c.height*.7,
+            vx:(goRight?1:-1)*(1.5+Math.random()*2.5),
+            vy:(Math.random()-.5)*.4,
+            size:2+Math.random()*2.5,
+            opacity:.5+Math.random()*.5,
+            tail:[],
+            tailMax:12+Math.floor(Math.random()*10)
+        };
+    }
+    for(var i=0;i<COUNT;i++) stars.push(makeStar(false));
+    function drawStar(x,y,r,ctx){
+        ctx.beginPath();
+        for(var i=0;i<5;i++){
+            var a=Math.PI/2+i*Math.PI*2/5;
+            ctx.lineTo(x+Math.cos(a)*r,y-Math.sin(a)*r);
+            a+=Math.PI/5;
+            ctx.lineTo(x+Math.cos(a)*r*.45,y-Math.sin(a)*r*.45);
+        }
+        ctx.closePath();
+        ctx.fill();
+    }
+    function draw(){
+        ctx.clearRect(0,0,c.width,c.height);
+        var dark=isDark();
+        for(var i=0;i<stars.length;i++){
+            var s=stars[i];
+            s.tail.push({x:s.x,y:s.y});
+            if(s.tail.length>s.tailMax) s.tail.shift();
+            s.x+=s.vx; s.y+=s.vy;
+            if((s.vx>0&&s.x>c.width+60)||(s.vx<0&&s.x<-60)||s.y<-40||s.y>c.height+40){
+                stars[i]=makeStar(true); continue;
+            }
+            for(var j=0;j<s.tail.length;j++){
+                var t=s.tail[j], pct=j/s.tail.length;
+                var w=s.size*.7*pct;
+                if(w<.3) continue;
+                ctx.globalAlpha=s.opacity*pct*.4;
+                if(dark) ctx.fillStyle='#facc15';
+                else ctx.fillStyle='#1a1a1a';
+                ctx.beginPath();
+                ctx.arc(t.x,t.y,w,0,Math.PI*2);
+                ctx.fill();
+            }
+            ctx.globalAlpha=s.opacity;
+            if(dark) ctx.fillStyle='#facc15';
+            else ctx.fillStyle='#1a1a1a';
+            drawStar(s.x,s.y,s.size,ctx);
+            ctx.globalAlpha=s.opacity*.3;
+            ctx.beginPath();
+            ctx.arc(s.x,s.y,s.size*1.8,0,Math.PI*2);
+            if(dark) ctx.fillStyle='rgba(250,204,21,.15)';
+            else ctx.fillStyle='rgba(0,0,0,.06)';
+            ctx.fill();
+        }
+        ctx.globalAlpha=1;
+        requestAnimationFrame(draw);
+    }
+    draw();
+})();
+</script>
 </body>
 </html>

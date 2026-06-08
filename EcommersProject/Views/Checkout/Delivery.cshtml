@@ -149,13 +149,13 @@
         const city    = document.querySelector('[name="DeliveryCity"]')?.value.trim();
         const phone   = document.querySelector('[name="DeliveryPhone"]')?.value.trim();
         if (!address || !city || !phone) {
-            errGlobal.textContent = 'Пожалуйста, заполните все поля доставки перед оплатой.';
+            errGlobal.textContent = '@L["Chk_FillAllFields"]';
             errGlobal.classList.remove('d-none');
             return;
         }
 
         btn.disabled = true;
-        btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Обработка...';
+        btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>@L["Chk_Processing"]';
 
         try {
             // Step 1: create payment intent
@@ -164,7 +164,7 @@
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ type: 'delivery', listingId: '@l.Id' })
             });
-            if (!piResp.ok) throw new Error('Ошибка создания платежа');
+            if (!piResp.ok) throw new Error('@L["Chk_PaymentCreateError"]');
             const { clientSecret } = await piResp.json();
 
             // Step 2: confirm card payment
@@ -175,7 +175,7 @@
             if (error) {
                 errStripe.textContent = error.message;
                 btn.disabled = false;
-                btn.innerHTML = '<i class="bi bi-shield-lock-fill me-2"></i>Оплатить @total.ToString("N2") ₼';
+                btn.innerHTML = '<i class="bi bi-shield-lock-fill me-2"></i>@L["Checkout_PayBtn"] @total.ToString("N2") ₼';
                 return;
             }
 
@@ -184,10 +184,10 @@
             document.getElementById('payForm').submit();
 
         } catch (e) {
-            errGlobal.textContent = e.message || 'Неизвестная ошибка. Попробуйте снова.';
+            errGlobal.textContent = e.message || '@L["Chk_UnknownError"]';
             errGlobal.classList.remove('d-none');
             btn.disabled = false;
-            btn.innerHTML = '<i class="bi bi-shield-lock-fill me-2"></i>Оплатить @total.ToString("N2") ₼';
+            btn.innerHTML = '<i class="bi bi-shield-lock-fill me-2"></i>@L["Checkout_PayBtn"] @total.ToString("N2") ₼';
         }
     }
 </script>

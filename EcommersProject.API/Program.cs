@@ -16,8 +16,8 @@ builder.Services.AddOpenApi("v1", options =>
     {
         doc.Info.Title       = "Alıs-Veris API";
         doc.Info.Version     = "v1";
-        doc.Info.Description = "REST API для маркетплейса Alıs-Veris. " +
-                               "Аутентификация: Bearer JWT — получите токен через POST /api/auth/login.";
+        doc.Info.Description = "REST API for the Alıs-Veris marketplace. " +
+                               "Authentication: Bearer JWT — obtain a token via POST /api/auth/login.";
         return Task.CompletedTask;
     });
 });
@@ -52,7 +52,7 @@ builder.Services.AddAuthorization(options =>
 
 var app = builder.Build();
 
-// ── API docs — доступны в любом окружении включая Production ─────────────────
+// ── API docs ─────────────────────────────────────────────────────────────────
 app.MapOpenApi(); // serves /openapi/v1.json
 
 app.MapScalarApiReference(options =>

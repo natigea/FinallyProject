@@ -16,19 +16,25 @@
 </div>
 <div class="chat-wrap">
     <!-- Header -->
+    @{ var isSupport = Model.ListingTitle == "__SUPPORT__"; }
     <div class="chat-header">
         <a href="/Messages" class="chat-back-btn"><i class="bi bi-arrow-left"></i></a>
-        @if (Model.ListingImage != null)
+        @if (isSupport)
+        { <div class="chat-header-img-ph" style="background:var(--accent);color:#fff;"><i class="bi bi-headset"></i></div> }
+        else if (Model.ListingImage != null)
         { <img src="@Model.ListingImage" class="chat-header-img" /> }
         else
         { <div class="chat-header-img-ph"><i class="bi bi-image"></i></div> }
         <div class="chat-header-info">
-            <div class="chat-header-name">@otherName</div>
+            <div class="chat-header-name">@(isSupport ? L["Nav_Support"].Value : otherName)</div>
+            @if (!isSupport)
+            {
             <a href="/Listing/Detail/@Model.ListingId" class="chat-header-listing">
                 @Model.ListingTitle@(Model.ListingPrice.HasValue ? $" — {Model.ListingPrice.Value:N0} ₼" : "")
             </a>
+            }
         </div>
-        <button id="call-btn" class="chat-call-btn" onclick="startCall()">
+        <button id="call-btn" class="chat-call-btn" onclick="startCall()" @(isSupport ? "style=display:none" : "")>
             <i class="bi bi-telephone-fill"></i>
         </button>
     </div>
@@ -45,8 +51,10 @@
                     @if (msg.Text.StartsWith("[voice]"))
                     {
                         var voiceUrl = msg.Text.Substring(7);
-                        <div class="chat-media-voice">
-                            <audio controls preload="none"><source src="@voiceUrl" type="audio/webm" /></audio>
+                        <div class="voice-msg" data-src="@voiceUrl">
+                            <button class="voice-msg-btn" type="button"><i class="bi bi-play-fill"></i></button>
+                            <div class="voice-msg-wave"></div>
+                            <span class="voice-msg-time">0:00</span>
                         </div>
                     }
                     else if (msg.Text.StartsWith("[photo]"))
@@ -75,10 +83,10 @@
         <form asp-controller="Messages" asp-action="Send" method="post" class="chat-input-form">
             @Html.AntiForgeryToken()
             <input type="hidden" name="conversationId" value="@Model.Id" />
-            <button type="button" class="chat-media-btn" id="photoBtn" title="Фото">
+            <button type="button" class="chat-media-btn" id="photoBtn" title="@L["Chat_PhotoBtn"]">
                 <i class="bi bi-image"></i>
             </button>
-            <button type="button" class="chat-media-btn" id="voiceBtn" title="Голосовое">
+            <button type="button" class="chat-media-btn" id="voiceBtn" title="@L["Chat_VoiceBtn"]">
                 <i class="bi bi-mic-fill" id="voiceIcon"></i>
             </button>
             <input type="text" name="text" class="chat-input"
@@ -129,7 +137,7 @@
             <button class="co-btn co-btn-speaker" id="speaker-btn" onclick="toggleSpeaker()">
                 <i class="bi bi-volume-up-fill" id="speaker-icon"></i>
             </button>
-            <span class="co-btn-lbl" id="speaker-lbl">Динамик</span>
+            <span class="co-btn-lbl" id="speaker-lbl">@L["Chat_Speaker"]</span>
         </div>
         <div class="co-ctrl-wrap">
             <button class="co-btn co-btn-end" onclick="endCall(false)">
@@ -242,9 +250,23 @@
 .voice-rec-send { width:42px; height:42px; border-radius:50%; background:#22c55e; color:#fff; border:none; cursor:pointer; display:flex; align-items:center; justify-content:center; font-size:1rem; transition:transform .1s; }
 .voice-rec-send:active { transform:scale(.92); }
 
+/* ── VOICE MESSAGE (TG-style) ── */
+.voice-msg { display:flex; align-items:center; gap:10px; min-width:200px; max-width:260px; padding:2px 0; user-select:none; }
+.voice-msg-btn { width:36px; height:36px; min-width:36px; border-radius:50%; border:none; cursor:pointer; display:flex; align-items:center; justify-content:center; font-size:1.05rem; transition:transform .12s, background .15s; }
+.voice-msg-btn:active { transform:scale(.88); }
+.chat-bubble-me .voice-msg-btn { background:rgba(255,255,255,.22); color:#fff; }
+.chat-bubble-them .voice-msg-btn { background:var(--accent); color:#fff; }
+.voice-msg-wave { flex:1; display:flex; align-items:center; gap:1.5px; height:28px; cursor:pointer; position:relative; }
+.voice-msg-wave .vbar { width:3px; border-radius:1.5px; min-height:3px; transition:background .08s; }
+.chat-bubble-me .voice-msg-wave .vbar { background:rgba(255,255,255,.35); }
+.chat-bubble-me .voice-msg-wave .vbar.played { background:rgba(255,255,255,.85); }
+.chat-bubble-them .voice-msg-wave .vbar { background:rgba(0,0,0,.15); }
+.chat-bubble-them .voice-msg-wave .vbar.played { background:var(--accent); }
+[data-theme="dark"] .chat-bubble-them .voice-msg-wave .vbar { background:rgba(255,255,255,.2); }
+[data-theme="dark"] .chat-bubble-them .voice-msg-wave .vbar.played { background:var(--accent); }
+.voice-msg-time { font-size:.72rem; font-weight:600; min-width:32px; text-align:right; font-variant-numeric:tabular-nums; opacity:.75; }
+
 /* ── MEDIA IN BUBBLES ── */
-.chat-media-voice audio { width:220px; max-width:100%; height:36px; }
-.chat-bubble-me .chat-media-voice audio { filter:brightness(1.1); }
 .chat-media-photo img { max-width:240px; max-height:260px; border-radius:10px; cursor:pointer; display:block; object-fit:cover; }
 .chat-bubble-me .chat-media-photo img { border:1px solid rgba(255,255,255,.2); }
 .chat-bubble-them .chat-media-photo img { border:1px solid var(--border); }
@@ -582,7 +604,7 @@ function toggleSpeaker() {
     var lbl = document.getElementById('speaker-lbl');
     if (si) si.className = _speakerOn ? 'bi bi-volume-up-fill' : 'bi bi-earbuds';
     if (sb) sb.classList.toggle('speaker-on', _speakerOn);
-    if (lbl) lbl.textContent = _speakerOn ? 'Громкая' : 'Телефон';
+    if (lbl) lbl.textContent = _speakerOn ? '@L["Chat_SpeakerLoud"]' : '@L["Chat_SpeakerEarpiece"]';
     document.querySelectorAll('audio[id^="daily-remote-audio-"]').forEach(function(el) {
         if (typeof el.setSinkId === 'function') {
             el.setSinkId(_speakerOn ? 'default' : 'communications').catch(function(){});
@@ -663,7 +685,10 @@ window._openPhoto = function(src) {
 function _renderMediaContent(text) {
     if (text.startsWith('[voice]')) {
         var u = _esc(text.substring(7));
-        return '<div class="chat-media-voice"><audio controls preload="none"><source src="' + u + '" type="audio/webm"></audio></div>';
+        return '<div class="voice-msg" data-src="' + u + '">' +
+            '<button class="voice-msg-btn" type="button"><i class="bi bi-play-fill"></i></button>' +
+            '<div class="voice-msg-wave"></div>' +
+            '<span class="voice-msg-time">0:00</span></div>';
     }
     if (text.startsWith('[photo]')) {
         var u = _esc(text.substring(7));
@@ -818,5 +843,129 @@ function _esc(s) {
         .replace(/&/g,'&amp;').replace(/</g,'&lt;')
         .replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
+
+// ── VOICE PLAYER (Telegram-style) ────────────────────────
+(function() {
+    var BAR_COUNT = 40;
+    var _activeAudio = null;
+    var _activeEl = null;
+    var _rafId = null;
+
+    function hashCode(s) {
+        for (var h = 0, i = 0; i < s.length; i++)
+            h = ((h << 5) - h + s.charCodeAt(i)) | 0;
+        return h;
+    }
+
+    function genBars(container, src) {
+        if (container.children.length) return;
+        var seed = Math.abs(hashCode(src || ''));
+        for (var i = 0; i < BAR_COUNT; i++) {
+            var bar = document.createElement('div');
+            bar.className = 'vbar';
+            seed = (seed * 16807 + 7) % 2147483647;
+            var h = 4 + Math.round(((seed % 1000) / 1000) * 20);
+            bar.style.height = h + 'px';
+            container.appendChild(bar);
+        }
+    }
+
+    function fmtTime(sec) {
+        if (!sec || !isFinite(sec)) return '0:00';
+        var m = Math.floor(sec / 60);
+        var s = Math.floor(sec % 60);
+        return m + ':' + (s < 10 ? '0' : '') + s;
+    }
+
+    function updateProgress(el, audio) {
+        var wave = el.querySelector('.voice-msg-wave');
+        var bars = wave.querySelectorAll('.vbar');
+        var pct = audio.duration ? audio.currentTime / audio.duration : 0;
+        var active = Math.floor(pct * bars.length);
+        for (var i = 0; i < bars.length; i++)
+            bars[i].classList.toggle('played', i < active);
+        el.querySelector('.voice-msg-time').textContent = fmtTime(audio.currentTime);
+    }
+
+    function tick() {
+        if (_activeAudio && _activeEl && !_activeAudio.paused) {
+            updateProgress(_activeEl, _activeAudio);
+            _rafId = requestAnimationFrame(tick);
+        }
+    }
+
+    function stopCurrent() {
+        if (_activeAudio) {
+            _activeAudio.pause();
+            _activeAudio.currentTime = 0;
+        }
+        if (_activeEl) {
+            _activeEl.querySelector('.voice-msg-btn i').className = 'bi bi-play-fill';
+            var bars = _activeEl.querySelectorAll('.vbar');
+            for (var i = 0; i < bars.length; i++) bars[i].classList.remove('played');
+            _activeEl.querySelector('.voice-msg-time').textContent = fmtTime(_activeAudio ? _activeAudio.duration : 0);
+        }
+        if (_rafId) cancelAnimationFrame(_rafId);
+        _activeAudio = null; _activeEl = null;
+    }
+
+    function initVoice(el) {
+        if (el._voiceInit) return;
+        el._voiceInit = true;
+        var src = el.getAttribute('data-src');
+        if (!src || src === '#') return;
+        var wave = el.querySelector('.voice-msg-wave');
+        genBars(wave, src);
+
+        var audio = new Audio();
+        audio.preload = 'metadata';
+        audio.src = src;
+        el._audio = audio;
+
+        audio.addEventListener('loadedmetadata', function() {
+            el.querySelector('.voice-msg-time').textContent = fmtTime(audio.duration);
+        });
+        audio.addEventListener('ended', function() {
+            stopCurrent();
+        });
+
+        el.querySelector('.voice-msg-btn').addEventListener('click', function() {
+            if (_activeAudio === audio && !audio.paused) {
+                audio.pause();
+                el.querySelector('.voice-msg-btn i').className = 'bi bi-play-fill';
+                if (_rafId) cancelAnimationFrame(_rafId);
+                return;
+            }
+            if (_activeAudio && _activeAudio !== audio) stopCurrent();
+            _activeAudio = audio; _activeEl = el;
+            el.querySelector('.voice-msg-btn i').className = 'bi bi-pause-fill';
+            audio.play();
+            _rafId = requestAnimationFrame(tick);
+        });
+
+        wave.addEventListener('click', function(e) {
+            if (!audio.duration) return;
+            var rect = wave.getBoundingClientRect();
+            var pct = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
+            audio.currentTime = pct * audio.duration;
+            if (_activeAudio !== audio) {
+                if (_activeAudio) stopCurrent();
+                _activeAudio = audio; _activeEl = el;
+                el.querySelector('.voice-msg-btn i').className = 'bi bi-pause-fill';
+                audio.play();
+                _rafId = requestAnimationFrame(tick);
+            }
+            updateProgress(el, audio);
+        });
+    }
+
+    function initAll() {
+        document.querySelectorAll('.voice-msg').forEach(initVoice);
+    }
+    initAll();
+
+    var obs = new MutationObserver(function() { requestAnimationFrame(initAll); });
+    if (chatBox) obs.observe(chatBox, { childList: true, subtree: true });
+})();
 </script>
 }

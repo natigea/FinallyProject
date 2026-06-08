@@ -19,7 +19,7 @@ public class AuthController(IAuthService authService, IConfiguration configurati
     {
         var result = await authService.LoginAsync(dto, cancellationToken);
         if (result is null)
-            return Unauthorized(new { message = "Неверный email или пароль." });
+            return Unauthorized(new { message = "Invalid email or password." });
 
         var token = GenerateJwtToken(result);
         return Ok(new { token, user = result });

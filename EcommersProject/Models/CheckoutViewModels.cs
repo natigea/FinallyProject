@@ -9,13 +9,13 @@ public class DeliveryViewModel
     [BindNever]
     public ListingGetDto Listing { get; set; } = null!;
 
-    [Required(ErrorMessage = "Введите адрес доставки")]
+    [Required(ErrorMessage = "Val_AddressRequired")]
     public string DeliveryAddress { get; set; } = "";
 
-    [Required(ErrorMessage = "Введите город")]
+    [Required(ErrorMessage = "Val_CityRequired")]
     public string DeliveryCity { get; set; } = "";
 
-    [Required(ErrorMessage = "Введите телефон")]
+    [Required(ErrorMessage = "Val_PhoneRequired")]
     public string DeliveryPhone { get; set; } = "";
 
     [Required]
@@ -28,7 +28,7 @@ public class VipViewModel
     public ListingGetDto Listing { get; set; } = null!;
 
     [Required]
-    [Range(1, 99, ErrorMessage = "Выберите план")]
+    [Range(1, 99, ErrorMessage = "Val_PlanRequired")]
     public int VipDays { get; set; } = 7;
 
     [Required]

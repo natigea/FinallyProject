@@ -11,6 +11,7 @@
   <data name="Nav_Favorites"          xml:space="preserve"><value>Избранное</value></data>
   <data name="Nav_Messages"           xml:space="preserve"><value>Сообщения</value></data>
   <data name="Nav_Profile"            xml:space="preserve"><value>Мой профиль</value></data>
+  <data name="Nav_Support"            xml:space="preserve"><value>Поддержка</value></data>
   <data name="Nav_MyListings"         xml:space="preserve"><value>Мои объявления</value></data>
   <data name="Nav_AdminPanel"         xml:space="preserve"><value>Панель админа</value></data>
   <data name="Nav_Login"              xml:space="preserve"><value>Войти</value></data>
@@ -68,6 +69,7 @@
   <data name="Home_City"             xml:space="preserve"><value>Город</value></data>
   <data name="Home_AllCities"        xml:space="preserve"><value>Все города</value></data>
   <data name="Home_Find"             xml:space="preserve"><value>Найти</value></data>
+  <data name="Home_SupportHours"     xml:space="preserve"><value>08:00 — 23:00</value></data>
   <data name="Home_Categories"       xml:space="preserve"><value>Категории</value></data>
   <data name="Home_FreshListings"    xml:space="preserve"><value>Свежие объявления</value></data>
   <data name="Home_ViewAll"          xml:space="preserve"><value>Смотреть все</value></data>
@@ -152,6 +154,9 @@
   <data name="Create_SectionPhotos"     xml:space="preserve"><value>Фотографии</value></data>
   <data name="Create_PhotosHint"        xml:space="preserve"><value>До 10 фото (JPG, PNG, WebP). Первое фото будет главным.</value></data>
   <data name="Create_Publish"           xml:space="preserve"><value>Опубликовать</value></data>
+  <data name="Create_Condition"          xml:space="preserve"><value>Состояние</value></data>
+  <data name="Create_ConditionNew"       xml:space="preserve"><value>Новый</value></data>
+  <data name="Create_ConditionUsed"      xml:space="preserve"><value>Б/у</value></data>
   <data name="Create_Cancel"            xml:space="preserve"><value>Отмена</value></data>
   <data name="Create_HeroSub"          xml:space="preserve"><value>Заполните форму и ваше объявление появится после модерации</value></data>
   <data name="Create_StepMain"         xml:space="preserve"><value>Основное</value></data>
@@ -698,4 +703,155 @@
   <data name="Error_500Desc"     xml:space="preserve"><value>Произошла внутренняя ошибка сервера. Попробуйте обновить страницу.</value></data>
   <data name="Error_Home"        xml:space="preserve"><value>На главную</value></data>
   <data name="Error_Catalog"     xml:space="preserve"><value>В каталог</value></data>
+  <data name="Acc_InvalidLogin" xml:space="preserve"><value>Неверный email или пароль.</value></data>
+  <data name="Acc_RegisterSuccess" xml:space="preserve"><value>Регистрация прошла успешно! Добро пожаловать!</value></data>
+  <data name="Acc_ResetCodeInvalid" xml:space="preserve"><value>Неверный или просроченный код. Запросите новый.</value></data>
+  <data name="Acc_PasswordChanged" xml:space="preserve"><value>Пароль успешно изменён. Войдите с новым паролем.</value></data>
+  <data name="Acc_ProfileUpdated" xml:space="preserve"><value>Профиль успешно обновлён.</value></data>
+  <data name="Acc_AccountDeleted" xml:space="preserve"><value>Ваш аккаунт был удалён.</value></data>
+  <data name="Acc_WrongPassword" xml:space="preserve"><value>Неверный текущий пароль.</value></data>
+  <data name="Acc_PasswordChangedShort" xml:space="preserve"><value>Пароль успешно изменён.</value></data>
+  <data name="Acc_PhotoFormatError" xml:space="preserve"><value>Допустимые форматы: JPG, PNG, WebP</value></data>
+  <data name="Chk_OwnListingVip" xml:space="preserve"><value>Продвигать можно только собственные объявления.</value></data>
+  <data name="Chk_PaymentNotCompleted" xml:space="preserve"><value>Оплата не была завершена.</value></data>
+  <data name="Chk_PaymentFailed" xml:space="preserve"><value>Оплата не прошла. Попробуйте снова.</value></data>
+  <data name="Chk_PaymentVerifyError" xml:space="preserve"><value>Ошибка проверки платежа.</value></data>
+  <data name="Chk_OwnListingOrder" xml:space="preserve"><value>Вы не можете заказать собственное объявление.</value></data>
+  <data name="Chk_Processing" xml:space="preserve"><value>Обработка...</value></data>
+  <data name="Chk_FillAllFields" xml:space="preserve"><value>Пожалуйста, заполните все поля доставки перед оплатой.</value></data>
+  <data name="Chk_PaymentCreateError" xml:space="preserve"><value>Ошибка создания платежа</value></data>
+  <data name="Chk_UnknownError" xml:space="preserve"><value>Неизвестная ошибка. Попробуйте снова.</value></data>
+  <data name="Chk_StripeSSL" xml:space="preserve"><value>Оплата через Stripe · SSL шифрование</value></data>
+  <data name="Lst_SentForReview" xml:space="preserve"><value>Объявление отправлено на проверку администратору. После проверки оно станет видно всем.</value></data>
+  <data name="Lst_Updated" xml:space="preserve"><value>Объявление обновлено.</value></data>
+  <data name="Lst_Closed" xml:space="preserve"><value>Объявление завершено.</value></data>
+  <data name="Lst_Deleted" xml:space="preserve"><value>Объявление удалено.</value></data>
+  <data name="Ntf_OrderConfirmed" xml:space="preserve"><value>Заказ подтверждён.</value></data>
+  <data name="Ntf_OrderRejected" xml:space="preserve"><value>Заказ отклонён.</value></data>
+  <data name="Rev_InvalidRating" xml:space="preserve"><value>Неверная оценка.</value></data>
+  <data name="Auth_InvalidLogin" xml:space="preserve"><value>Неверный email или пароль.</value></data>
+  <data name="Auth_AccessDeniedPanel" xml:space="preserve"><value>Доступ запрещён. Панель доступна только для администраторов и продавцов.</value></data>
+  <data name="Auth_AccessDenied" xml:space="preserve"><value>Доступ запрещён</value></data>
+  <data name="Auth_NoPermission" xml:space="preserve"><value>У вас нет прав для просмотра этой страницы.</value></data>
+  <data name="Auth_Login" xml:space="preserve"><value>Войти</value></data>
+  <data name="Admin_NameRequired" xml:space="preserve"><value>Название обязательно.</value></data>
+  <data name="Admin_CategoryCreated" xml:space="preserve"><value>Категория создана.</value></data>
+  <data name="Admin_CategoryDeleted" xml:space="preserve"><value>Категория удалена.</value></data>
+  <data name="SP_MyListings" xml:space="preserve"><value>Мои объявления</value></data>
+  <data name="SP_Total" xml:space="preserve"><value>Всего</value></data>
+  <data name="SP_CreateListing" xml:space="preserve"><value>Подать объявление</value></data>
+  <data name="SP_NoListings" xml:space="preserve"><value>У вас ещё нет объявлений.</value></data>
+  <data name="SP_CreateFirst" xml:space="preserve"><value>Подайте первое!</value></data>
+  <data name="SP_Photo" xml:space="preserve"><value>Фото</value></data>
+  <data name="SP_Title" xml:space="preserve"><value>Название</value></data>
+  <data name="SP_Category" xml:space="preserve"><value>Категория</value></data>
+  <data name="SP_City" xml:space="preserve"><value>Город</value></data>
+  <data name="SP_Price" xml:space="preserve"><value>Цена</value></data>
+  <data name="SP_Status" xml:space="preserve"><value>Статус</value></data>
+  <data name="SP_Date" xml:space="preserve"><value>Дата</value></data>
+  <data name="SP_Actions" xml:space="preserve"><value>Действия</value></data>
+  <data name="SP_Active" xml:space="preserve"><value>Активно</value></data>
+  <data name="SP_ClosedStatus" xml:space="preserve"><value>Закрыто</value></data>
+  <data name="SP_Edit" xml:space="preserve"><value>Редактировать</value></data>
+  <data name="SP_Delete" xml:space="preserve"><value>Удалить</value></data>
+  <data name="SP_ConfirmDelete" xml:space="preserve"><value>Удалить объявление?</value></data>
+  <data name="SP_Close" xml:space="preserve"><value>Закрыть</value></data>
+  <data name="SP_TotalListings" xml:space="preserve"><value>Всего объявлений</value></data>
+  <data name="SP_ActiveCount" xml:space="preserve"><value>Активных</value></data>
+  <data name="SP_ClosedCount" xml:space="preserve"><value>Завершённых</value></data>
+  <data name="SP_AllMyListings" xml:space="preserve"><value>Все мои объявления</value></data>
+  <data name="SP_Messages" xml:space="preserve"><value>Сообщения</value></data>
+  <data name="SP_RecentListings" xml:space="preserve"><value>Мои последние объявления</value></data>
+  <data name="SP_All" xml:space="preserve"><value>Все</value></data>
+  <data name="SP_Author" xml:space="preserve"><value>Автор</value></data>
+  <data name="SP_Found" xml:space="preserve"><value>Найдено</value></data>
+  <data name="SP_SearchPlaceholder" xml:space="preserve"><value>Поиск по названию...</value></data>
+  <data name="SP_Reset" xml:space="preserve"><value>Сброс</value></data>
+  <data name="SP_NotFound" xml:space="preserve"><value>Объявления не найдены.</value></data>
+  <data name="SP_AllListings" xml:space="preserve"><value>Все объявления</value></data>
+  <data name="SP_Moderation" xml:space="preserve"><value>Модерация объявлений</value></data>
+  <data name="SP_NoListingsYet" xml:space="preserve"><value>Объявлений нет.</value></data>
+  <data name="SP_Categories" xml:space="preserve"><value>Категории</value></data>
+  <data name="SP_NoCategoriesYet" xml:space="preserve"><value>Категорий нет. Добавьте первую!</value></data>
+  <data name="SP_VipUntil" xml:space="preserve"><value>ВИП до</value></data>
+  <data name="SP_ExtendVip" xml:space="preserve"><value>Продлить ВИП</value></data>
+  <data name="SP_MakeVip" xml:space="preserve"><value>Сделать ВИП</value></data>
+  <data name="SP_CancelTimeExpired" xml:space="preserve"><value>Время на отмену истекло.</value></data>
+  <data name="SP_PendingOrders" xml:space="preserve"><value>заказа требуют вашего ответа</value></data>
+  <data name="SP_PendingHint" xml:space="preserve"><value>Одобрите или отклоните — покупатель ждёт</value></data>
+  <data name="SP_Respond" xml:space="preserve"><value>Ответить</value></data>
+  <data name="SP_EmptyOrders" xml:space="preserve"><value>Когда покупатели оформят доставку ваших товаров, заказы появятся здесь</value></data>
+  <data name="SP_Icon" xml:space="preserve"><value>Иконка</value></data>
+  <data name="SP_Name" xml:space="preserve"><value>Название</value></data>
+  <data name="SP_Description" xml:space="preserve"><value>Описание</value></data>
+  <data name="SP_NewCategory" xml:space="preserve"><value>Новая категория</value></data>
+  <data name="SP_CategoryNamePlaceholder" xml:space="preserve"><value>Например: Электроника</value></data>
+  <data name="SP_CategoryDescPlaceholder" xml:space="preserve"><value>Краткое описание категории...</value></data>
+  <data name="SP_IconExamples" xml:space="preserve"><value>Например: bi-phone, bi-car-front, bi-house</value></data>
+  <data name="SP_AddCategory" xml:space="preserve"><value>Добавить категорию</value></data>
+  <data name="SP_ConfirmDeleteCategory" xml:space="preserve"><value>Удалить эту категорию?</value></data>
+
+  <!-- ── VALIDATION ────────────────────────────────────────── -->
+  <data name="Val_EmailRequired" xml:space="preserve"><value>Введите email</value></data>
+  <data name="Val_EmailInvalid" xml:space="preserve"><value>Некорректный email</value></data>
+  <data name="Val_PasswordRequired" xml:space="preserve"><value>Введите пароль</value></data>
+  <data name="Val_FirstNameRequired" xml:space="preserve"><value>Введите имя</value></data>
+  <data name="Val_LastNameRequired" xml:space="preserve"><value>Введите фамилию</value></data>
+  <data name="Val_MinLength2" xml:space="preserve"><value>Минимум 2 символа</value></data>
+  <data name="Val_PhoneRequired" xml:space="preserve"><value>Введите номер телефона</value></data>
+  <data name="Val_PhoneInvalid" xml:space="preserve"><value>Некорректный номер телефона</value></data>
+  <data name="Val_MinLength6" xml:space="preserve"><value>Минимум 6 символов</value></data>
+  <data name="Val_ConfirmPasswordRequired" xml:space="preserve"><value>Подтвердите пароль</value></data>
+  <data name="Val_PasswordsMismatch" xml:space="preserve"><value>Пароли не совпадают</value></data>
+  <data name="Val_CodeRequired" xml:space="preserve"><value>Введите код из сообщения</value></data>
+  <data name="Val_CodeLength8" xml:space="preserve"><value>Код состоит из 8 символов</value></data>
+  <data name="Val_NewPasswordRequired" xml:space="preserve"><value>Введите новый пароль</value></data>
+  <data name="Val_CurrentPasswordRequired" xml:space="preserve"><value>Введите текущий пароль</value></data>
+  <data name="Val_TitleRequired" xml:space="preserve"><value>Введите заголовок</value></data>
+  <data name="Val_TitleLength" xml:space="preserve"><value>От 3 до 200 символов</value></data>
+  <data name="Val_DescriptionRequired" xml:space="preserve"><value>Введите описание</value></data>
+  <data name="Val_DescriptionLength" xml:space="preserve"><value>От 10 до 5000 символов</value></data>
+  <data name="Val_PriceRequired" xml:space="preserve"><value>Укажите цену</value></data>
+  <data name="Val_PricePositive" xml:space="preserve"><value>Цена должна быть неотрицательной</value></data>
+  <data name="Val_CityRequired" xml:space="preserve"><value>Выберите город</value></data>
+  <data name="Val_ContactPhoneRequired" xml:space="preserve"><value>Укажите контактный телефон</value></data>
+  <data name="Val_CategoryRequired" xml:space="preserve"><value>Выберите категорию</value></data>
+  <data name="Val_AddressRequired" xml:space="preserve"><value>Введите адрес доставки</value></data>
+  <data name="Val_PlanRequired" xml:space="preserve"><value>Выберите план</value></data>
+
+  <!-- ── AUTH (Admin Login Page) ───────────────────────────── -->
+  <data name="Auth_LoginTitle" xml:space="preserve"><value>Вход</value></data>
+  <data name="Auth_PanelSubtitle" xml:space="preserve"><value>Панель управления магазином</value></data>
+  <data name="Auth_Password" xml:space="preserve"><value>Пароль</value></data>
+  <data name="Auth_LoginBtn" xml:space="preserve"><value>Войти</value></data>
+  <data name="Auth_AccessOnly" xml:space="preserve"><value>Доступ только для администраторов и продавцов</value></data>
+
+  <!-- ── CHAT ──────────────────────────────────────────────── -->
+  <data name="Chat_PhotoBtn" xml:space="preserve"><value>Фото</value></data>
+  <data name="Chat_VoiceBtn" xml:space="preserve"><value>Голосовое</value></data>
+  <data name="Chat_Speaker" xml:space="preserve"><value>Динамик</value></data>
+  <data name="Chat_SpeakerLoud" xml:space="preserve"><value>Громкая</value></data>
+  <data name="Chat_SpeakerEarpiece" xml:space="preserve"><value>Телефон</value></data>
+
+  <!-- ── FCM / MESSAGES PUSH ───────────────────────────────── -->
+  <data name="Msg_VoiceMessage" xml:space="preserve"><value>🎤 Голосовое сообщение</value></data>
+  <data name="Msg_Photo" xml:space="preserve"><value>📷 Фото</value></data>
+  <data name="Fcm_Calling" xml:space="preserve"><value>📞 {0} звонит</value></data>
+  <data name="Fcm_TapToAnswer" xml:space="preserve"><value>Нажмите чтобы ответить</value></data>
+
+  <!-- ── TWO-FACTOR AUTH ───────────────────────────────────── -->
+  <data name="TwoFactor_Title" xml:space="preserve"><value>Подтверждение входа</value></data>
+  <data name="TwoFactor_Subtitle" xml:space="preserve"><value>Введите 6-значный код, отправленный на</value></data>
+  <data name="TwoFactor_Submit" xml:space="preserve"><value>Подтвердить</value></data>
+  <data name="TwoFactor_NoCode" xml:space="preserve"><value>Не получили код?</value></data>
+  <data name="TwoFactor_ResendBtn" xml:space="preserve"><value>Отправить повторно</value></data>
+  <data name="TwoFactor_BackToLogin" xml:space="preserve"><value>Назад ко входу</value></data>
+  <data name="TwoFactor_CodeSent" xml:space="preserve"><value>Код подтверждения отправлен на вашу почту.</value></data>
+  <data name="TwoFactor_CodeResent" xml:space="preserve"><value>Код отправлен повторно.</value></data>
+  <data name="TwoFactor_InvalidCode" xml:space="preserve"><value>Неверный или просроченный код.</value></data>
+  <data name="TwoFactor_SendError" xml:space="preserve"><value>Не удалось отправить код. Попробуйте позже.</value></data>
+
+  <!-- ── PUSH NOTIFICATIONS ──────────────────────────────── -->
+  <data name="Push_BannerText"  xml:space="preserve"><value>Включите уведомления, чтобы не пропустить сообщения и звонки</value></data>
+  <data name="Push_BannerBtn"   xml:space="preserve"><value>Включить</value></data>
 </root>

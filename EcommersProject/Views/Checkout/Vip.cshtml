@@ -67,7 +67,7 @@
                     <i class="bi bi-star-fill me-2"></i><span id="payBtnText">@L["Checkout_VipActivateBtn"]</span>
                 </button>
                 <p class="text-center text-muted mt-2" style="font-size:.72rem;">
-                    <i class="bi bi-stripe me-1"></i>Оплата через Stripe · SSL шифрование
+                    <i class="bi bi-stripe me-1"></i>@L["Chk_StripeSSL"]
                 </p>
             </form>
         </div>
@@ -179,7 +179,7 @@
         errStripe.textContent = '';
 
         btn.disabled = true;
-        btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Обработка...';
+        btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>@L["Chk_Processing"]';
 
         try {
             // Step 1: create payment intent for selected plan
@@ -188,7 +188,7 @@
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ type: 'vip', listingId: '@l.Id', vipDays: selectedDays })
             });
-            if (!piResp.ok) throw new Error('Ошибка создания платежа');
+            if (!piResp.ok) throw new Error('@L["Chk_PaymentCreateError"]');
             const { clientSecret } = await piResp.json();
 
             // Step 2: confirm card payment
@@ -208,7 +208,7 @@
             document.getElementById('vipForm').submit();
 
         } catch (e) {
-            errGlobal.textContent = e.message || 'Неизвестная ошибка. Попробуйте снова.';
+            errGlobal.textContent = e.message || '@L["Chk_UnknownError"]';
             errGlobal.classList.remove('d-none');
             btn.disabled = false;
             btn.innerHTML = '<i class="bi bi-star-fill me-2"></i>@L["Checkout_VipActivateBtn"]';

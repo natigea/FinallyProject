@@ -10,4 +10,6 @@ public interface IAuthService
     Task<string?> GeneratePasswordResetTokenAsync(string email, CancellationToken cancellationToken = default);
     Task<bool> ResetPasswordAsync(string email, string token, string newPassword, CancellationToken cancellationToken = default);
     Task<bool> ChangePasswordAsync(Guid userId, string currentPassword, string newPassword, CancellationToken cancellationToken = default);
+    Task<string> GenerateTwoFactorCodeAsync(Guid userId, CancellationToken cancellationToken = default);
+    Task<AuthResponseDto?> VerifyTwoFactorCodeAsync(Guid userId, string code, CancellationToken cancellationToken = default);
 }

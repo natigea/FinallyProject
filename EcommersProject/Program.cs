@@ -8,6 +8,7 @@ using EcommersProject.Services;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.EntityFrameworkCore;
+using EcommersProject.Resources;
 using Stripe;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -17,12 +18,24 @@ StripeConfiguration.ApiKey = builder.Configuration["Stripe:SecretKey"];
 builder.Services.AddHttpClient();
 builder.Services.AddSignalR();
 builder.Services.AddScoped<FcmService>();
+builder.Services.AddScoped<EmailService>();
+
+builder.Services.AddSession(options =>
+{
+    options.IdleTimeout = TimeSpan.FromMinutes(15);
+    options.Cookie.HttpOnly = true;
+    options.Cookie.IsEssential = true;
+});
 
 builder.Services.AddLocalization(o => o.ResourcesPath = "");
 
 builder.Services.AddControllersWithViews()
     .AddViewLocalization()
-    .AddDataAnnotationsLocalization();
+    .AddDataAnnotationsLocalization(options =>
+    {
+        options.DataAnnotationLocalizerProvider = (type, factory) =>
+            factory.Create(typeof(SharedResource));
+    });
 
 builder.Services.Configure<RequestLocalizationOptions>(options =>
 {
@@ -163,6 +176,10 @@ using (var scope = app.Services.CreateScope())
             IF NOT EXISTS (SELECT * FROM sys.columns WHERE Name = N'FcmToken' AND Object_ID = OBJECT_ID(N'Users'))
                 ALTER TABLE [Users] ADD [FcmToken] NVARCHAR(500) NULL;
 
+            -- Condition column on Listings (New / Used)
+            IF NOT EXISTS (SELECT * FROM sys.columns WHERE Name = N'Condition' AND Object_ID = OBJECT_ID(N'Listings'))
+                ALTER TABLE [Listings] ADD [Condition] NVARCHAR(20) NULL;
+
             -- Email verification columns on Users
             IF NOT EXISTS (SELECT * FROM sys.columns WHERE Name = N'IsEmailVerified' AND Object_ID = OBJECT_ID(N'Users'))
                 ALTER TABLE [Users] ADD [IsEmailVerified] BIT NOT NULL DEFAULT 0;
@@ -198,6 +215,22 @@ using (var scope = app.Services.CreateScope())
     var adminLastName = builder.Configuration["AdminDefaults:LastName"]!;
     await authService.CreateAdminAsync(adminEmail, adminPassword, adminFirstName, adminLastName);
 
+    // Create hidden support listing for admin (used for support chat)
+    try
+    {
+        await db.Database.ExecuteSqlRawAsync(@"
+            IF NOT EXISTS (SELECT 1 FROM [Listings] WHERE [Title] = N'__SUPPORT__')
+            BEGIN
+                DECLARE @adminId UNIQUEIDENTIFIER = (SELECT TOP 1 [Id] FROM [Users] WHERE [Role] = 2);
+                DECLARE @catId   UNIQUEIDENTIFIER = (SELECT TOP 1 [Id] FROM [Categories]);
+                IF @adminId IS NOT NULL AND @catId IS NOT NULL
+                    INSERT INTO [Listings] ([Id],[Title],[Description],[Price],[City],[ContactPhone],[Status],[CategoryId],[UserId],[IsVip],[DeliveryAvailable],[CreatedDate],[UpdatedDate],[IsDeleted])
+                    VALUES (NEWID(), N'__SUPPORT__', N'Support', 0, N'', N'', 0, @catId, @adminId, 0, 0, GETUTCDATE(), GETUTCDATE(), 0);
+            END
+        ");
+    }
+    catch { }
+
     // Seed categories
     var categoryService = scope.ServiceProvider.GetRequiredService<ICategoryService>();
     var existingCategories = await categoryService.GetAllAsync();
@@ -227,6 +260,7 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRequestLocalization();
+app.UseSession();
 app.UseAuthentication();
 app.UseAuthorization();
 

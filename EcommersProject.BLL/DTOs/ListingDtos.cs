@@ -21,7 +21,16 @@ public record ListingGetDto(
     DateTimeOffset CreatedDate,
     bool IsVip,
     DateTimeOffset? VipExpiresAt,
-    bool DeliveryAvailable = true);
+    bool DeliveryAvailable = true,
+    string? Condition = null)
+{
+    public string ConditionDisplay => Condition switch
+    {
+        "New" => "🆕",
+        "Used" => "📦",
+        _ => ""
+    };
+}
 
 public record ListingCreateDto(
     string Title,
@@ -31,7 +40,8 @@ public record ListingCreateDto(
     string ContactPhone,
     Guid CategoryId,
     Guid UserId,
-    bool DeliveryAvailable = true);
+    bool DeliveryAvailable = true,
+    string? Condition = null);
 
 public record ListingUpdateDto(
     string Title,
@@ -40,7 +50,8 @@ public record ListingUpdateDto(
     string City,
     string ContactPhone,
     Guid CategoryId,
-    bool DeliveryAvailable = true);
+    bool DeliveryAvailable = true,
+    string? Condition = null);
 
 public record ListingSearchDto(
     string? Query,

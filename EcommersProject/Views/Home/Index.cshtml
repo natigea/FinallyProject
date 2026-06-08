@@ -18,20 +18,90 @@
                 <button type="submit" class="hero-btn">@L["Home_Find"]</button>
             </div>
         </form>
-        <div class="hero-stats">
-            <div class="hero-stat">
-                <span class="hero-stat-num">50 000+</span>
-                <span class="hero-stat-lbl">@L["Browse_FoundListings"]</span>
+        <div class="hero-support">
+            <div class="hero-support-item">
+                <i class="bi bi-telephone-fill"></i>
+                <a href="tel:+994993838898">+994 99 383 88 98</a>
             </div>
-            <div class="hero-stat-sep"></div>
-            <div class="hero-stat">
-                <span class="hero-stat-num">46</span>
-                <span class="hero-stat-lbl">@L["Browse_City"]</span>
+            <div class="hero-support-sep"></div>
+            <div class="hero-support-item">
+                <i class="bi bi-envelope-fill"></i>
+                <a href="mailto:alisverisaze@gmail.com">alisverisaze&#64;gmail.com</a>
             </div>
-            <div class="hero-stat-sep"></div>
-            <div class="hero-stat">
-                <span class="hero-stat-num">10 000+</span>
-                <span class="hero-stat-lbl">@L["Detail_Seller"]</span>
+            <div class="hero-support-sep"></div>
+            <div class="hero-support-item">
+                <i class="bi bi-clock-fill"></i>
+                <span>@L["Home_SupportHours"]</span>
+            </div>
+        </div>
+
+        <!-- Brand marquee -->
+        <div class="brand-marquee-wrap">
+            <div class="brand-marquee brand-marquee-left">
+                <div class="brand-track">
+                    <span class="brand-card">🚗 Toyota</span>
+                    <span class="brand-card">📱 Samsung</span>
+                    <span class="brand-card">🍎 Apple</span>
+                    <span class="brand-card">🎮 Sony</span>
+                    <span class="brand-card">👟 Nike</span>
+                    <span class="brand-card">⚡ Adidas</span>
+                    <span class="brand-card">🏎️ BMW</span>
+                    <span class="brand-card">⭐ Mercedes</span>
+                    <span class="brand-card">📺 LG</span>
+                    <span class="brand-card">📡 Huawei</span>
+                    <span class="brand-card">🔋 Xiaomi</span>
+                    <span class="brand-card">💻 HP</span>
+                    <span class="brand-card">🖥️ Dell</span>
+                    <span class="brand-card">🎯 Asus</span>
+                    <!-- duplicate for seamless loop -->
+                    <span class="brand-card">🚗 Toyota</span>
+                    <span class="brand-card">📱 Samsung</span>
+                    <span class="brand-card">🍎 Apple</span>
+                    <span class="brand-card">🎮 Sony</span>
+                    <span class="brand-card">👟 Nike</span>
+                    <span class="brand-card">⚡ Adidas</span>
+                    <span class="brand-card">🏎️ BMW</span>
+                    <span class="brand-card">⭐ Mercedes</span>
+                    <span class="brand-card">📺 LG</span>
+                    <span class="brand-card">📡 Huawei</span>
+                    <span class="brand-card">🔋 Xiaomi</span>
+                    <span class="brand-card">💻 HP</span>
+                    <span class="brand-card">🖥️ Dell</span>
+                    <span class="brand-card">🎯 Asus</span>
+                </div>
+            </div>
+            <div class="brand-marquee brand-marquee-right">
+                <div class="brand-track">
+                    <span class="brand-card">🧥 Lenovo</span>
+                    <span class="brand-card">🐆 Puma</span>
+                    <span class="brand-card">👗 Zara</span>
+                    <span class="brand-card">👕 H&amp;M</span>
+                    <span class="brand-card">🏠 IKEA</span>
+                    <span class="brand-card">👜 Gucci</span>
+                    <span class="brand-card">💎 Louis Vuitton</span>
+                    <span class="brand-card">🌸 Chanel</span>
+                    <span class="brand-card">⌚ Rolex</span>
+                    <span class="brand-card">📷 Canon</span>
+                    <span class="brand-card">📸 Nikon</span>
+                    <span class="brand-card">🔧 Intel</span>
+                    <span class="brand-card">🔥 AMD</span>
+                    <span class="brand-card">🪟 Microsoft</span>
+                    <!-- duplicate for seamless loop -->
+                    <span class="brand-card">🧥 Lenovo</span>
+                    <span class="brand-card">🐆 Puma</span>
+                    <span class="brand-card">👗 Zara</span>
+                    <span class="brand-card">👕 H&amp;M</span>
+                    <span class="brand-card">🏠 IKEA</span>
+                    <span class="brand-card">👜 Gucci</span>
+                    <span class="brand-card">💎 Louis Vuitton</span>
+                    <span class="brand-card">🌸 Chanel</span>
+                    <span class="brand-card">⌚ Rolex</span>
+                    <span class="brand-card">📷 Canon</span>
+                    <span class="brand-card">📸 Nikon</span>
+                    <span class="brand-card">🔧 Intel</span>
+                    <span class="brand-card">🔥 AMD</span>
+                    <span class="brand-card">🪟 Microsoft</span>
+                </div>
             </div>
         </div>
     </div>
@@ -149,13 +219,19 @@
     }
     .hero-btn:hover { background: var(--accent-h); box-shadow: 0 6px 22px rgba(26,86,219,.62); }
 
-    /* Hero stats */
-    .hero-stats { display: flex; align-items: center; gap: 28px; margin-top: 2.5rem; flex-wrap: wrap; }
-    .hero-stat { text-align: left; }
-    .hero-stat-num { display: block; font-size: 1.3rem; font-weight: 800; color: #fff; line-height: 1; }
-    .hero-stat-lbl { display: block; font-size: .67rem; color: rgba(255,255,255,.42); margin-top: 3px; text-transform: uppercase; letter-spacing: .5px; }
-    .hero-stat-sep { width: 1px; height: 34px; background: rgba(255,255,255,.14); flex-shrink: 0; }
-    @@media (max-width: 480px) { .hero-stats { gap: 16px; } .hero-stat-num { font-size: 1.1rem; } .hero-stat-sep { display: none; } }
+    /* Hero support */
+    .hero-support { display: flex; align-items: center; gap: 22px; margin-top: 2.2rem; flex-wrap: wrap; }
+    .hero-support-item {
+        display: flex; align-items: center; gap: 8px;
+        color: rgba(255,255,255,.72); font-size: .82rem; font-weight: 500;
+    }
+    .hero-support-item i { font-size: .85rem; color: rgba(255,255,255,.45); }
+    .hero-support-item a {
+        color: rgba(255,255,255,.85); text-decoration: none; transition: color .15s;
+    }
+    .hero-support-item a:hover { color: #fff; }
+    .hero-support-sep { width: 1px; height: 22px; background: rgba(255,255,255,.14); flex-shrink: 0; }
+    @@media (max-width: 480px) { .hero-support { gap: 12px; } .hero-support-sep { display: none; } }
     @@media (max-width: 600px) { .hero-input-wrap { border-radius: 16px; } .hero-btn { border-radius: 12px; } }
     /* Filter icon button */
     .hero-filter-btn {
@@ -186,6 +262,62 @@
     }
     .cat-item:hover .cat-icon { transform: scale(1.1); }
     .cat-label { font-size: .71rem; font-weight: 600; text-align: center; line-height: 1.2; color: var(--sub); }
+
+    /* ──── Brand marquee ───────────────────────── */
+    .brand-marquee-wrap {
+        margin-top: 2.5rem;
+        overflow: hidden;
+        mask-image: linear-gradient(to right, transparent, #000 8%, #000 92%, transparent);
+        -webkit-mask-image: linear-gradient(to right, transparent, #000 8%, #000 92%, transparent);
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+    .brand-marquee { overflow: hidden; }
+    .brand-track {
+        display: flex;
+        gap: 10px;
+        width: max-content;
+        will-change: transform;
+    }
+    .brand-marquee-left .brand-track {
+        animation: marqueeLeft 28s linear infinite;
+    }
+    .brand-marquee-right .brand-track {
+        animation: marqueeRight 32s linear infinite;
+    }
+    @@keyframes marqueeLeft {
+        0%   { transform: translateX(0); }
+        100% { transform: translateX(-50%); }
+    }
+    @@keyframes marqueeRight {
+        0%   { transform: translateX(-50%); }
+        100% { transform: translateX(0); }
+    }
+    .brand-card {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 8px 16px;
+        border-radius: 28px;
+        background: rgba(255,255,255,.1);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border: 1px solid rgba(255,255,255,.12);
+        color: rgba(255,255,255,.85);
+        font-size: .78rem;
+        font-weight: 600;
+        white-space: nowrap;
+        transition: transform .2s, background .2s;
+        cursor: default;
+    }
+    .brand-card:hover {
+        transform: scale(1.08);
+        background: rgba(255,255,255,.18);
+    }
+    .brand-marquee-wrap:hover .brand-track {
+        animation-play-state: paused;
+    }
 
     /* ──── Home grid ─────────────────────────── */
     .home-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 16px; }

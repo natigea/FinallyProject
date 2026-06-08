@@ -11,6 +11,7 @@
   <data name="Nav_Favorites"          xml:space="preserve"><value>Sevimlilər</value></data>
   <data name="Nav_Messages"           xml:space="preserve"><value>Mesajlar</value></data>
   <data name="Nav_Profile"            xml:space="preserve"><value>Mənim profilim</value></data>
+  <data name="Nav_Support"            xml:space="preserve"><value>Dəstək</value></data>
   <data name="Nav_MyListings"         xml:space="preserve"><value>Elanlarım</value></data>
   <data name="Nav_AdminPanel"         xml:space="preserve"><value>Admin paneli</value></data>
   <data name="Nav_Login"              xml:space="preserve"><value>Daxil ol</value></data>
@@ -68,6 +69,7 @@
   <data name="Home_City"             xml:space="preserve"><value>Şəhər</value></data>
   <data name="Home_AllCities"        xml:space="preserve"><value>Bütün şəhərlər</value></data>
   <data name="Home_Find"             xml:space="preserve"><value>Axtar</value></data>
+  <data name="Home_SupportHours"     xml:space="preserve"><value>08:00 — 23:00</value></data>
   <data name="Home_Categories"       xml:space="preserve"><value>Kateqoriyalar</value></data>
   <data name="Home_FreshListings"    xml:space="preserve"><value>Son elanlar</value></data>
   <data name="Home_ViewAll"          xml:space="preserve"><value>Hamısına bax</value></data>
@@ -136,6 +138,9 @@
   <data name="Create_SectionPhotos"     xml:space="preserve"><value>Şəkillər</value></data>
   <data name="Create_PhotosHint"        xml:space="preserve"><value>5-ə qədər şəkil (JPG, PNG, WebP). İlk şəkil üz olacaq.</value></data>
   <data name="Create_Publish"           xml:space="preserve"><value>Dərc et</value></data>
+  <data name="Create_Condition"          xml:space="preserve"><value>Vəziyyəti</value></data>
+  <data name="Create_ConditionNew"       xml:space="preserve"><value>Yeni</value></data>
+  <data name="Create_ConditionUsed"      xml:space="preserve"><value>İşlənmiş</value></data>
   <data name="Create_Cancel"            xml:space="preserve"><value>Ləğv et</value></data>
   <data name="Create_HeroSub"          xml:space="preserve"><value>Formanı doldurun və elanınız moderasiyadan sonra görünəcək</value></data>
   <data name="Create_StepMain"         xml:space="preserve"><value>Əsas</value></data>
@@ -689,4 +694,155 @@
   <data name="Error_500Desc"     xml:space="preserve"><value>Daxili server xətası baş verdi. Səhifəni yeniləməyə cəhd edin.</value></data>
   <data name="Error_Home"        xml:space="preserve"><value>Ana səhifəyə</value></data>
   <data name="Error_Catalog"     xml:space="preserve"><value>Kataloqa</value></data>
+  <data name="Acc_InvalidLogin" xml:space="preserve"><value>Yanlış e-poçt və ya şifrə.</value></data>
+  <data name="Acc_RegisterSuccess" xml:space="preserve"><value>Qeydiyyat uğurla tamamlandı! Xoş gəldiniz!</value></data>
+  <data name="Acc_ResetCodeInvalid" xml:space="preserve"><value>Yanlış və ya vaxtı keçmiş kod. Yenisini tələb edin.</value></data>
+  <data name="Acc_PasswordChanged" xml:space="preserve"><value>Şifrə uğurla dəyişdirildi. Yeni şifrə ilə daxil olun.</value></data>
+  <data name="Acc_ProfileUpdated" xml:space="preserve"><value>Profil uğurla yeniləndi.</value></data>
+  <data name="Acc_AccountDeleted" xml:space="preserve"><value>Hesabınız silindi.</value></data>
+  <data name="Acc_WrongPassword" xml:space="preserve"><value>Cari şifrə yanlışdır.</value></data>
+  <data name="Acc_PasswordChangedShort" xml:space="preserve"><value>Şifrə uğurla dəyişdirildi.</value></data>
+  <data name="Acc_PhotoFormatError" xml:space="preserve"><value>İcazə verilən formatlar: JPG, PNG, WebP</value></data>
+  <data name="Chk_OwnListingVip" xml:space="preserve"><value>Yalnız öz elanlarınızı irəli çəkə bilərsiniz.</value></data>
+  <data name="Chk_PaymentNotCompleted" xml:space="preserve"><value>Ödəniş tamamlanmadı.</value></data>
+  <data name="Chk_PaymentFailed" xml:space="preserve"><value>Ödəniş uğursuz oldu. Yenidən cəhd edin.</value></data>
+  <data name="Chk_PaymentVerifyError" xml:space="preserve"><value>Ödəniş yoxlanışı xətası.</value></data>
+  <data name="Chk_OwnListingOrder" xml:space="preserve"><value>Öz elanınızı sifariş edə bilməzsiniz.</value></data>
+  <data name="Chk_Processing" xml:space="preserve"><value>Emal edilir...</value></data>
+  <data name="Chk_FillAllFields" xml:space="preserve"><value>Ödənişdən əvvəl bütün çatdırılma sahələrini doldurun.</value></data>
+  <data name="Chk_PaymentCreateError" xml:space="preserve"><value>Ödəniş yaradılması xətası</value></data>
+  <data name="Chk_UnknownError" xml:space="preserve"><value>Naməlum xəta. Yenidən cəhd edin.</value></data>
+  <data name="Chk_StripeSSL" xml:space="preserve"><value>Stripe ilə ödəniş · SSL şifrələmə</value></data>
+  <data name="Lst_SentForReview" xml:space="preserve"><value>Elan yoxlamaya göndərildi. Yoxlamadan sonra hamıya görünəcək.</value></data>
+  <data name="Lst_Updated" xml:space="preserve"><value>Elan yeniləndi.</value></data>
+  <data name="Lst_Closed" xml:space="preserve"><value>Elan bağlandı.</value></data>
+  <data name="Lst_Deleted" xml:space="preserve"><value>Elan silindi.</value></data>
+  <data name="Ntf_OrderConfirmed" xml:space="preserve"><value>Sifariş təsdiqləndi.</value></data>
+  <data name="Ntf_OrderRejected" xml:space="preserve"><value>Sifariş rədd edildi.</value></data>
+  <data name="Rev_InvalidRating" xml:space="preserve"><value>Yanlış qiymətləndirmə.</value></data>
+  <data name="Auth_InvalidLogin" xml:space="preserve"><value>Yanlış e-poçt və ya şifrə.</value></data>
+  <data name="Auth_AccessDeniedPanel" xml:space="preserve"><value>Giriş qadağandır. Panel yalnız admin və satıcılar üçündür.</value></data>
+  <data name="Auth_AccessDenied" xml:space="preserve"><value>Giriş qadağandır</value></data>
+  <data name="Auth_NoPermission" xml:space="preserve"><value>Bu səhifəyə baxmaq üçün icazəniz yoxdur.</value></data>
+  <data name="Auth_Login" xml:space="preserve"><value>Daxil ol</value></data>
+  <data name="Admin_NameRequired" xml:space="preserve"><value>Ad tələb olunur.</value></data>
+  <data name="Admin_CategoryCreated" xml:space="preserve"><value>Kateqoriya yaradıldı.</value></data>
+  <data name="Admin_CategoryDeleted" xml:space="preserve"><value>Kateqoriya silindi.</value></data>
+  <data name="SP_MyListings" xml:space="preserve"><value>Elanlarım</value></data>
+  <data name="SP_Total" xml:space="preserve"><value>Cəmi</value></data>
+  <data name="SP_CreateListing" xml:space="preserve"><value>Elan yerləşdir</value></data>
+  <data name="SP_NoListings" xml:space="preserve"><value>Hələ elanınız yoxdur.</value></data>
+  <data name="SP_CreateFirst" xml:space="preserve"><value>İlk elanı yerləşdirin!</value></data>
+  <data name="SP_Photo" xml:space="preserve"><value>Foto</value></data>
+  <data name="SP_Title" xml:space="preserve"><value>Ad</value></data>
+  <data name="SP_Category" xml:space="preserve"><value>Kateqoriya</value></data>
+  <data name="SP_City" xml:space="preserve"><value>Şəhər</value></data>
+  <data name="SP_Price" xml:space="preserve"><value>Qiymət</value></data>
+  <data name="SP_Status" xml:space="preserve"><value>Status</value></data>
+  <data name="SP_Date" xml:space="preserve"><value>Tarix</value></data>
+  <data name="SP_Actions" xml:space="preserve"><value>Əməliyyatlar</value></data>
+  <data name="SP_Active" xml:space="preserve"><value>Aktiv</value></data>
+  <data name="SP_ClosedStatus" xml:space="preserve"><value>Bağlı</value></data>
+  <data name="SP_Edit" xml:space="preserve"><value>Redaktə</value></data>
+  <data name="SP_Delete" xml:space="preserve"><value>Sil</value></data>
+  <data name="SP_ConfirmDelete" xml:space="preserve"><value>Elan silinsin?</value></data>
+  <data name="SP_Close" xml:space="preserve"><value>Bağla</value></data>
+  <data name="SP_TotalListings" xml:space="preserve"><value>Ümumi elanlar</value></data>
+  <data name="SP_ActiveCount" xml:space="preserve"><value>Aktiv</value></data>
+  <data name="SP_ClosedCount" xml:space="preserve"><value>Bağlanmış</value></data>
+  <data name="SP_AllMyListings" xml:space="preserve"><value>Bütün elanlarım</value></data>
+  <data name="SP_Messages" xml:space="preserve"><value>Mesajlar</value></data>
+  <data name="SP_RecentListings" xml:space="preserve"><value>Son elanlarım</value></data>
+  <data name="SP_All" xml:space="preserve"><value>Hamısı</value></data>
+  <data name="SP_Author" xml:space="preserve"><value>Müəllif</value></data>
+  <data name="SP_Found" xml:space="preserve"><value>Tapıldı</value></data>
+  <data name="SP_SearchPlaceholder" xml:space="preserve"><value>Ad ilə axtarış...</value></data>
+  <data name="SP_Reset" xml:space="preserve"><value>Sıfırla</value></data>
+  <data name="SP_NotFound" xml:space="preserve"><value>Elan tapılmadı.</value></data>
+  <data name="SP_AllListings" xml:space="preserve"><value>Bütün elanlar</value></data>
+  <data name="SP_Moderation" xml:space="preserve"><value>Elanların moderasiyası</value></data>
+  <data name="SP_NoListingsYet" xml:space="preserve"><value>Elan yoxdur.</value></data>
+  <data name="SP_Categories" xml:space="preserve"><value>Kateqoriyalar</value></data>
+  <data name="SP_NoCategoriesYet" xml:space="preserve"><value>Kateqoriya yoxdur. İlkini əlavə edin!</value></data>
+  <data name="SP_VipUntil" xml:space="preserve"><value>VIP tarixədək</value></data>
+  <data name="SP_ExtendVip" xml:space="preserve"><value>VIP uzat</value></data>
+  <data name="SP_MakeVip" xml:space="preserve"><value>VIP et</value></data>
+  <data name="SP_CancelTimeExpired" xml:space="preserve"><value>Ləğv müddəti bitdi.</value></data>
+  <data name="SP_PendingOrders" xml:space="preserve"><value>sifariş cavab gözləyir</value></data>
+  <data name="SP_PendingHint" xml:space="preserve"><value>Təsdiqləyin və ya rədd edin — alıcı gözləyir</value></data>
+  <data name="SP_Respond" xml:space="preserve"><value>Cavab ver</value></data>
+  <data name="SP_EmptyOrders" xml:space="preserve"><value>Alıcılar çatdırılma sifariş etdikdə burada görünəcək</value></data>
+  <data name="SP_Icon" xml:space="preserve"><value>İkon</value></data>
+  <data name="SP_Name" xml:space="preserve"><value>Ad</value></data>
+  <data name="SP_Description" xml:space="preserve"><value>Təsvir</value></data>
+  <data name="SP_NewCategory" xml:space="preserve"><value>Yeni kateqoriya</value></data>
+  <data name="SP_CategoryNamePlaceholder" xml:space="preserve"><value>Məsələn: Elektronika</value></data>
+  <data name="SP_CategoryDescPlaceholder" xml:space="preserve"><value>Kateqoriya haqqında qısa təsvir...</value></data>
+  <data name="SP_IconExamples" xml:space="preserve"><value>Məsələn: bi-phone, bi-car-front, bi-house</value></data>
+  <data name="SP_AddCategory" xml:space="preserve"><value>Kateqoriya əlavə et</value></data>
+  <data name="SP_ConfirmDeleteCategory" xml:space="preserve"><value>Bu kateqoriya silinsin?</value></data>
+
+  <!-- ── VALIDATION ────────────────────────────────────────── -->
+  <data name="Val_EmailRequired" xml:space="preserve"><value>Email daxil edin</value></data>
+  <data name="Val_EmailInvalid" xml:space="preserve"><value>Yanlış email</value></data>
+  <data name="Val_PasswordRequired" xml:space="preserve"><value>Şifrə daxil edin</value></data>
+  <data name="Val_FirstNameRequired" xml:space="preserve"><value>Ad daxil edin</value></data>
+  <data name="Val_LastNameRequired" xml:space="preserve"><value>Soyad daxil edin</value></data>
+  <data name="Val_MinLength2" xml:space="preserve"><value>Minimum 2 simvol</value></data>
+  <data name="Val_PhoneRequired" xml:space="preserve"><value>Telefon nömrəsi daxil edin</value></data>
+  <data name="Val_PhoneInvalid" xml:space="preserve"><value>Yanlış telefon nömrəsi</value></data>
+  <data name="Val_MinLength6" xml:space="preserve"><value>Minimum 6 simvol</value></data>
+  <data name="Val_ConfirmPasswordRequired" xml:space="preserve"><value>Şifrəni təsdiqləyin</value></data>
+  <data name="Val_PasswordsMismatch" xml:space="preserve"><value>Şifrələr uyğun gəlmir</value></data>
+  <data name="Val_CodeRequired" xml:space="preserve"><value>Mesajdakı kodu daxil edin</value></data>
+  <data name="Val_CodeLength8" xml:space="preserve"><value>Kod 8 simvoldan ibarətdir</value></data>
+  <data name="Val_NewPasswordRequired" xml:space="preserve"><value>Yeni şifrə daxil edin</value></data>
+  <data name="Val_CurrentPasswordRequired" xml:space="preserve"><value>Cari şifrə daxil edin</value></data>
+  <data name="Val_TitleRequired" xml:space="preserve"><value>Başlıq daxil edin</value></data>
+  <data name="Val_TitleLength" xml:space="preserve"><value>3-dən 200-ə qədər simvol</value></data>
+  <data name="Val_DescriptionRequired" xml:space="preserve"><value>Təsvir daxil edin</value></data>
+  <data name="Val_DescriptionLength" xml:space="preserve"><value>10-dan 5000-ə qədər simvol</value></data>
+  <data name="Val_PriceRequired" xml:space="preserve"><value>Qiymət göstərin</value></data>
+  <data name="Val_PricePositive" xml:space="preserve"><value>Qiymət mənfi olmamalıdır</value></data>
+  <data name="Val_CityRequired" xml:space="preserve"><value>Şəhər seçin</value></data>
+  <data name="Val_ContactPhoneRequired" xml:space="preserve"><value>Əlaqə telefonu göstərin</value></data>
+  <data name="Val_CategoryRequired" xml:space="preserve"><value>Kateqoriya seçin</value></data>
+  <data name="Val_AddressRequired" xml:space="preserve"><value>Çatdırılma ünvanı daxil edin</value></data>
+  <data name="Val_PlanRequired" xml:space="preserve"><value>Plan seçin</value></data>
+
+  <!-- ── AUTH (Admin Login Page) ───────────────────────────── -->
+  <data name="Auth_LoginTitle" xml:space="preserve"><value>Giriş</value></data>
+  <data name="Auth_PanelSubtitle" xml:space="preserve"><value>Mağaza idarəetmə paneli</value></data>
+  <data name="Auth_Password" xml:space="preserve"><value>Şifrə</value></data>
+  <data name="Auth_LoginBtn" xml:space="preserve"><value>Daxil ol</value></data>
+  <data name="Auth_AccessOnly" xml:space="preserve"><value>Yalnız administratorlar və satıcılar üçün</value></data>
+
+  <!-- ── CHAT ──────────────────────────────────────────────── -->
+  <data name="Chat_PhotoBtn" xml:space="preserve"><value>Şəkil</value></data>
+  <data name="Chat_VoiceBtn" xml:space="preserve"><value>Səsli</value></data>
+  <data name="Chat_Speaker" xml:space="preserve"><value>Dinamik</value></data>
+  <data name="Chat_SpeakerLoud" xml:space="preserve"><value>Güclü səs</value></data>
+  <data name="Chat_SpeakerEarpiece" xml:space="preserve"><value>Telefon</value></data>
+
+  <!-- ── FCM / MESSAGES PUSH ───────────────────────────────── -->
+  <data name="Msg_VoiceMessage" xml:space="preserve"><value>🎤 Səsli mesaj</value></data>
+  <data name="Msg_Photo" xml:space="preserve"><value>📷 Şəkil</value></data>
+  <data name="Fcm_Calling" xml:space="preserve"><value>📞 {0} zəng edir</value></data>
+  <data name="Fcm_TapToAnswer" xml:space="preserve"><value>Cavab vermək üçün basın</value></data>
+
+  <!-- ── TWO-FACTOR AUTH ───────────────────────────────────── -->
+  <data name="TwoFactor_Title" xml:space="preserve"><value>Giriş təsdiqi</value></data>
+  <data name="TwoFactor_Subtitle" xml:space="preserve"><value>Göndərilən 6 rəqəmli kodu daxil edin</value></data>
+  <data name="TwoFactor_Submit" xml:space="preserve"><value>Təsdiqlə</value></data>
+  <data name="TwoFactor_NoCode" xml:space="preserve"><value>Kod almadınız?</value></data>
+  <data name="TwoFactor_ResendBtn" xml:space="preserve"><value>Yenidən göndər</value></data>
+  <data name="TwoFactor_BackToLogin" xml:space="preserve"><value>Girişə qayıt</value></data>
+  <data name="TwoFactor_CodeSent" xml:space="preserve"><value>Təsdiq kodu e-poçtunuza göndərildi.</value></data>
+  <data name="TwoFactor_CodeResent" xml:space="preserve"><value>Kod yenidən göndərildi.</value></data>
+  <data name="TwoFactor_InvalidCode" xml:space="preserve"><value>Yanlış və ya müddəti bitmiş kod.</value></data>
+  <data name="TwoFactor_SendError" xml:space="preserve"><value>Kod göndərmək mümkün olmadı. Sonra yenidən cəhd edin.</value></data>
+
+  <!-- ── PUSH NOTIFICATIONS ──────────────────────────────── -->
+  <data name="Push_BannerText"  xml:space="preserve"><value>Mesaj və zəngləri qaçırmamaq üçün bildirişləri aktivləşdirin</value></data>
+  <data name="Push_BannerBtn"   xml:space="preserve"><value>Aktivləşdir</value></data>
 </root>

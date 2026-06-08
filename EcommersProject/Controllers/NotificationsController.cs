@@ -1,7 +1,9 @@
 using EcommersProject.BLL.Interfaces;
 using EcommersProject.BLL.Exceptions;
+using EcommersProject.Resources;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Localization;
 using System.Security.Claims;
 
 namespace EcommersProject.Controllers;
@@ -11,7 +13,8 @@ namespace EcommersProject.Controllers;
 public class NotificationsController(
     INotificationService notifications,
     IPurchaseService purchases,
-    IListingService listings) : Controller
+    IListingService listings,
+    IStringLocalizer<SharedResource> localizer) : Controller
 {
     [HttpGet]
     public async Task<IActionResult> Index()
@@ -39,7 +42,7 @@ public class NotificationsController(
             link: "/Checkout/History",
             titleKey: "Notif_OrderApproved");
 
-        TempData["Success"] = "Заказ подтверждён.";
+        TempData["Success"] = localizer["Ntf_OrderConfirmed"].Value;
         return RedirectToAction(nameof(Index));
     }
 
@@ -62,7 +65,7 @@ public class NotificationsController(
             link: "/Checkout/History",
             titleKey: "Notif_OrderRejected");
 
-        TempData["Info"] = "Заказ отклонён.";
+        TempData["Info"] = localizer["Ntf_OrderRejected"].Value;
         return RedirectToAction(nameof(Index));
     }
 

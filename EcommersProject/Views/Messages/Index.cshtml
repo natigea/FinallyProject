@@ -25,8 +25,9 @@
                 <div class="d-flex flex-column gap-2">
                     @foreach (var conv in Model)
                     {
-                        var isBuyer    = conv.BuyerId.ToString() == userId;
-                        var otherName  = isBuyer ? conv.SellerName : conv.BuyerName;
+                        var isBuyer     = conv.BuyerId.ToString() == userId;
+                        var otherName   = isBuyer ? conv.SellerName : conv.BuyerName;
+                        var isSupport   = conv.ListingTitle == "__SUPPORT__";
                         var diff       = conv.LastMessage != null ? DateTimeOffset.UtcNow - conv.LastMessage.CreatedDate : (TimeSpan?)null;
                         var timeAgo    = diff == null ? "" :
                             diff.Value.TotalHours < 1
@@ -40,7 +41,14 @@
                         <a href="/Messages/Chat/@conv.Id" class="text-decoration-none d-block">
                             <div class="border p-3 d-flex gap-3 conv-row @(conv.UnreadCount > 0 ? "conv-row-unread" : "")" style="background:var(--card);">
 
-                                @if (conv.ListingImage != null)
+                                @if (isSupport)
+                                {
+                                    <div class="rounded flex-shrink-0 d-flex align-items-center justify-content-center"
+                                         style="width:56px;height:56px;font-size:1.4rem;background:var(--accent);color:#fff;">
+                                        <i class="bi bi-headset"></i>
+                                    </div>
+                                }
+                                else if (conv.ListingImage != null)
                                 {
                                     <img src="@conv.ListingImage" class="rounded flex-shrink-0"
                                          style="width:56px;height:56px;object-fit:cover;" />
@@ -54,10 +62,10 @@
                                 }
                                 <div class="flex-grow-1 min-width-0">
                                     <div class="d-flex justify-content-between">
-                                        <span class="fw-semibold small">@otherName</span>
+                                        <span class="fw-semibold small">@(isSupport ? L["Nav_Support"].Value : otherName)</span>
                                         <span class="text-muted" style="font-size:.75rem;">@timeAgo</span>
                                     </div>
-                                    <div class="text-muted small text-truncate">@conv.ListingTitle</div>
+                                    <div class="text-muted small text-truncate">@(isSupport ? "" : conv.ListingTitle)</div>
                                     @if (conv.LastMessage != null)
                                     {
                                         <div class="small text-truncate @(conv.UnreadCount > 0 ? "fw-semibold text-dark" : "text-muted")">

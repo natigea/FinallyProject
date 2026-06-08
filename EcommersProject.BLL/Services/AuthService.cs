@@ -3,10 +3,11 @@ using EcommersProject.BLL.Interfaces;
 using EcommersProject.DAL.Entities;
 using EcommersProject.DAL.UnitOfWork;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 
 namespace EcommersProject.BLL.Services;
 
-public class AuthService(IUnitOfWork unitOfWork) : IAuthService
+public class AuthService(IUnitOfWork unitOfWork, ILogger<AuthService> logger) : IAuthService
 {
     public async Task<AuthResponseDto?> LoginAsync(LoginDto dto, CancellationToken cancellationToken = default)
     {
@@ -26,7 +27,7 @@ public class AuthService(IUnitOfWork unitOfWork) : IAuthService
         var normalized = dto.Email.Trim().ToLowerInvariant();
         var existing = await unitOfWork.Users.FindAsync(u => u.Email == normalized, cancellationToken);
         if (existing.Any())
-            throw new InvalidOperationException($"Пользователь с email {dto.Email} уже существует.");
+            throw new InvalidOperationException($"User with email {dto.Email} already exists.");
 
         var user = new User
         {
@@ -126,6 +127,59 @@ public class AuthService(IUnitOfWork unitOfWork) : IAuthService
         await unitOfWork.Users.UpdateAsync(user, cancellationToken);
         await unitOfWork.SaveChangesAsync(cancellationToken);
         return true;
+    }
+
+    public async Task<string> GenerateTwoFactorCodeAsync(Guid userId, CancellationToken cancellationToken = default)
+    {
+        var user = await unitOfWork.Users.GetByIdAsync(userId, cancellationToken)
+                   ?? throw new InvalidOperationException("User not found.");
+
+        if (!string.IsNullOrEmpty(user.EmailVerificationCode)
+            && user.EmailCodeExpiry.HasValue
+            && user.EmailCodeExpiry.Value > DateTimeOffset.UtcNow)
+        {
+            return user.EmailVerificationCode;
+        }
+
+        var code = Random.Shared.Next(0, 1_000_000).ToString("D6");
+        user.EmailVerificationCode = code;
+        user.EmailCodeExpiry = DateTimeOffset.UtcNow.AddMinutes(10);
+        await unitOfWork.Users.UpdateAsync(user, cancellationToken);
+        await unitOfWork.SaveChangesAsync(cancellationToken);
+        return code;
+    }
+
+    public async Task<AuthResponseDto?> VerifyTwoFactorCodeAsync(Guid userId, string code, CancellationToken cancellationToken = default)
+    {
+        logger.LogInformation("[2FA-Verify] userId={UserId}, inputCode='{Code}'", userId, code?.Trim());
+
+        var user = await unitOfWork.Users.GetByIdAsync(userId, cancellationToken);
+        if (user is null)
+        {
+            logger.LogWarning("[2FA-Verify] User NOT FOUND for id={UserId}", userId);
+            return null;
+        }
+
+        var trimmedCode = code.Trim();
+        var storedCode = user.EmailVerificationCode?.Trim();
+
+        logger.LogInformation("[2FA-Verify] storedCode='{StoredCode}', inputCode='{InputCode}', match={Match}",
+            storedCode, trimmedCode, storedCode == trimmedCode);
+        logger.LogInformation("[2FA-Verify] ExpiresAt={ExpiresAt}, UtcNow={UtcNow}, expired={Expired}",
+            user.EmailCodeExpiry, DateTimeOffset.UtcNow,
+            !user.EmailCodeExpiry.HasValue || user.EmailCodeExpiry.Value < DateTimeOffset.UtcNow);
+
+        if (string.IsNullOrEmpty(user.EmailVerificationCode)) return null;
+        if (storedCode != trimmedCode) return null;
+        if (!user.EmailCodeExpiry.HasValue || user.EmailCodeExpiry.Value < DateTimeOffset.UtcNow) return null;
+
+        user.EmailVerificationCode = null;
+        user.EmailCodeExpiry = null;
+        await unitOfWork.Users.UpdateAsync(user, cancellationToken);
+        await unitOfWork.SaveChangesAsync(cancellationToken);
+
+        logger.LogInformation("[2FA-Verify] SUCCESS — user {Email} verified", user.Email);
+        return MapToResponse(user);
     }
 
     private static AuthResponseDto MapToResponse(User user) =>

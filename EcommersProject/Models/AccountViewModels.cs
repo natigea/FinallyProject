@@ -5,11 +5,11 @@ namespace EcommersProject.Models;
 
 public class LoginViewModel
 {
-    [Required(ErrorMessage = "Введите email")]
-    [EmailAddress(ErrorMessage = "Некорректный email")]
+    [Required(ErrorMessage = "Val_EmailRequired")]
+    [EmailAddress(ErrorMessage = "Val_EmailInvalid")]
     public string Email { get; set; } = "";
 
-    [Required(ErrorMessage = "Введите пароль")]
+    [Required(ErrorMessage = "Val_PasswordRequired")]
     public string Password { get; set; } = "";
 
     public string? ReturnUrl { get; set; }
@@ -17,54 +17,54 @@ public class LoginViewModel
 
 public class RegisterViewModel
 {
-    [Required(ErrorMessage = "Введите email")]
-    [EmailAddress(ErrorMessage = "Некорректный email")]
+    [Required(ErrorMessage = "Val_EmailRequired")]
+    [EmailAddress(ErrorMessage = "Val_EmailInvalid")]
     public string Email { get; set; } = "";
 
-    [Required(ErrorMessage = "Введите имя")]
-    [MinLength(2, ErrorMessage = "Минимум 2 символа")]
+    [Required(ErrorMessage = "Val_FirstNameRequired")]
+    [MinLength(2, ErrorMessage = "Val_MinLength2")]
     public string FirstName { get; set; } = "";
 
-    [Required(ErrorMessage = "Введите фамилию")]
-    [MinLength(2, ErrorMessage = "Минимум 2 символа")]
+    [Required(ErrorMessage = "Val_LastNameRequired")]
+    [MinLength(2, ErrorMessage = "Val_MinLength2")]
     public string LastName { get; set; } = "";
 
-    [Required(ErrorMessage = "Введите номер телефона")]
-    [Phone(ErrorMessage = "Некорректный номер телефона")]
+    [Required(ErrorMessage = "Val_PhoneRequired")]
+    [Phone(ErrorMessage = "Val_PhoneInvalid")]
     public string PhoneNumber { get; set; } = "";
 
-    [Required(ErrorMessage = "Введите пароль")]
-    [MinLength(6, ErrorMessage = "Минимум 6 символов")]
+    [Required(ErrorMessage = "Val_PasswordRequired")]
+    [MinLength(6, ErrorMessage = "Val_MinLength6")]
     public string Password { get; set; } = "";
 
-    [Required(ErrorMessage = "Подтвердите пароль")]
-    [Compare(nameof(Password), ErrorMessage = "Пароли не совпадают")]
+    [Required(ErrorMessage = "Val_ConfirmPasswordRequired")]
+    [Compare(nameof(Password), ErrorMessage = "Val_PasswordsMismatch")]
     public string ConfirmPassword { get; set; } = "";
 }
 
 public class ForgotPasswordViewModel
 {
-    [Required(ErrorMessage = "Введите email")]
-    [EmailAddress(ErrorMessage = "Некорректный email")]
+    [Required(ErrorMessage = "Val_EmailRequired")]
+    [EmailAddress(ErrorMessage = "Val_EmailInvalid")]
     public string Email { get; set; } = "";
 }
 
 public class ResetPasswordViewModel
 {
-    [Required(ErrorMessage = "Введите email")]
-    [EmailAddress(ErrorMessage = "Некорректный email")]
+    [Required(ErrorMessage = "Val_EmailRequired")]
+    [EmailAddress(ErrorMessage = "Val_EmailInvalid")]
     public string Email { get; set; } = "";
 
-    [Required(ErrorMessage = "Введите код из сообщения")]
-    [StringLength(8, MinimumLength = 8, ErrorMessage = "Код состоит из 8 символов")]
+    [Required(ErrorMessage = "Val_CodeRequired")]
+    [StringLength(8, MinimumLength = 8, ErrorMessage = "Val_CodeLength8")]
     public string Token { get; set; } = "";
 
-    [Required(ErrorMessage = "Введите новый пароль")]
-    [MinLength(6, ErrorMessage = "Минимум 6 символов")]
+    [Required(ErrorMessage = "Val_NewPasswordRequired")]
+    [MinLength(6, ErrorMessage = "Val_MinLength6")]
     public string NewPassword { get; set; } = "";
 
-    [Required(ErrorMessage = "Подтвердите пароль")]
-    [Compare(nameof(NewPassword), ErrorMessage = "Пароли не совпадают")]
+    [Required(ErrorMessage = "Val_ConfirmPasswordRequired")]
+    [Compare(nameof(NewPassword), ErrorMessage = "Val_PasswordsMismatch")]
     public string ConfirmPassword { get; set; } = "";
 }
 
@@ -99,15 +99,15 @@ public class ProfilePageViewModel
 
 public class ProfileEditViewModel
 {
-    [Required(ErrorMessage = "Введите имя")]
-    [MinLength(2, ErrorMessage = "Минимум 2 символа")]
+    [Required(ErrorMessage = "Val_FirstNameRequired")]
+    [MinLength(2, ErrorMessage = "Val_MinLength2")]
     public string FirstName { get; set; } = "";
 
-    [Required(ErrorMessage = "Введите фамилию")]
-    [MinLength(2, ErrorMessage = "Минимум 2 символа")]
+    [Required(ErrorMessage = "Val_LastNameRequired")]
+    [MinLength(2, ErrorMessage = "Val_MinLength2")]
     public string LastName { get; set; } = "";
 
-    [Phone(ErrorMessage = "Некорректный номер телефона")]
+    [Phone(ErrorMessage = "Val_PhoneInvalid")]
     public string PhoneNumber { get; set; } = "";
 
     public string? PhotoUrl { get; set; }
@@ -116,14 +116,21 @@ public class ProfileEditViewModel
 
 public class ChangePasswordViewModel
 {
-    [Required(ErrorMessage = "Введите текущий пароль")]
+    [Required(ErrorMessage = "Val_CurrentPasswordRequired")]
     public string CurrentPassword { get; set; } = "";
 
-    [Required(ErrorMessage = "Введите новый пароль")]
-    [MinLength(6, ErrorMessage = "Минимум 6 символов")]
+    [Required(ErrorMessage = "Val_NewPasswordRequired")]
+    [MinLength(6, ErrorMessage = "Val_MinLength6")]
     public string NewPassword { get; set; } = "";
 
-    [Required(ErrorMessage = "Подтвердите пароль")]
-    [Compare(nameof(NewPassword), ErrorMessage = "Пароли не совпадают")]
+    [Required(ErrorMessage = "Val_ConfirmPasswordRequired")]
+    [Compare(nameof(NewPassword), ErrorMessage = "Val_PasswordsMismatch")]
     public string ConfirmPassword { get; set; } = "";
+}
+
+public class TwoFactorViewModel
+{
+    [Required(ErrorMessage = "Val_CodeRequired")]
+    public string Code { get; set; } = "";
+    public string? Email { get; set; }
 }
