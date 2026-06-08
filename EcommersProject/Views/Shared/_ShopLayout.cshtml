@@ -3,15 +3,34 @@
 @using EcommersProject.BLL.Interfaces
 @inject IStringLocalizer<SharedResource> L
 @inject INotificationService _notifSvc
+@inject ICategoryService _catSvc
+@inject IMessageService _msgSvc
+@inject Microsoft.Extensions.Configuration.IConfiguration _cfg
 @{
     var currentCulture = System.Globalization.CultureInfo.CurrentUICulture.TwoLetterISOLanguageName;
     var returnUrl = Uri.EscapeDataString(Context.Request.Path + Context.Request.QueryString);
     int _unreadNotifs = 0;
+    int _unreadMsgs   = 0;
     if (User.Identity?.IsAuthenticated == true)
     {
         var _uidStr = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
-        if (_uidStr != null) _unreadNotifs = await _notifSvc.GetUnreadCountAsync(Guid.Parse(_uidStr));
+        if (_uidStr != null)
+        {
+            var _uid = Guid.Parse(_uidStr);
+            _unreadNotifs = await _notifSvc.GetUnreadCountAsync(_uid);
+            _unreadMsgs   = await _msgSvc.GetUnreadCountAsync(_uid);
+        }
     }
+    var _layoutCategories = await _catSvc.GetAllAsync();
+    var _modalQ       = Context.Request.Query["q"].ToString();
+    var _modalCity    = Context.Request.Query["city"].ToString();
+    var _modalCatId   = Context.Request.Query["categoryId"].ToString();
+    var _modalSortBy  = Context.Request.Query["sortBy"].ToString();
+    if (string.IsNullOrEmpty(_modalSortBy)) _modalSortBy = "newest";
+    var _modalPriceMin = Context.Request.Query["priceMin"].ToString();
+    var _modalPriceMax = Context.Request.Query["priceMax"].ToString();
+    var _modalPhoto   = Context.Request.Query["onlyWithPhoto"].ToString() == "true";
+    var _modalVip     = Context.Request.Query["onlyVip"].ToString() == "true";
 }
 <!DOCTYPE html>
 <html lang="@currentCulture">
@@ -42,6 +61,7 @@
             --logo-bg:     #111111;
         }
 
+        @@media (min-width: 768px) { html { scrollbar-gutter: stable; } } /* desktop-only: prevent layout shift from scrollbar */
         *, *::before, *::after { box-sizing: border-box; }
         body {
             background: var(--bg);
@@ -90,8 +110,25 @@
         /* Search */
         .nav-search {
             flex: 1;
-            max-width: 520px;
+            max-width: 560px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
+        .nav-search form { flex: 1; }
+        .nav-filter-btn {
+            width: 40px; height: 40px; flex-shrink: 0;
+            border-radius: 10px;
+            border: 1.5px solid var(--border);
+            background: var(--bg);
+            color: var(--sub);
+            cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1rem;
+            transition: border-color .15s, color .15s, background .15s;
+        }
+        .nav-filter-btn:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-soft); }
+        .nav-filter-btn.active { border-color: var(--accent); color: var(--accent); background: var(--accent-soft); }
         .search-wrap {
             display: flex;
             border: 1.5px solid var(--border);
@@ -349,6 +386,10 @@
         /* ── Profile sidebar layout ── */
         .profile-wrap { max-width: 1060px; margin: 0 auto; padding: 32px 16px 60px; }
         .profile-layout { display: flex; gap: 28px; align-items: flex-start; }
+        @@media (max-width: 767px) {
+            .profile-wrap { padding: 0 0 60px; }
+            .profile-layout { padding: 0 16px; }
+        }
         .profile-sidebar { width: 240px; flex-shrink: 0; }
         .profile-avatar-ring {
             width: 76px; height: 76px; border-radius: 50%;
@@ -442,10 +483,7 @@
         [data-theme="dark"] .search-wrap { background: #1e2536; border-color: var(--border); }
         [data-theme="dark"] .search-wrap input { color: var(--text); }
         [data-theme="dark"] .search-wrap input::placeholder { color: var(--muted); }
-        [data-theme="dark"] .browse-bar { background: rgba(13,17,23,.97); border-bottom-color: var(--border); }
-        [data-theme="dark"] .browse-form { background: #1e2536; border-color: var(--border); }
-        [data-theme="dark"] .browse-input,
-        [data-theme="dark"] .browse-city-sel { color: var(--text); background: transparent; }
+        [data-theme="dark"] .browse-cats-bar { background: var(--bg); }
         [data-theme="dark"] .cat-chip { background: #161b26; border-color: #252d3d; color: var(--sub); }
         [data-theme="dark"] .dropdown-menu { background: #1e2536; border-color: #252d3d; }
         [data-theme="dark"] .dropdown-item { color: var(--text); }
@@ -477,27 +515,20 @@
         [data-theme="dark"] .btn-outline-dark-custom:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-soft); }
         [data-theme="dark"] .hero-input-wrap { background: #1e2536; box-shadow: 0 20px 60px rgba(0,0,0,.5), 0 4px 24px rgba(0,0,0,.3); }
         [data-theme="dark"] .hero-input { color: var(--text); }
-        [data-theme="dark"] .hero-city { color: var(--sub); }
-        [data-theme="dark"] .hero-sep { background: #252d3d; }
         [data-theme="dark"] .lang-btn { border-color: #252d3d; color: var(--muted); }
+        [data-theme="dark"] .nav-filter-btn { border-color: #252d3d; background: #1e2536; color: var(--sub); }
+        [data-theme="dark"] .nav-filter-btn:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-soft); }
+        [data-theme="dark"] .filter-modal .modal-content { background: #161b26; border-color: #252d3d; }
+        [data-theme="dark"] .filter-modal .modal-header,
+        [data-theme="dark"] .filter-modal .modal-footer { border-color: #252d3d; }
+        [data-theme="dark"] .filter-modal .modal-title { color: var(--text); }
+        [data-theme="dark"] .filter-lbl-modal { color: var(--sub); }
+        [data-theme="dark"] .filter-check-modal { color: var(--sub); }
+        [data-theme="dark"] .filter-check-modal:hover { background: var(--accent-soft); color: var(--accent); }
         [data-theme="dark"] .lang-btn:hover { border-color: var(--accent); color: var(--accent); }
         [data-theme="dark"] .lang-btn.active { border-color: var(--accent); color: var(--accent); background: var(--accent-soft); }
 
         /* ─── Mobile util bar ─────────────────────────────────── */
-        .mobile-util-bar {
-            display: flex; align-items: center; justify-content: space-between;
-            margin-top: 8px; padding-top: 8px;
-            border-top: 1px solid var(--border);
-        }
-        .mobile-theme-btn {
-            display: flex; align-items: center; gap: 5px;
-            background: transparent; border: 1.5px solid var(--border);
-            border-radius: 8px; padding: 4px 11px;
-            font-size: .78rem; color: var(--sub); cursor: pointer;
-            transition: all .15s; font-family: inherit; font-weight: 500;
-        }
-        .mobile-theme-btn:hover { border-color: var(--accent); color: var(--accent); }
-        .mobile-theme-btn i { font-size: .88rem; }
 
         /* ─── Mobile Bottom Nav ──────────────────────────── */
         .mobile-bottom-nav {
@@ -534,6 +565,156 @@
             main { padding-bottom: 68px; }
         }
         [data-theme="dark"] .mobile-bottom-nav { box-shadow: 0 -2px 12px rgba(0,0,0,.4); }
+        .mob-notif-badge {
+            position: absolute; top: 4px; right: calc(50% - 18px);
+            background: #ef4444; color: #fff;
+            font-size: .55rem; font-weight: 700; line-height: 1;
+            padding: 2px 4px; border-radius: 20px;
+            min-width: 16px; text-align: center;
+            border: 1.5px solid var(--card);
+        }
+
+        /* ─── Filter Modal ───────────────────────────── */
+        .filter-modal .modal-content {
+            border-radius: 20px;
+            border: none;
+            box-shadow: 0 20px 60px rgba(0,0,0,.18), 0 4px 20px rgba(0,0,0,.08);
+        }
+        .filter-modal .modal-header {
+            border-bottom: 1px solid var(--border);
+            padding: 20px 24px 16px;
+        }
+        .filter-modal .modal-title {
+            font-size: .95rem;
+            font-weight: 700;
+            color: var(--text);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .filter-modal .modal-body { padding: 20px 24px; }
+        .filter-modal .modal-footer {
+            border-top: 1px solid var(--border);
+            padding: 16px 24px;
+            gap: 8px;
+        }
+        .filter-lbl-modal {
+            display: block;
+            font-size: .78rem;
+            font-weight: 600;
+            color: var(--sub);
+            margin-bottom: 6px;
+        }
+        .filter-check-modal {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            font-size: .84rem;
+            color: var(--sub);
+            cursor: pointer;
+            user-select: none;
+            padding: 7px 10px;
+            border-radius: 8px;
+            transition: background .15s;
+            flex: 1;
+        }
+        .filter-check-modal:hover { background: var(--accent-soft); color: var(--accent); }
+        .filter-check-modal input[type="checkbox"] {
+            width: 15px; height: 15px; accent-color: var(--accent); flex-shrink: 0; cursor: pointer;
+        }
+        .filter-modal .btn-clear-modal {
+            background: transparent;
+            border: 1.5px solid var(--border);
+            border-radius: 10px;
+            padding: 9px 18px;
+            font-size: .85rem;
+            font-weight: 600;
+            color: var(--sub);
+            cursor: pointer;
+            transition: all .15s;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+        }
+        .filter-modal .btn-clear-modal:hover { border-color: #dc2626; color: #dc2626; }
+
+        /* ─── In-app toast notification ─────────────────────── */
+        .app-toast {
+            position: fixed; bottom: 80px; right: 16px; z-index: 9998;
+            background: var(--card); border: 1px solid var(--border);
+            border-radius: 14px; padding: 12px 16px; max-width: 300px; min-width: 220px;
+            box-shadow: var(--shadow-lg); cursor: pointer;
+            transform: translateY(24px); opacity: 0;
+            transition: transform .32s cubic-bezier(.25,.46,.45,.94), opacity .32s;
+            display: flex; flex-direction: column; gap: 3px;
+            pointer-events: auto;
+        }
+        .app-toast.app-toast-show { transform: translateY(0); opacity: 1; }
+        .app-toast-title { font-size: .85rem; font-weight: 700; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .app-toast-body  { font-size: .8rem;  color: var(--sub);  white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        [data-theme="dark"] .app-toast { background: var(--card); border-color: var(--border); }
+
+        /* ─── Global Incoming Call Overlay ─────────────────────── */
+        #gbl-call-overlay {
+            display: none; position: fixed; inset: 0; z-index: 99999;
+            background: linear-gradient(160deg, #0a0e18 0%, #111827 55%, #0a0e18 100%);
+            flex-direction: column; align-items: center;
+            font-family: 'Inter', system-ui, sans-serif;
+            overflow: hidden;
+        }
+        #gbl-call-overlay.gbl-active { display: flex; animation: gblFadeIn .35s ease both; }
+        @@keyframes gblFadeIn { from { opacity: 0; transform: scale(1.04); } to { opacity: 1; transform: scale(1); } }
+        .gbl-blob {
+            position: absolute; border-radius: 50%; pointer-events: none; filter: blur(70px);
+        }
+        .gbl-blob-1 { width: 340px; height: 340px; background: rgba(34,197,94,.16); top: -100px; left: -80px; }
+        .gbl-blob-2 { width: 280px; height: 280px; background: rgba(99,102,241,.13); bottom: 40px; right: -60px; }
+        .gbl-body {
+            position: relative; z-index: 1; display: flex; flex-direction: column;
+            align-items: center; flex: 1; padding-top: 84px;
+        }
+        .gbl-label {
+            font-size: .7rem; font-weight: 700; letter-spacing: 1.5px;
+            color: #86efac; text-transform: uppercase; margin-bottom: 38px;
+        }
+        .gbl-av-wrap { position: relative; width: 120px; height: 120px; margin-bottom: 34px; }
+        .gbl-av {
+            width: 120px; height: 120px; border-radius: 50%; position: relative; z-index: 2;
+            background: linear-gradient(135deg, #22c55e, #16a34a);
+            color: #fff; font-size: 2.8rem; font-weight: 900; text-transform: uppercase;
+            display: flex; align-items: center; justify-content: center;
+            box-shadow: 0 8px 48px rgba(34,197,94,.55);
+        }
+        .gbl-ring {
+            position: absolute; border-radius: 50%; z-index: 1;
+            border: 2px solid rgba(34,197,94,.5);
+            animation: gblPulse 2.6s ease-out infinite;
+        }
+        .gbl-ring-1 { inset: -18px; }
+        .gbl-ring-2 { inset: -38px; border-color: rgba(34,197,94,.25); animation-delay: .85s; }
+        .gbl-ring-3 { inset: -58px; border-color: rgba(34,197,94,.1); animation-delay: 1.65s; }
+        @@keyframes gblPulse { 0% { transform: scale(1); opacity: 1; } 100% { transform: scale(1.42); opacity: 0; } }
+        .gbl-name { font-size: 1.7rem; font-weight: 800; color: #fff; margin-bottom: 8px; letter-spacing: -.4px; text-align: center; }
+        .gbl-status { font-size: .88rem; color: rgba(255,255,255,.4); }
+        .gbl-controls {
+            position: relative; z-index: 1; display: flex; align-items: flex-start;
+            justify-content: center; gap: 64px; padding: 44px 24px 68px;
+        }
+        .gbl-ctrl { display: flex; flex-direction: column; align-items: center; gap: 11px; }
+        .gbl-btn {
+            width: 76px; height: 76px; border-radius: 50%; border: none; cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.65rem; color: #fff; transition: transform .15s, box-shadow .15s;
+        }
+        .gbl-btn:active { transform: scale(.87); }
+        .gbl-btn-decline { background: #ef4444; box-shadow: 0 6px 28px rgba(239,68,68,.55); }
+        .gbl-btn-decline:hover { box-shadow: 0 8px 40px rgba(239,68,68,.8); }
+        .gbl-btn-accept {
+            background: #22c55e; box-shadow: 0 6px 28px rgba(34,197,94,.6);
+            animation: gblGlow 1.3s ease-in-out infinite;
+        }
+        @@keyframes gblGlow { 0%,100% { box-shadow: 0 6px 28px rgba(34,197,94,.6); } 50% { box-shadow: 0 6px 56px rgba(34,197,94,1); } }
+        .gbl-btn-lbl { font-size: .74rem; font-weight: 600; color: rgba(255,255,255,.45); text-align: center; }
     </style>
     @RenderSection("Styles", required: false)
 </head>
@@ -555,42 +736,59 @@
         </a>
 
         <!-- Search -->
-        <form class="nav-search d-none d-md-block" action="/Listing" method="get">
-            <div class="search-wrap">
-                <input type="text" name="q" value="@Context.Request.Query["q"]" placeholder="@L["Nav_Search_Placeholder"]" />
-                <button class="search-btn" type="submit"><i class="bi bi-search"></i></button>
-            </div>
-        </form>
+        @if (ViewData["HideNavSearch"] == null)
+        {
+        <div class="nav-search d-none d-md-flex">
+            <form action="/Listing" method="get" style="flex:1;">
+                <div class="search-wrap">
+                    <input type="text" name="q" value="@Context.Request.Query["q"]" placeholder="@L["Nav_Search_Placeholder"]" />
+                    <button class="search-btn" type="submit"><i class="bi bi-search"></i></button>
+                </div>
+            </form>
+            @if (ViewData["ShowFilterBtn"] != null)
+            {
+                <button type="button" class="nav-filter-btn" data-bs-toggle="modal" data-bs-target="#filterModal" title="@L["Browse_Filters"]">
+                    <i class="bi bi-sliders2"></i>
+                </button>
+            }
+        </div>
+        }
 
         <div class="nav-actions">
             <!-- Theme toggle -->
             <button class="nav-icon" onclick="toggleTheme()" title="@L["Nav_Theme"]">
-                <i class="bi bi-moon-stars theme-icon"></i><span>@L["Nav_Theme"]</span>
+                <i class="bi bi-moon-stars theme-icon"></i>
             </button>
+            @if (User.Identity?.IsAuthenticated == true)
+            {
+                <!-- Notifications — always visible next to theme toggle -->
+                <a href="/Notifications" class="nav-icon" title="@L["Nav_Notifications"]" style="position:relative;">
+                    <i class="bi bi-bell"></i>
+                    @if (_unreadNotifs > 0)
+                    {
+                        <span class="nav-badge">@(_unreadNotifs > 9 ? "9+" : _unreadNotifs.ToString())</span>
+                    }
+                    <span class="d-none d-md-inline">@L["Nav_Notifications"]</span>
+                </a>
+            }
             <div class="nav-sep"></div>
             <!-- Lang -->
-            <div class="lang-wrap d-none d-lg-flex">
+            <div class="lang-wrap d-flex">
                 <a href="/Language/Set?culture=ru&returnUrl=@returnUrl" class="lang-btn @(currentCulture == "ru" ? "active" : "")">RU</a>
                 <a href="/Language/Set?culture=az&returnUrl=@returnUrl" class="lang-btn @(currentCulture == "az" ? "active" : "")">AZ</a>
                 <a href="/Language/Set?culture=en&returnUrl=@returnUrl" class="lang-btn @(currentCulture == "en" ? "active" : "")">EN</a>
             </div>
-            <div class="nav-sep d-none d-lg-block"></div>
+            <div class="nav-sep"></div>
 
             @if (User.Identity?.IsAuthenticated == true)
             {
                 <a href="/Favorites" class="nav-icon d-none d-md-flex" title="@L["Nav_Favorites"]">
                     <i class="bi bi-heart"></i><span>@L["Nav_Favorites"]</span>
                 </a>
-                <a href="/Messages" class="nav-icon d-none d-md-flex" title="@L["Nav_Messages"]">
+                <a href="/Messages" class="nav-icon d-none d-md-flex" title="@L["Nav_Messages"]" style="position:relative;">
                     <i class="bi bi-chat-dots"></i><span>@L["Nav_Messages"]</span>
-                </a>
-                <a href="/Notifications" class="nav-icon d-none d-md-flex" title="@L["Nav_Notifications"]">
-                    <i class="bi bi-bell"></i>
-                    @if (_unreadNotifs > 0)
-                    {
-                        <span class="nav-badge">@(_unreadNotifs > 9 ? "9+" : _unreadNotifs.ToString())</span>
-                    }
-                    <span>@L["Nav_Notifications"]</span>
+                    <span id="msg-unread-badge" class="nav-badge" data-count="@_unreadMsgs"
+                          @(_unreadMsgs == 0 ? "style=\"display:none\"" : "")>@(_unreadMsgs > 9 ? "9+" : _unreadMsgs > 0 ? _unreadMsgs.ToString() : "")</span>
                 </a>
                 <div class="dropdown d-none d-md-flex">
                     <button class="nav-icon dropdown-toggle" data-bs-toggle="dropdown">
@@ -639,22 +837,23 @@
 
     <!-- Mobile search + lang + theme -->
     <div class="d-md-none px-3 pb-2">
-        <form action="/Listing" method="get">
-            <div class="search-wrap">
-                <input type="text" name="q" value="@Context.Request.Query["q"]" placeholder="@L["Nav_Search_Placeholder"]" />
-                <button class="search-btn" type="submit"><i class="bi bi-search"></i></button>
-            </div>
-        </form>
-        <div class="mobile-util-bar">
-            <div class="lang-wrap">
-                <a href="/Language/Set?culture=ru&returnUrl=@returnUrl" class="lang-btn @(currentCulture == "ru" ? "active" : "")">RU</a>
-                <a href="/Language/Set?culture=az&returnUrl=@returnUrl" class="lang-btn @(currentCulture == "az" ? "active" : "")">AZ</a>
-                <a href="/Language/Set?culture=en&returnUrl=@returnUrl" class="lang-btn @(currentCulture == "en" ? "active" : "")">EN</a>
-            </div>
-            <button class="mobile-theme-btn" onclick="toggleTheme()">
-                <i class="bi bi-moon-stars theme-icon"></i> @L["Nav_Theme"]
-            </button>
+        @if (ViewData["HideNavSearch"] == null)
+        {
+        <div class="d-flex gap-2 align-items-center">
+            <form action="/Listing" method="get" style="flex:1;">
+                <div class="search-wrap">
+                    <input type="text" name="q" value="@Context.Request.Query["q"]" placeholder="@L["Nav_Search_Placeholder"]" />
+                    <button class="search-btn" type="submit"><i class="bi bi-search"></i></button>
+                </div>
+            </form>
+            @if (ViewData["ShowFilterBtn"] != null)
+            {
+                <button type="button" class="nav-filter-btn" data-bs-toggle="modal" data-bs-target="#filterModal" title="@L["Browse_Filters"]">
+                    <i class="bi bi-sliders2"></i>
+                </button>
+            }
         </div>
+        }
     </div>
 </nav>
 
@@ -686,6 +885,7 @@
 <main>@RenderBody()</main>
 
 <!-- ─── Footer ─────────────────────────────────── -->
+@if (ViewData["HideFooter"] == null) {
 <footer>
     <div class="container">
         <div class="row g-4 mb-3">
@@ -706,14 +906,6 @@
                     <a href="#" class="soc-btn"><i class="bi bi-telegram"></i></a>
                     <a href="#" class="soc-btn"><i class="bi bi-youtube"></i></a>
                 </div>
-            </div>
-            <div class="col-6 col-lg-2 col-md-3">
-                <h6>@L["Footer_Listings"]</h6>
-                <ul class="list-unstyled d-flex flex-column gap-2">
-                    <li><a href="/Listing">@L["Footer_AllListings"]</a></li>
-                    <li><a href="/Listing/Create">@L["Footer_PostListing"]</a></li>
-                    <li><a href="/Listing/MyListings">@L["Footer_MyListings"]</a></li>
-                </ul>
             </div>
             <div class="col-6 col-lg-2 col-md-3">
                 <h6>@L["Footer_Cabinet"]</h6>
@@ -741,6 +933,7 @@
         </div>
     </div>
 </footer>
+}
 
 <!-- Mobile Bottom Nav -->
 <nav class="d-md-none mobile-bottom-nav">
@@ -756,9 +949,11 @@
         <i class="bi bi-plus-lg"></i>
         <span>@L["Nav_PostListing"]</span>
     </a>
-    <a href="/Messages" class="mob-nav-item">
+    <a href="/Messages" class="mob-nav-item" style="position:relative;">
         <i class="bi bi-chat-dots"></i>
         <span>@L["Nav_Messages"]</span>
+        <span id="msg-unread-badge-mob" class="mob-notif-badge" data-count="@_unreadMsgs"
+              @(_unreadMsgs == 0 ? "style=\"display:none\"" : "")>@(_unreadMsgs > 9 ? "9+" : _unreadMsgs > 0 ? _unreadMsgs.ToString() : "")</span>
     </a>
     @if (User.Identity?.IsAuthenticated == true)
     {
@@ -776,6 +971,314 @@
     }
 </nav>
 
+<!-- ─── Global Incoming Call Overlay ──────────── -->
+@if (User.Identity?.IsAuthenticated == true)
+{
+<div id="gbl-call-overlay" aria-hidden="true">
+    <div class="gbl-blob gbl-blob-1"></div>
+    <div class="gbl-blob gbl-blob-2"></div>
+    <div class="gbl-body">
+        <div class="gbl-label">@L["Call_Incoming"]</div>
+        <div class="gbl-av-wrap">
+            <div class="gbl-ring gbl-ring-1"></div>
+            <div class="gbl-ring gbl-ring-2"></div>
+            <div class="gbl-ring gbl-ring-3"></div>
+            <div class="gbl-av" id="gbl-av-initials">?</div>
+        </div>
+        <div class="gbl-name" id="gbl-caller-name">...</div>
+        <div class="gbl-status" id="gbl-status">&#8226;&nbsp;&#8226;&nbsp;&#8226;</div>
+    </div>
+    <div class="gbl-controls">
+        <div class="gbl-ctrl">
+            <button class="gbl-btn gbl-btn-decline" onclick="window.gblDeclineCall()">
+                <i class="bi bi-telephone-x-fill"></i>
+            </button>
+            <span class="gbl-btn-lbl">@L["Call_Decline"]</span>
+        </div>
+        <div class="gbl-ctrl">
+            <button class="gbl-btn gbl-btn-accept" onclick="window.gblAcceptCall()">
+                <i class="bi bi-telephone-fill"></i>
+            </button>
+            <span class="gbl-btn-lbl">@L["Call_Accept"]</span>
+        </div>
+    </div>
+</div>
+}
+
+<!-- ─── Filter Modal ──────────────────────────── -->
+<div class="modal fade filter-modal" id="filterModal" tabindex="-1" aria-labelledby="filterModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" style="max-width:480px;">
+        <div class="modal-content">
+            <form action="/Listing" method="get" id="filterModalForm">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="filterModalLabel">
+                        <i class="bi bi-sliders2 me-2" style="color:var(--accent);"></i>@L["Browse_Filters"]
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <!-- Search text -->
+                    <div class="mb-3">
+                        <label class="filter-lbl-modal">@L["Nav_Search_Placeholder"]</label>
+                        <div class="search-wrap" style="border-radius:10px;">
+                            <input type="text" name="q" id="modalQInput" class="form-control border-0 shadow-none"
+                                   value="@_modalQ" placeholder="@L["Nav_Search_Placeholder"]"
+                                   style="background:transparent;" />
+                        </div>
+                    </div>
+
+                    <!-- City -->
+                    <div class="mb-3">
+                        <label class="filter-lbl-modal">@L["Browse_City"]</label>
+                        @{ ViewData["SelectedCity"] = _modalCity; }
+                        <select name="city" class="form-select form-select-sm">
+                            <option value="">@L["Home_AllCities"]</option>
+                            @await Html.PartialAsync("_CityOptions")
+                        </select>
+                    </div>
+
+                    <!-- Category -->
+                    @if (_layoutCategories.Any())
+                    {
+                    <div class="mb-3">
+                        <label class="filter-lbl-modal">@L["Browse_All"]</label>
+                        <select name="categoryId" class="form-select form-select-sm">
+                            <option value="">@L["Browse_All"]</option>
+                            @foreach (var cat in _layoutCategories)
+                            {
+                                <option value="@cat.Id" selected="@(_modalCatId == cat.Id.ToString())">
+                                    @(L["Cat_" + cat.Slug] is { ResourceNotFound: false } ck ? ck.Value : cat.Name)
+                                </option>
+                            }
+                        </select>
+                    </div>
+                    }
+
+                    <!-- Price range -->
+                    <div class="mb-3">
+                        <label class="filter-lbl-modal">@L["Browse_Price"]</label>
+                        <div class="d-flex gap-2">
+                            <input type="number" name="priceMin" class="form-control form-control-sm"
+                                   value="@_modalPriceMin" placeholder="@L["Browse_From"]" min="0" />
+                            <input type="number" name="priceMax" class="form-control form-control-sm"
+                                   value="@_modalPriceMax" placeholder="@L["Browse_PriceTo"]" min="0" />
+                        </div>
+                    </div>
+
+                    <!-- Sort -->
+                    <div class="mb-3">
+                        <label class="filter-lbl-modal">@L["Browse_Sort"]</label>
+                        <select name="sortBy" class="form-select form-select-sm">
+                            <option value="newest" selected="@(_modalSortBy == "newest")">@L["Browse_SortNewest"]</option>
+                            <option value="price_asc" selected="@(_modalSortBy == "price_asc")">@L["Browse_SortCheapest"]</option>
+                            <option value="price_desc" selected="@(_modalSortBy == "price_desc")">@L["Browse_SortExpensive"]</option>
+                        </select>
+                    </div>
+
+                    <!-- Extra checkboxes -->
+                    <div class="d-flex gap-2">
+                        <label class="filter-check-modal">
+                            <input type="checkbox" name="onlyWithPhoto" value="true" @(_modalPhoto ? "checked" : "") />
+                            <span><i class="bi bi-image me-1 text-muted"></i>@L["Browse_WithPhoto"]</span>
+                        </label>
+                        <label class="filter-check-modal">
+                            <input type="checkbox" name="onlyVip" value="true" @(_modalVip ? "checked" : "") />
+                            <span><i class="bi bi-star-fill me-1" style="color:#f59e0b;"></i>@L["Browse_VipOnly"]</span>
+                        </label>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <a href="/Listing" class="btn-clear-modal" data-bs-dismiss="modal">
+                        <i class="bi bi-x-circle me-1"></i>@L["Browse_Clear"]
+                    </a>
+                    <button type="submit" class="btn-dark-custom px-4 ms-auto">
+                        <i class="bi bi-search me-1"></i>@L["Browse_Apply"]
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@if (User.Identity?.IsAuthenticated == true)
+{
+<!-- SignalR + Firebase (authenticated users only) -->
+<script src="https://cdn.jsdelivr.net/npm/@@microsoft/signalr@@8.0.7/dist/browser/signalr.min.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-messaging-compat.js"></script>
+<script>
+(function () {
+    // ── FCM ───────────────────────────────────────────────────
+    var _fbVapid = '@Html.Raw(_cfg["Firebase:VapidKey"] ?? "")';
+    var _fbServerKeySet = '@Html.Raw((_cfg["Firebase:ServerKey"] ?? "").StartsWith("REPLACE") ? "no" : "yes")';
+
+    try {
+        firebase.initializeApp({
+            apiKey:            "AIzaSyCxELfCxyrDUKdycrZOxQUnlYahVZ4O9gg",
+            authDomain:        "alis-veris-85db5.firebaseapp.com",
+            projectId:         "alis-veris-85db5",
+            storageBucket:     "alis-veris-85db5.firebasestorage.app",
+            messagingSenderId: "886662188950",
+            appId:             "1:886662188950:web:0aa9c781ef5b404a7397b7"
+        });
+        var _messaging = firebase.messaging();
+
+        async function _initFcm() {
+            if (!('serviceWorker' in navigator) || !('Notification' in window)) return;
+            if (!_fbVapid || _fbVapid.startsWith('REPLACE')) return;
+            try {
+                var reg  = await navigator.serviceWorker.register('/firebase-messaging-sw.js');
+                var perm = await Notification.requestPermission();
+                if (perm !== 'granted') return;
+                var token = await _messaging.getToken({ vapidKey: _fbVapid, serviceWorkerRegistration: reg });
+                if (!token) return;
+                var cached = sessionStorage.getItem('_fcmTok');
+                if (cached !== token) {
+                    fetch('/Fcm/Token', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json', 'X-Requested-With': 'XMLHttpRequest' },
+                        body: JSON.stringify({ token: token })
+                    }).then(function() { sessionStorage.setItem('_fcmTok', token); }).catch(function(){});
+                }
+                // Foreground FCM messages (tab is open and visible)
+                _messaging.onMessage(function(payload) {
+                    var n = payload.notification || {};
+                    _appToast(n.title, n.body, (payload.data || {}).url);
+                });
+            } catch(e) { console.warn('FCM init:', e); }
+        }
+        _initFcm();
+    } catch(e) { console.warn('Firebase:', e); }
+
+    // ── SignalR ───────────────────────────────────────────────
+    var _hub = new signalR.HubConnectionBuilder()
+        .withUrl('/chatHub')
+        .withAutomaticReconnect()
+        .build();
+
+    _hub.on('ReceiveMessage', function(msg) {
+        // Let the open chat page handle rendering — dispatch an event it can listen to
+        window.dispatchEvent(new CustomEvent('signalr:message', { detail: msg }));
+
+        // Update unread badge only if user is NOT on this conversation's chat page
+        var onThisChat = (window._currentConvId === String(msg.conversationId));
+        if (!onThisChat) {
+            _incMsgBadge(1);
+            _appToast(msg.senderName || '@L["Nav_Messages"]', msg.text,
+                      '/Messages/Chat/' + msg.conversationId);
+        }
+    });
+
+    // ── Global Incoming Call ──────────────────────────────────
+    var _gblConvId   = null;
+    var _gblRingCtx  = null;
+    var _gblRingInt  = null;
+    var _gblDismissT = null;
+
+    function _gblStartRing() {
+        try {
+            var ctx = new (window.AudioContext || window.webkitAudioContext)();
+            _gblRingCtx = ctx;
+            function beep(t0, f, d) {
+                var o = ctx.createOscillator(), g = ctx.createGain();
+                o.connect(g); g.connect(ctx.destination);
+                o.type = 'sine'; o.frequency.value = f;
+                g.gain.setValueAtTime(0, t0);
+                g.gain.linearRampToValueAtTime(0.24, t0 + .02);
+                g.gain.setValueAtTime(0.24, t0 + d - .04);
+                g.gain.linearRampToValueAtTime(0, t0 + d);
+                o.start(t0); o.stop(t0 + d);
+            }
+            function ring() {
+                var t = ctx.currentTime;
+                beep(t, 880, .16); beep(t + .2, 660, .16); beep(t + .4, 880, .16);
+            }
+            ring();
+            _gblRingInt = setInterval(ring, 1900);
+        } catch(e) {}
+    }
+    function _gblStopRing() {
+        if (_gblRingInt) { clearInterval(_gblRingInt); _gblRingInt = null; }
+        try { if (_gblRingCtx) { _gblRingCtx.close(); _gblRingCtx = null; } } catch(e) {}
+    }
+    function _gblHide() {
+        _gblStopRing();
+        if (_gblDismissT) { clearTimeout(_gblDismissT); _gblDismissT = null; }
+        var o = document.getElementById('gbl-call-overlay');
+        if (o) { o.classList.remove('gbl-active'); o.setAttribute('aria-hidden','true'); }
+        document.body.style.overflow = '';
+        _gblConvId = null;
+    }
+
+    _hub.on('IncomingCall', function(callerName, conversationId) {
+        // If chat page for this conversation is open, let it handle the overlay
+        if (window._currentConvId && String(window._currentConvId) === String(conversationId)) {
+            window.dispatchEvent(new CustomEvent('signalr:incomingCall',
+                { detail: { callerName: callerName, conversationId: conversationId } }));
+            return;
+        }
+        _gblConvId = conversationId;
+        var av = document.getElementById('gbl-av-initials');
+        var nm = document.getElementById('gbl-caller-name');
+        if (av) av.textContent = callerName ? callerName[0].toUpperCase() : '?';
+        if (nm) nm.textContent = callerName || '...';
+        var o = document.getElementById('gbl-call-overlay');
+        if (o) { o.classList.add('gbl-active'); o.setAttribute('aria-hidden','false'); }
+        document.body.style.overflow = 'hidden';
+        _gblStartRing();
+        _gblDismissT = setTimeout(_gblHide, 55000);
+    });
+
+    _hub.on('CallDeclined', function(conversationId) {
+        // Forward to chat page if it's open (caller side UI)
+        window.dispatchEvent(new CustomEvent('signalr:callDeclined',
+            { detail: { conversationId: conversationId } }));
+    });
+
+    window.gblAcceptCall = function() {
+        var convId = _gblConvId;
+        _gblHide();
+        if (convId) location.href = '/Messages/Chat/' + convId + '?accept=1';
+    };
+    window.gblDeclineCall = function() {
+        var convId = _gblConvId;
+        _gblHide();
+        if (convId) fetch('/Call/Decline?conversationId=' + convId).catch(function(){});
+    };
+
+    _hub.start().catch(function(e) { console.warn('SignalR start:', e); });
+    window._chatHub = _hub;
+
+    // ── Badge helper ──────────────────────────────────────────
+    function _incMsgBadge(delta) {
+        ['msg-unread-badge','msg-unread-badge-mob'].forEach(function(id) {
+            var b = document.getElementById(id);
+            if (!b) return;
+            var n = Math.max(0, (parseInt(b.dataset.count) || 0) + delta);
+            b.dataset.count = n;
+            b.textContent   = n > 9 ? '9+' : String(n);
+            b.style.display = n > 0 ? '' : 'none';
+        });
+    }
+
+    // ── In-app toast ──────────────────────────────────────────
+    window._appToast = function(title, body, url) {
+        if (!title && !body) return;
+        var el = document.createElement('div');
+        el.className = 'app-toast';
+        if (title) { var t = document.createElement('div'); t.className = 'app-toast-title'; t.textContent = title; el.appendChild(t); }
+        if (body)  { var b = document.createElement('div'); b.className = 'app-toast-body';  b.textContent = body;  el.appendChild(b); }
+        if (url) el.onclick = function() { location.href = url; };
+        document.body.appendChild(el);
+        requestAnimationFrame(function() { el.classList.add('app-toast-show'); });
+        setTimeout(function() {
+            el.classList.remove('app-toast-show');
+            setTimeout(function() { el.remove(); }, 350);
+        }, 4500);
+    };
+})();
+</script>
+}
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 <script>
     function applyTheme(t) {
@@ -791,6 +1294,31 @@
         applyTheme(c === 'dark' ? 'light' : 'dark');
     }
     applyTheme(localStorage.getItem('theme') || 'light');
+
+    // Sync hero search input → filter modal when opening from hero
+    var filterModalEl = document.getElementById('filterModal');
+    if (filterModalEl) {
+        filterModalEl.addEventListener('show.bs.modal', function() {
+            var heroInput = document.getElementById('heroSearchInput');
+            var modalQ    = document.getElementById('modalQInput');
+            if (heroInput && modalQ && !modalQ.value && heroInput.value) {
+                modalQ.value = heroInput.value;
+            }
+        });
+    }
+
+    // Highlight filter btn when active filters exist
+    (function() {
+        var params = new URLSearchParams(window.location.search);
+        var hasFilter = params.get('city') || params.get('categoryId') ||
+                        params.get('priceMin') || params.get('priceMax') ||
+                        params.get('onlyVip') || params.get('onlyWithPhoto');
+        if (hasFilter) {
+            document.querySelectorAll('.nav-filter-btn').forEach(function(btn) {
+                btn.classList.add('active');
+            });
+        }
+    })();
 </script>
 @RenderSection("Scripts", required: false)
 </body>

@@ -179,6 +179,25 @@ public class CheckoutController(
         }
     }
 
+    // ── Seller: approve / reject delivery orders ──────────────
+    [HttpPost, IgnoreAntiforgeryToken]
+    public async Task<IActionResult> ApproveOrder(Guid id)
+    {
+        var order = await purchases.GetByIdAsync(id);
+        if (order == null || order.SellerId != CurrentUserId()) return Forbid();
+        await purchases.ApproveAsync(id);
+        return Ok(new { ok = true });
+    }
+
+    [HttpPost, IgnoreAntiforgeryToken]
+    public async Task<IActionResult> RejectOrder(Guid id)
+    {
+        var order = await purchases.GetByIdAsync(id);
+        if (order == null || order.SellerId != CurrentUserId()) return Forbid();
+        await purchases.RejectAsync(id);
+        return Ok(new { ok = true });
+    }
+
     // ── Result & History ──────────────────────────────────────
     [HttpGet]
     public async Task<IActionResult> Result(Guid id)

@@ -17,6 +17,7 @@ public class Listing : BaseEntity
 
     public bool IsVip { get; set; }
     public DateTimeOffset? VipExpiresAt { get; set; }
+    public bool DeliveryAvailable { get; set; } = true;
 
     public ICollection<ListingImage> Images { get; set; } = new List<ListingImage>();
     public ICollection<Favorite> Favorites { get; set; } = new List<Favorite>();

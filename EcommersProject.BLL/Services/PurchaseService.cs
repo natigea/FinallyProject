@@ -108,6 +108,12 @@ public class PurchaseService(IUnitOfWork uow) : IPurchaseService
         return list.Select(ToDto).OrderByDescending(p => p.CreatedDate).ToList();
     }
 
+    public async Task<IReadOnlyList<PurchaseGetDto>> GetBySellerAsync(Guid sellerId)
+    {
+        var list = await uow.Purchases.FindAsync(p => p.SellerId == sellerId);
+        return list.Select(ToDto).OrderByDescending(p => p.CreatedDate).ToList();
+    }
+
     public async Task ApproveAsync(Guid purchaseId)
     {
         var p = await uow.Purchases.GetByIdAsync(purchaseId);

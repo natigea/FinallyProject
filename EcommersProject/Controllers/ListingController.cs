@@ -27,6 +27,7 @@ public class ListingController(
         decimal? priceMin, decimal? priceMax, string? sortBy,
         bool onlyVip = false, bool onlyWithPhoto = false, int page = 1)
     {
+        ViewData["ShowFilterBtn"] = true;
         var searchDto = new ListingSearchDto(q, categoryId, city, priceMin, priceMax, sortBy ?? "newest", page, 20, onlyVip, onlyWithPhoto);
         var (items, total) = await listings.SearchAsync(searchDto);
         var cats = await categories.GetAllAsync();
@@ -97,7 +98,8 @@ public class ListingController(
         var userId = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
         var created = await listings.CreateAsync(new ListingCreateDto(
             vm.Title, vm.Description, vm.Price, vm.City,
-            vm.ContactPhone, vm.CategoryId, userId));
+            vm.ContactPhone, vm.CategoryId, userId,
+            vm.DeliveryAvailable));
 
         await SaveImages(created.Id, vm.NewImages);
 
@@ -123,15 +125,16 @@ public class ListingController(
 
         return View(new ListingFormViewModel
         {
-            Id = listing.Id,
-            Title = listing.Title,
-            Description = listing.Description,
-            Price = listing.Price,
-            City = listing.City,
-            ContactPhone = listing.ContactPhone,
-            CategoryId = listing.CategoryId,
-            Categories = await categories.GetAllAsync(),
-            ExistingImages = listing.Images
+            Id                = listing.Id,
+            Title             = listing.Title,
+            Description       = listing.Description,
+            Price             = listing.Price,
+            City              = listing.City,
+            ContactPhone      = listing.ContactPhone,
+            CategoryId        = listing.CategoryId,
+            DeliveryAvailable = listing.DeliveryAvailable,
+            Categories        = await categories.GetAllAsync(),
+            ExistingImages    = listing.Images
         });
     }
 
@@ -155,7 +158,7 @@ public class ListingController(
 
         bool isAdmin = User.IsInRole("Admin");
         await listings.UpdateAsync(id,
-            new ListingUpdateDto(vm.Title, vm.Description, vm.Price, vm.City, vm.ContactPhone, vm.CategoryId),
+            new ListingUpdateDto(vm.Title, vm.Description, vm.Price, vm.City, vm.ContactPhone, vm.CategoryId, vm.DeliveryAvailable),
             isAdmin);
 
         // Delete marked images

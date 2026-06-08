@@ -21,13 +21,16 @@
     }
 
     var path         = Context.Request.Path.Value ?? "";
-    bool isProfile   = path.Equals("/Account/Profile",    StringComparison.OrdinalIgnoreCase);
+    var query        = Context.Request.Query["tab"].ToString();
+    bool isProfile   = path.Equals("/Account/Profile",    StringComparison.OrdinalIgnoreCase) && query != "seller";
+    bool isSeller    = path.Equals("/Account/Profile",    StringComparison.OrdinalIgnoreCase) && query == "seller";
     bool isListings  = path.StartsWith("/Listing/MyListings", StringComparison.OrdinalIgnoreCase);
     bool isFavorites = path.StartsWith("/Favorites",      StringComparison.OrdinalIgnoreCase);
     bool isMessages  = path.StartsWith("/Messages",       StringComparison.OrdinalIgnoreCase);
     bool isPurchases = path.StartsWith("/Checkout/History", StringComparison.OrdinalIgnoreCase);
 }
-<aside class="profile-sidebar">
+<!-- Desktop sidebar -->
+<aside class="profile-sidebar d-none d-md-block">
     <div class="section-card text-center" style="padding:24px 20px;">
         <div class="profile-avatar-ring mx-auto" style="overflow:hidden;">
             @if (!string.IsNullOrEmpty(photoUrl))
@@ -58,6 +61,9 @@
         </a>
         <a href="/Checkout/History" class="@(isPurchases ? "active" : "")">
             <i class="bi bi-bag-check snav-icon"></i>@L["Profile_Purchases"]
+        </a>
+        <a href="/Account/Profile?tab=seller" class="@(isSeller ? "active" : "")">
+            <i class="bi bi-shop snav-icon"></i>@L["Seller_Tab"]
         </a>
     </nav>
 

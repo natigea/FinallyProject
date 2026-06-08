@@ -12,6 +12,7 @@ public class User : BaseEntity
     public string? PhotoUrl { get; set; }
     public string? ResetToken { get; set; }
     public DateTimeOffset? ResetTokenExpiry { get; set; }
+    public string? FcmToken { get; set; }
 
     public ICollection<Listing> Listings { get; set; } = new List<Listing>();
     public ICollection<Favorite> Favorites { get; set; } = new List<Favorite>();

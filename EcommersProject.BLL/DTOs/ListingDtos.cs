@@ -20,7 +20,8 @@ public record ListingGetDto(
     List<ListingImageDto> Images,
     DateTimeOffset CreatedDate,
     bool IsVip,
-    DateTimeOffset? VipExpiresAt);
+    DateTimeOffset? VipExpiresAt,
+    bool DeliveryAvailable = true);
 
 public record ListingCreateDto(
     string Title,
@@ -29,7 +30,8 @@ public record ListingCreateDto(
     string City,
     string ContactPhone,
     Guid CategoryId,
-    Guid UserId);
+    Guid UserId,
+    bool DeliveryAvailable = true);
 
 public record ListingUpdateDto(
     string Title,
@@ -37,7 +39,8 @@ public record ListingUpdateDto(
     decimal Price,
     string City,
     string ContactPhone,
-    Guid CategoryId);
+    Guid CategoryId,
+    bool DeliveryAvailable = true);
 
 public record ListingSearchDto(
     string? Query,

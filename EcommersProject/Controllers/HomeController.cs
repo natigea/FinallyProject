@@ -10,6 +10,7 @@ public class HomeController(IListingService listings, ICategoryService categorie
 {
     public async Task<IActionResult> Index()
     {
+        ViewData["HideNavSearch"] = true;
         var (items, _) = await listings.SearchAsync(new ListingSearchDto(
             null, null, null, null, null, "newest", 1, 12));
         var cats = await categories.GetAllAsync();

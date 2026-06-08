@@ -16,5 +16,17 @@ public class ConversationConfiguration : BaseEntityConfiguration<Conversation>
             .WithOne(m => m.Conversation)
             .HasForeignKey(m => m.ConversationId)
             .OnDelete(DeleteBehavior.Cascade);
+
+        // User → Conversations via BuyerId (Cascade) creates path to Messages.
+        // Prevent second path via SellerId.
+        builder.HasOne(c => c.Buyer)
+            .WithMany()
+            .HasForeignKey(c => c.BuyerId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        builder.HasOne(c => c.Seller)
+            .WithMany()
+            .HasForeignKey(c => c.SellerId)
+            .OnDelete(DeleteBehavior.NoAction);
     }
 }

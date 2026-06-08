@@ -4,6 +4,7 @@ using EcommersProject.Resources;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Localization;
 using System.Security.Claims;
 
@@ -12,9 +13,11 @@ namespace EcommersProject.Pages.Admin;
 [Authorize(Policy = "AdminOnly")]
 public class UsersModel(
     IUserService userService,
-    IStringLocalizer<SharedResource> localizer) : PageModel
+    IStringLocalizer<SharedResource> localizer,
+    IConfiguration configuration) : PageModel
 {
     private IStringLocalizer<SharedResource> L => localizer;
+    public string SuperAdminEmail { get; } = configuration["AdminDefaults:Email"]!.Trim().ToLowerInvariant();
 
     public IReadOnlyList<UserGetDto> Users { get; private set; } = [];
 
@@ -38,9 +41,27 @@ public class UsersModel(
     public async Task<IActionResult> OnPostSetRoleAsync(Guid id, string role, CancellationToken cancellationToken)
     {
         var currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        var currentUserEmail = User.FindFirstValue(ClaimTypes.Email)?.Trim().ToLowerInvariant();
+
         if (currentUserId == id.ToString() && role != "Admin")
         {
             TempData["ErrorMessage"] = L["Admin_CannotDemoteSelf"].Value;
+            return RedirectToPage();
+        }
+
+        var target = await userService.GetByIdAsync(id, cancellationToken);
+
+        // Protect super admin from role changes
+        if (target.Email.Trim().ToLowerInvariant() == SuperAdminEmail)
+        {
+            TempData["ErrorMessage"] = L["Admin_CannotDemoteSuperAdmin"].Value;
+            return RedirectToPage();
+        }
+
+        // Only super admin can demote other admins
+        if (role != "Admin" && target.Role == "Admin" && currentUserEmail != SuperAdminEmail)
+        {
+            TempData["ErrorMessage"] = L["Admin_CannotDemoteAdmin"].Value;
             return RedirectToPage();
         }
 
@@ -71,6 +92,13 @@ public class UsersModel(
         if (currentUserId == id.ToString())
         {
             TempData["ErrorMessage"] = L["Admin_CannotDeleteSelf"].Value;
+            return RedirectToPage();
+        }
+
+        var target = await userService.GetByIdAsync(id, cancellationToken);
+        if (target.Email.Trim().ToLowerInvariant() == SuperAdminEmail)
+        {
+            TempData["ErrorMessage"] = L["Admin_CannotDeleteSuperAdmin"].Value;
             return RedirectToPage();
         }
 

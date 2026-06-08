@@ -133,6 +133,22 @@
   <data name="Create_Price"             xml:space="preserve"><value>Цена (₼)</value></data>
   <data name="Create_City"              xml:space="preserve"><value>Город</value></data>
   <data name="Create_Phone"             xml:space="preserve"><value>Контактный телефон</value></data>
+  <data name="Create_DeliveryAvailable"    xml:space="preserve"><value>Доставка доступна</value></data>
+  <data name="Create_DeliveryAvailableSub" xml:space="preserve"><value>Покупатели смогут оформить доставку (+3% к цене)</value></data>
+
+  <!-- ── CALL UI ───────────────────────────────────────── -->
+  <data name="Call_Calling"     xml:space="preserve"><value>Вызов...</value></data>
+  <data name="Call_Connecting"  xml:space="preserve"><value>Подключение...</value></data>
+  <data name="Call_InCall"      xml:space="preserve"><value>В звонке</value></data>
+  <data name="Call_Incoming"    xml:space="preserve"><value>Входящий звонок</value></data>
+  <data name="Call_NoAnswer"    xml:space="preserve"><value>Нет ответа...</value></data>
+  <data name="Call_Accept"      xml:space="preserve"><value>Ответить</value></data>
+  <data name="Call_Decline"     xml:space="preserve"><value>Отклонить</value></data>
+  <data name="Call_End"         xml:space="preserve"><value>Завершить</value></data>
+  <data name="Call_Mic"         xml:space="preserve"><value>Микрофон</value></data>
+  <data name="Call_LogCall"     xml:space="preserve"><value>📞 Голосовой звонок</value></data>
+  <data name="Call_LogEnded"    xml:space="preserve"><value>📞 Голосовой звонок завершён</value></data>
+  <data name="Call_LogMissed"   xml:space="preserve"><value>📞 Звонок (не состоялся)</value></data>
   <data name="Create_SectionPhotos"     xml:space="preserve"><value>Фотографии</value></data>
   <data name="Create_PhotosHint"        xml:space="preserve"><value>До 10 фото (JPG, PNG, WebP). Первое фото будет главным.</value></data>
   <data name="Create_Publish"           xml:space="preserve"><value>Опубликовать</value></data>
@@ -456,6 +472,25 @@
   <data name="Profile_ConfirmPassword"    xml:space="preserve"><value>Подтвердите новый пароль</value></data>
   <data name="Profile_UpdatePassword"     xml:space="preserve"><value>Обновить пароль</value></data>
   <data name="Profile_Purchases"          xml:space="preserve"><value>Покупки и ВИП</value></data>
+  <data name="Profile_Overview"           xml:space="preserve"><value>Обзор</value></data>
+  <data name="Profile_ReviewsTab"         xml:space="preserve"><value>Отзывы</value></data>
+  <data name="Profile_Settings"           xml:space="preserve"><value>Настройки</value></data>
+  <data name="Profile_Edit"               xml:space="preserve"><value>Редактировать</value></data>
+  <data name="Profile_NoRating"           xml:space="preserve"><value>Нет оценок</value></data>
+  <data name="Profile_TotalSales"         xml:space="preserve"><value>Продано</value></data>
+  <data name="Profile_ActiveCount"        xml:space="preserve"><value>Активных</value></data>
+  <data name="Profile_ClosedCount"        xml:space="preserve"><value>Завершено</value></data>
+  <data name="Profile_AvgRating"          xml:space="preserve"><value>Рейтинг</value></data>
+  <data name="Profile_DeleteAccount"      xml:space="preserve"><value>Удалить аккаунт</value></data>
+  <data name="Profile_DeleteAccountWarn"  xml:space="preserve"><value>Это действие необратимо. Все ваши объявления, сообщения и данные будут удалены.</value></data>
+  <data name="Profile_DeleteConfirmHint"  xml:space="preserve"><value>Введите «УДАЛИТЬ» для подтверждения</value></data>
+  <data name="Profile_NoReviewsYet"       xml:space="preserve"><value>Пока нет отзывов</value></data>
+  <data name="Profile_NoReviewsDesc"      xml:space="preserve"><value>Здесь будут отзывы покупателей о вашей работе</value></data>
+  <data name="Profile_DangerZone"         xml:space="preserve"><value>Опасная зона</value></data>
+  <data name="Profile_ReviewCount"        xml:space="preserve"><value>отзывов</value></data>
+  <data name="Profile_MemberSince"        xml:space="preserve"><value>На сайте с</value></data>
+  <data name="Profile_RecentOrders"       xml:space="preserve"><value>Последние покупки</value></data>
+  <data name="Profile_NoPurchasesYet"     xml:space="preserve"><value>Покупок пока нет</value></data>
 
   <!-- ── NOTIFICATIONS ───────────────────────────────────── -->
   <data name="Nav_Notifications"               xml:space="preserve"><value>Уведомления</value></data>
@@ -609,6 +644,24 @@
   <data name="Checkout_Result_Step4Label"      xml:space="preserve"><value>Доставка</value></data>
   <data name="Checkout_Result_Step4Sub"        xml:space="preserve"><value>Товар будет доставлен по указанному адресу</value></data>
   <data name="Checkout_Result_Continue"        xml:space="preserve"><value>Продолжить покупки</value></data>
+
+  <!-- ── SELLER PANEL ─────────────────────────────────────── -->
+  <data name="Seller_Tab"             xml:space="preserve"><value>Продавец</value></data>
+  <data name="Seller_IncomingOrders"  xml:space="preserve"><value>Входящие заказы</value></data>
+  <data name="Seller_TotalOrders"     xml:space="preserve"><value>Всего заказов</value></data>
+  <data name="Seller_PendingOrders"   xml:space="preserve"><value>Ожидают ответа</value></data>
+  <data name="Seller_ApprovedOrders"  xml:space="preserve"><value>Одобрено</value></data>
+  <data name="Seller_Revenue"         xml:space="preserve"><value>Выручка</value></data>
+  <data name="Seller_Approve"         xml:space="preserve"><value>Одобрить</value></data>
+  <data name="Seller_Reject"          xml:space="preserve"><value>Отклонить</value></data>
+  <data name="Seller_Approved"        xml:space="preserve"><value>Одобрено</value></data>
+  <data name="Seller_Rejected"        xml:space="preserve"><value>Отклонено</value></data>
+  <data name="Seller_Pending"         xml:space="preserve"><value>Ожидает</value></data>
+  <data name="Seller_DeliveryTo"      xml:space="preserve"><value>Доставка в</value></data>
+  <data name="Seller_NoOrders"        xml:space="preserve"><value>Нет входящих заказов</value></data>
+  <data name="Seller_NoOrdersDesc"    xml:space="preserve"><value>Когда покупатели оформят доставку ваших товаров, заказы появятся здесь</value></data>
+  <data name="Seller_OrderNumber"     xml:space="preserve"><value>Заказ</value></data>
+  <data name="Seller_Amount"          xml:space="preserve"><value>Сумма</value></data>
 
   <!-- ── ERROR PAGES ───────────────────────────────────────── -->
   <data name="Error_404Title"    xml:space="preserve"><value>Страница не найдена</value></data>

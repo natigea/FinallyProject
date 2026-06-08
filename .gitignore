@@ -1,3 +1,7 @@
+## Firebase Service Account (contains private key — never commit)
+**/serviceaccount.json
+**/firebase-service-account*.json
+
 ## .NET / Visual Studio
 obj/
 bin/

@@ -61,12 +61,19 @@
                         {
                             var isSelf = u.Id.ToString() == currentUserId;
                             var isAdmin = u.Role == "Admin";
+                            var isSuperAdmin = u.Email.Trim().ToLowerInvariant() == Model.SuperAdminEmail;
+                            var currentEmail = User.FindFirstValue(System.Security.Claims.ClaimTypes.Email)?.Trim().ToLowerInvariant();
+                            var currentIsSuperAdmin = currentEmail == Model.SuperAdminEmail;
                             <tr class="@(isSelf ? "table-light" : "")">
                                 <td class="fw-medium">
                                     @u.FirstName @u.LastName
                                     @if (isSelf)
                                     {
                                         <span class="badge bg-secondary ms-1" style="font-size:.65rem;">@L["Admin_You"]</span>
+                                    }
+                                    @if (isSuperAdmin)
+                                    {
+                                        <span class="badge bg-danger ms-1" style="font-size:.65rem;"><i class="bi bi-star-fill me-1"></i>@L["Admin_SuperAdmin"]</span>
                                     }
                                 </td>
                                 <td class="small text-muted">@u.Email</td>
@@ -97,7 +104,11 @@
                                 <td>
                                     <div class="d-flex gap-1 flex-wrap">
 
-                                        @if (!isSelf)
+                                        @if (isSuperAdmin)
+                                        {
+                                            <span class="text-muted small fst-italic">@L["Admin_Protected"]</span>
+                                        }
+                                        else if (!isSelf)
                                         {
                                             @if (!isAdmin)
                                             {
@@ -112,7 +123,7 @@
                                                     </button>
                                                 </form>
                                             }
-                                            else
+                                            else if (currentIsSuperAdmin)
                                             {
                                                 <form method="post" asp-page-handler="SetRole"
                                                       onsubmit="return confirm('@L["Admin_RemoveAdminConfirm"]')">

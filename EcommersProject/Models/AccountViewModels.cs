@@ -76,6 +76,27 @@ public class ProfileViewModel
     public int UnreadMessages { get; set; }
 }
 
+public class ProfilePageViewModel
+{
+    public UserGetDto User { get; set; } = null!;
+    public ProfileEditViewModel EditForm { get; set; } = new();
+    public IReadOnlyList<ListingGetDto> MyListings { get; set; } = [];
+    public IReadOnlyList<PurchaseGetDto> Purchases { get; set; } = [];
+    public IReadOnlyList<PurchaseGetDto> IncomingOrders { get; set; } = [];
+    public IReadOnlyList<ReviewGetDto> ReviewsReceived { get; set; } = [];
+    public double? AvgRating { get; set; }
+    public string ActiveTab { get; set; } = "overview";
+
+    public int ActiveListingsCount   => MyListings.Count(l => l.Status == "Active");
+    public int PendingListingsCount  => MyListings.Count(l => l.Status == "Pending");
+    public int ClosedListingsCount   => MyListings.Count(l => l.Status == "Closed");
+    public decimal TotalEarnings     => MyListings.Where(l => l.Status == "Closed").Sum(l => l.Price);
+    public int CompletedBuysCount    => Purchases.Count(p => p.Status == "Completed");
+    public int PendingOrdersCount    => IncomingOrders.Count(o => o.SellerApprovalStatus == "Pending");
+    public int ApprovedOrdersCount   => IncomingOrders.Count(o => o.SellerApprovalStatus == "Approved");
+    public decimal DeliveryRevenue   => IncomingOrders.Where(o => o.SellerApprovalStatus == "Approved").Sum(o => o.TotalAmount);
+}
+
 public class ProfileEditViewModel
 {
     [Required(ErrorMessage = "Введите имя")]

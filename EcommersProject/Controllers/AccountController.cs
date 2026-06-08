@@ -14,7 +14,9 @@ public class AccountController(
     IUserService users,
     IListingService listings,
     IFavoriteService favorites,
-    IMessageService messages) : Controller
+    IMessageService messages,
+    IPurchaseService purchases,
+    IReviewService reviews) : Controller
 {
     [HttpGet]
     public IActionResult Login(string? returnUrl)
@@ -118,20 +120,38 @@ public class AccountController(
     }
 
     [HttpGet]
-    public async Task<IActionResult> Profile()
+    public async Task<IActionResult> Profile(string tab = "overview")
     {
         if (User.Identity?.IsAuthenticated != true)
             return RedirectToAction("Login", new { returnUrl = "/Account/Profile" });
 
-        var userId = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
-        var user = await users.GetByIdAsync(userId);
+        ViewData["HideNavSearch"] = true;
+        ViewData["HideFooter"]    = true;
 
-        return View(new ProfileEditViewModel
+        var userId = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+        var user           = await users.GetByIdAsync(userId);
+        var myListings     = await listings.GetByUserAsync(userId);
+        var myPurchases    = await purchases.GetByUserAsync(userId);
+        var incomingOrders = await purchases.GetBySellerAsync(userId);
+        var myReviews      = await reviews.GetForSellerAsync(userId);
+        var avgRating      = await reviews.GetAverageRatingAsync(userId);
+
+        return View(new ProfilePageViewModel
         {
-            FirstName = user.FirstName,
-            LastName = user.LastName,
-            PhoneNumber = user.PhoneNumber,
-            PhotoUrl = user.PhotoUrl
+            User = user,
+            EditForm = new ProfileEditViewModel
+            {
+                FirstName   = user.FirstName,
+                LastName    = user.LastName,
+                PhoneNumber = user.PhoneNumber,
+                PhotoUrl    = user.PhotoUrl
+            },
+            MyListings      = myListings,
+            Purchases       = myPurchases,
+            IncomingOrders  = incomingOrders,
+            ReviewsReceived = myReviews,
+            AvgRating       = avgRating,
+            ActiveTab       = tab
         });
     }
 
@@ -141,7 +161,12 @@ public class AccountController(
         if (User.Identity?.IsAuthenticated != true)
             return RedirectToAction("Login", new { returnUrl = "/Account/Profile" });
 
-        if (!ModelState.IsValid) return View(vm);
+        if (!ModelState.IsValid)
+        {
+            TempData["PwdError"] = string.Join(" ", ModelState.Values
+                .SelectMany(v => v.Errors).Select(e => e.ErrorMessage));
+            return RedirectToAction(nameof(Profile), new { tab = "settings" });
+        }
 
         var userId = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
         string? photoUrl = vm.PhotoUrl;
@@ -180,7 +205,7 @@ public class AccountController(
             new Microsoft.AspNetCore.Authentication.AuthenticationProperties { IsPersistent = true, ExpiresUtc = DateTimeOffset.UtcNow.AddHours(8) });
 
         TempData["Success"] = "Профиль успешно обновлён.";
-        return RedirectToAction(nameof(Profile));
+        return RedirectToAction(nameof(Profile), new { tab = "settings" });
     }
 
     [HttpGet]
@@ -193,7 +218,20 @@ public class AccountController(
         var user = await users.GetByIdAsync(userId);
         // Pass "" (empty string) as PhotoUrl — mapping treats it as "clear to null"
         await users.UpdateAsync(userId, new UserUpdateDto(user.FirstName, user.LastName, user.PhoneNumber, ""));
-        return RedirectToAction(nameof(Profile));
+        return RedirectToAction(nameof(Profile), new { tab = "settings" });
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> DeleteAccount()
+    {
+        if (User.Identity?.IsAuthenticated != true)
+            return RedirectToAction("Login");
+
+        var userId = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+        await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+        await users.DeleteAsync(userId);
+        TempData["Info"] = "Ваш аккаунт был удалён.";
+        return RedirectToAction("Index", "Home");
     }
 
     [HttpPost]
@@ -217,7 +255,7 @@ public class AccountController(
         }
 
         TempData["PwdSuccess"] = "Пароль успешно изменён.";
-        return RedirectToAction(nameof(Profile));
+        return RedirectToAction(nameof(Profile), new { tab = "settings" });
     }
 
     private async Task SignInUser(AuthResponseDto result)

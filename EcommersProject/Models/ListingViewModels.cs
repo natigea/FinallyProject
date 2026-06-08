@@ -50,6 +50,8 @@ public class ListingFormViewModel
     [Required(ErrorMessage = "Выберите категорию")]
     public Guid CategoryId { get; set; }
 
+    public bool DeliveryAvailable { get; set; } = true;
+
     public IReadOnlyList<CategoryGetDto> Categories { get; set; } = [];
     public IReadOnlyList<ListingImageDto> ExistingImages { get; set; } = [];
     public List<IFormFile> NewImages { get; set; } = [];

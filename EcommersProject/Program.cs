@@ -3,6 +3,8 @@ using EcommersProject.BLL.Extensions;
 using EcommersProject.BLL.Interfaces;
 using EcommersProject.DAL.Context;
 using EcommersProject.DAL.Extensions;
+using EcommersProject.Hubs;
+using EcommersProject.Services;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.EntityFrameworkCore;
@@ -11,6 +13,10 @@ using Stripe;
 var builder = WebApplication.CreateBuilder(args);
 
 StripeConfiguration.ApiKey = builder.Configuration["Stripe:SecretKey"];
+
+builder.Services.AddHttpClient();
+builder.Services.AddSignalR();
+builder.Services.AddScoped<FcmService>();
 
 builder.Services.AddLocalization(o => o.ResourcesPath = "");
 
@@ -153,6 +159,10 @@ using (var scope = app.Services.CreateScope())
             IF NOT EXISTS (SELECT * FROM sys.columns WHERE Name = N'TitleKey' AND Object_ID = OBJECT_ID(N'Notifications'))
                 ALTER TABLE [Notifications] ADD [TitleKey] NVARCHAR(100) NULL;
 
+            -- FCM token for push notifications
+            IF NOT EXISTS (SELECT * FROM sys.columns WHERE Name = N'FcmToken' AND Object_ID = OBJECT_ID(N'Users'))
+                ALTER TABLE [Users] ADD [FcmToken] NVARCHAR(500) NULL;
+
             -- Notifications table
             IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='Notifications' AND xtype='U')
             CREATE TABLE [Notifications] (
@@ -214,5 +224,6 @@ app.UseAuthorization();
 
 app.MapControllerRoute("default", "{controller=Home}/{action=Index}/{id?}");
 app.MapRazorPages();
+app.MapHub<ChatHub>("/chatHub");
 
 app.Run();

@@ -4,9 +4,9 @@
     var userId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
 }
 
-<div class="profile-wrap">
+<div class="profile-wrap msg-page">
     <div class="profile-layout">
-        @await Html.PartialAsync("_ProfileSidebar")
+        <div class="d-none d-md-block">@await Html.PartialAsync("_ProfileSidebar")</div>
 
         <div class="profile-main">
             <h1 class="h3 fw-bold mb-4">@L["Messages_Title"]</h1>
@@ -37,8 +37,9 @@
                                         ? string.Format(L["Time_Day"].Value,  (int)diff.Value.TotalDays)
                                         : conv.LastMessage!.CreatedDate.ToString("dd.MM");
 
-                        <a href="/Messages/Chat/@conv.Id" class="text-decoration-none">
-                            <div class="bg-white rounded-3 border p-3 d-flex gap-3 conv-row @(conv.UnreadCount > 0 ? "border-success" : "")">
+                        <a href="/Messages/Chat/@conv.Id" class="text-decoration-none d-block">
+                            <div class="border p-3 d-flex gap-3 conv-row @(conv.UnreadCount > 0 ? "conv-row-unread" : "")" style="background:var(--card);">
+
                                 @if (conv.ListingImage != null)
                                 {
                                     <img src="@conv.ListingImage" class="rounded flex-shrink-0"
@@ -79,7 +80,32 @@
 
 @section Styles {
 <style>
-    .conv-row { transition: box-shadow .15s; }
+    .conv-row { transition: box-shadow .15s, border-color .15s; border-radius: 12px; }
     .conv-row:hover { box-shadow: 0 2px 10px rgba(0,0,0,.08); }
+    .conv-row-unread { border-color: var(--accent) !important; }
+
+    @@media (max-width: 767px) {
+        /* Sidebar is hidden (d-none d-md-block) on mobile, so we can safely
+           zero out profile-layout padding — only profile-main remains and fills 100% */
+        .profile-wrap.msg-page .profile-layout { padding: 0 !important; align-items: stretch !important; }
+        .profile-wrap.msg-page .profile-main    { width: 100%; }
+
+        /* Give title and empty-state card their own inset so text isn't flush with edge */
+        .msg-page h1             { padding: 12px 16px 8px !important; margin-bottom: 0 !important; }
+        .msg-page .section-card  { margin: 0 16px !important; }
+
+        /* Cards: true wall-to-wall, WhatsApp style */
+        .msg-page .d-flex.flex-column { gap: 0 !important; }
+        .msg-page .conv-row {
+            border-radius: 0 !important;
+            border-left: none !important;
+            border-right: none !important;
+            border-top: none !important;
+            border-bottom: 1px solid var(--border) !important;
+        }
+        .msg-page a:first-of-type .conv-row {
+            border-top: 1px solid var(--border) !important;
+        }
+    }
 </style>
 }

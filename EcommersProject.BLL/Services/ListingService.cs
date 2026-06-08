@@ -102,14 +102,15 @@ public class ListingService(IUnitOfWork uow) : IListingService
     {
         var listing = new Listing
         {
-            Title        = dto.Title,
-            Description  = dto.Description,
-            Price        = dto.Price,
-            City         = dto.City,
-            ContactPhone = dto.ContactPhone,
-            CategoryId   = dto.CategoryId,
-            UserId       = dto.UserId,
-            Status       = ListingStatus.Pending   // requires admin approval
+            Title             = dto.Title,
+            Description       = dto.Description,
+            Price             = dto.Price,
+            City              = dto.City,
+            ContactPhone      = dto.ContactPhone,
+            CategoryId        = dto.CategoryId,
+            UserId            = dto.UserId,
+            Status            = ListingStatus.Pending,
+            DeliveryAvailable = dto.DeliveryAvailable
         };
         await uow.Listings.AddAsync(listing, ct);
         await uow.SaveChangesAsync(ct);
@@ -126,12 +127,13 @@ public class ListingService(IUnitOfWork uow) : IListingService
         var listing = entities.FirstOrDefault()
             ?? throw new NotFoundException(nameof(Listing), id);
 
-        listing.Title        = dto.Title;
-        listing.Description  = dto.Description;
-        listing.Price        = dto.Price;
-        listing.City         = dto.City;
-        listing.ContactPhone = dto.ContactPhone;
-        listing.CategoryId   = dto.CategoryId;
+        listing.Title             = dto.Title;
+        listing.Description       = dto.Description;
+        listing.Price             = dto.Price;
+        listing.City              = dto.City;
+        listing.ContactPhone      = dto.ContactPhone;
+        listing.CategoryId        = dto.CategoryId;
+        listing.DeliveryAvailable = dto.DeliveryAvailable;
 
         if (!isAdminEdit)
             listing.Status = ListingStatus.Pending;
@@ -235,6 +237,7 @@ public class ListingService(IUnitOfWork uow) : IListingService
             l.Images.OrderBy(i => i.SortOrder).Select(i => new ListingImageDto(i.Id, i.Url, i.SortOrder)).ToList(),
             l.CreatedDate,
             isVipActive,
-            l.VipExpiresAt);
+            l.VipExpiresAt,
+            l.DeliveryAvailable);
     }
 }

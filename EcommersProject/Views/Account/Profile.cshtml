@@ -1,262 +1,1185 @@
-@model ProfileEditViewModel
+@model ProfilePageViewModel
 @using EcommersProject.Models
+@using EcommersProject.BLL.DTOs
 @{
-    ViewData["Title"] = L["Profile_EditTitle"].Value;
-    var email = User.FindFirst(System.Security.Claims.ClaimTypes.Email)?.Value ?? "";
+    ViewData["Title"] = L["Profile_Title"].Value;
+    var email    = User.FindFirst(System.Security.Claims.ClaimTypes.Email)?.Value ?? "";
+    var initials = $"{Model.User.FirstName.FirstOrDefault()}{Model.User.LastName.FirstOrDefault()}".ToUpper();
+    var fullName = $"{Model.User.FirstName} {Model.User.LastName}";
+
+    var activeListings  = Model.MyListings.Where(l => l.Status == "Active").ToList();
+    var pendingListings = Model.MyListings.Where(l => l.Status == "Pending").ToList();
+    var closedListings  = Model.MyListings.Where(l => l.Status == "Closed").ToList();
+
+    var closedTotal = closedListings.Sum(l => l.Price);
+    var memberSince = Model.User.CreatedDate.ToString("MMMM yyyy");
+    var activeTab   = Model.ActiveTab;
 }
 
 @section Styles {
 <style>
-    .settings-wrap { max-width: 860px; margin: 0 auto; padding: 32px 16px 60px; }
-    .settings-layout { display: flex; gap: 28px; align-items: flex-start; }
+/* ── prevent ALL horizontal scroll on mobile ── */
+@@media (max-width:767px) {
+    body { overflow-x: hidden; }
+    .profile-wrap, .profile-layout, .profile-main { overflow-x: hidden; max-width:100%; }
+}
 
-    /* ── Section card ──────────────────────────────── */
-    .settings-card {
-        background: #fff;
-        border: 1.5px solid #e8eaed;
-        border-radius: 14px;
-        padding: 28px;
-        margin-bottom: 20px;
-    }
-    .settings-card-title {
-        font-size: .9rem;
-        font-weight: 700;
-        color: #1a1a1a;
-        margin-bottom: 20px;
-        display: flex;
-        align-items: center;
-        gap: 8px;
-    }
-    .settings-card-title i { color: #666; font-size: 1rem; }
+/* ── alerts ─────────────────────────────────── */
+.pf-alert { display:flex; align-items:center; gap:8px; padding:12px 16px; border-radius:12px; font-size:.875rem; margin-bottom:14px; }
+.pf-alert-ok  { background:#f0fdf4; border:1px solid #bbf7d0; color:#166534; }
+.pf-alert-err { background:#fff5f5; border:1px solid #fecaca; color:#dc2626; }
 
-    /* ── Avatar block ──────────────────────────────── */
-    .avatar-block { display: flex; align-items: center; gap: 20px; }
-    .avatar-circle {
-        width: 80px; height: 80px; border-radius: 50%;
-        background: #1a1a1a; color: #fff;
-        font-size: 1.7rem; font-weight: 700;
-        display: flex; align-items: center; justify-content: center;
-        flex-shrink: 0; overflow: hidden;
-        border: 3px solid #e8eaed;
-    }
-    .avatar-circle img { width: 100%; height: 100%; object-fit: cover; }
-    .avatar-actions { display: flex; flex-direction: column; gap: 8px; }
-    .avatar-upload-btn {
-        display: inline-flex; align-items: center; gap: 6px;
-        padding: 8px 16px; border-radius: 8px;
-        border: 1.5px solid #1a1a1a; background: #1a1a1a;
-        color: #fff; font-size: .82rem; font-weight: 600;
-        cursor: pointer; transition: opacity .15s;
-    }
-    .avatar-upload-btn:hover { opacity: .85; }
-    .avatar-remove-btn {
-        display: inline-flex; align-items: center; gap: 6px;
-        padding: 7px 14px; border-radius: 8px;
-        border: 1.5px solid #e8eaed; background: transparent;
-        color: #888; font-size: .82rem; font-weight: 500;
-        cursor: pointer; transition: all .15s;
-        text-decoration: none;
-    }
-    .avatar-remove-btn:hover { border-color: #ef4444; color: #ef4444; }
-    .avatar-hint { font-size: .74rem; color: #aaa; margin-top: 4px; }
+/* ── HERO ────────────────────────────────────── */
+.pf-hero { padding:24px; margin-bottom:0; }
+.pf-hero-inner { display:flex; align-items:center; gap:16px; }
+.pf-av-wrap { position:relative; flex-shrink:0; }
+.pf-av {
+    width:80px; height:80px; border-radius:50%; overflow:hidden;
+    background:linear-gradient(135deg,var(--accent),#60a5fa); color:#fff;
+    font-size:1.6rem; font-weight:800; letter-spacing:-1px;
+    display:flex; align-items:center; justify-content:center;
+    box-shadow:0 4px 18px rgba(26,86,219,.28);
+    border:3px solid var(--card); outline:3px solid var(--accent);
+}
+.pf-av img { width:100%; height:100%; object-fit:cover; }
+.pf-av-cam {
+    position:absolute; bottom:2px; right:2px;
+    width:24px; height:24px; border-radius:50%;
+    background:var(--accent); color:#fff;
+    display:flex; align-items:center; justify-content:center;
+    font-size:.62rem; cursor:pointer; border:2px solid var(--card);
+    transition:background .15s;
+}
+.pf-av-cam:hover { background:var(--accent-h); }
+.pf-hero-info { flex:1; min-width:0; }
+.pf-hero-name { font-size:1.25rem; font-weight:800; margin-bottom:4px; letter-spacing:-.4px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.pf-hero-rating { display:flex; align-items:center; gap:4px; margin-bottom:5px; }
+.star-ico { color:#f59e0b; }
+.star-ico-empty { color:var(--border); }
+.pf-rat-num  { font-weight:700; font-size:.85rem; }
+.pf-rat-cnt  { font-size:.75rem; color:var(--muted); }
+.pf-hero-meta { font-size:.73rem; color:var(--muted); display:flex; flex-direction:column; gap:3px; }
+.pf-edit-btn {
+    display:inline-flex; align-items:center; gap:5px; padding:7px 14px;
+    border-radius:10px; border:1.5px solid var(--border); background:transparent;
+    color:var(--sub); font-size:.8rem; font-weight:600; cursor:pointer;
+    transition:all .15s; flex-shrink:0; font-family:inherit; white-space:nowrap;
+}
+.pf-edit-btn:hover { border-color:var(--accent); color:var(--accent); background:var(--accent-soft); }
 
-    /* ── Form ──────────────────────────────────────── */
-    .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
-    .form-group { display: flex; flex-direction: column; gap: 5px; }
-    .form-group.full { grid-column: 1 / -1; }
-    .form-label { font-size: .8rem; font-weight: 600; color: #555; }
-    .form-input {
-        border: 1.5px solid #e0e4ec; border-radius: 8px;
-        padding: 10px 14px; font-size: .875rem; font-family: inherit;
-        color: #1a1a1a; outline: none; transition: border-color .15s;
-        background: #fff;
-    }
-    .form-input:focus { border-color: #999; }
-    .form-input:disabled { background: #f8f9fa; color: #999; cursor: not-allowed; }
-    .form-hint { font-size: .74rem; color: #aaa; }
-    .validation-msg { font-size: .75rem; color: #ef4444; margin-top: 2px; }
+/* ── STATS ───────────────────────────────────── */
+.pf-stats { display:grid; grid-template-columns:repeat(2,1fr); gap:10px; margin-bottom:14px; }
+.pf-stat-card {
+    background:var(--card); border-radius:12px; padding:12px 10px;
+    border:1px solid var(--border); box-shadow:var(--shadow-sm);
+    display:flex; align-items:center; gap:10px;
+}
+.pf-stat-ico {
+    width:36px; height:36px; border-radius:9px; flex-shrink:0;
+    display:flex; align-items:center; justify-content:center; font-size:.95rem;
+}
+.pf-stat-ico-green { background:#dcfce7; color:#16a34a; }
+.pf-stat-ico-blue  { background:#dbeafe; color:#1d4ed8; }
+.pf-stat-ico-amber { background:#fef9c3; color:#b45309; }
+.pf-stat-ico-accent{ background:var(--accent-soft); color:var(--accent); }
+.pf-stat-num { font-size:1.05rem; font-weight:800; color:var(--text); line-height:1.1; }
+.pf-stat-lbl { font-size:.64rem; color:var(--muted); margin-top:1px; }
 
-    /* ── Save button ───────────────────────────────── */
-    .save-btn {
-        display: inline-flex; align-items: center; gap: 8px;
-        padding: 11px 28px; border-radius: 9px;
-        background: #1a1a1a; color: #fff;
-        border: none; font-size: .875rem; font-weight: 600;
-        font-family: inherit; cursor: pointer; transition: opacity .15s;
-        margin-top: 8px;
-    }
-    .save-btn:hover { opacity: .85; }
+/* ── TABS (desktop only) ─────────────────────── */
+.pf-tabs-wrap { background:var(--card); border-radius:16px; border:1px solid var(--border); box-shadow:var(--shadow-sm); overflow:hidden; }
+.pf-tabs {
+    display:flex; border-bottom:1px solid var(--border); overflow-x:auto;
+    scrollbar-width:none; background:var(--card);
+}
+.pf-tabs::-webkit-scrollbar { display:none; }
+.pf-tab-btn {
+    padding:13px 18px; font-size:.83rem; font-weight:600; color:var(--muted);
+    border:none; background:none; cursor:pointer; white-space:nowrap;
+    position:relative; transition:color .15s; flex-shrink:0; font-family:inherit;
+    display:flex; align-items:center; gap:5px;
+}
+.pf-tab-btn::after { content:''; position:absolute; bottom:-1px; left:0; right:0; height:2px; background:transparent; border-radius:2px 2px 0 0; transition:background .15s; }
+.pf-tab-btn.active { color:var(--accent); }
+.pf-tab-btn.active::after { background:var(--accent); }
+.pf-tab-btn:hover:not(.active) { color:var(--sub); }
+.pf-tab-badge { display:inline-flex; align-items:center; justify-content:center; min-width:17px; height:17px; padding:0 5px; border-radius:20px; background:var(--accent); color:#fff; font-size:.58rem; font-weight:700; }
+.pf-tab-badge.warn { background:#f59e0b; }
 
-    /* ── Password section ──────────────────────────── */
-    .pwd-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; }
+.pf-tab-pane { display:none; }
+.pf-tab-pane.active { display:block; }
 
-    /* ── Alerts ────────────────────────────────────── */
-    .settings-alert {
-        border-radius: 9px; padding: 11px 16px;
-        font-size: .84rem; display: flex; align-items: center; gap: 9px;
-        margin-bottom: 16px;
+/* ── MOBILE: menu-style navigation ─── */
+@@media (max-width:767px) {
+    .pf-tabs { display:none; }
+    .pf-tabs-wrap { background:transparent; border:none; box-shadow:none; border-radius:0; overflow:visible; }
+    .pf-tab-pane { display:none !important; }
+    .pf-tab-pane.mob-open {
+        display:block !important;
+        background:var(--card); border:1px solid var(--border);
+        border-radius:14px; margin-bottom:10px; box-shadow:var(--shadow-sm); overflow:hidden;
     }
-    .settings-alert-success { background: #f0fdf4; border: 1px solid #bbf7d0; color: #166534; }
-    .settings-alert-error   { background: #fff5f5; border: 1px solid #fecaca; color: #dc2626; }
+}
 
-    @@media (max-width: 768px) {
-        .settings-layout { flex-direction: column; }
-        .form-grid { grid-template-columns: 1fr; }
-        .pwd-grid  { grid-template-columns: 1fr; }
-    }
+/* ── MOBILE MENU ITEMS ─────────────────────────── */
+.pf-mob-menu-wrap {
+    background:var(--card); border:1px solid var(--border);
+    border-radius:14px; overflow:hidden; box-shadow:var(--shadow-sm);
+}
+.pf-mob-item {
+    display:flex; align-items:center; gap:12px; width:100%; padding:14px 16px;
+    background:transparent; border:none; border-bottom:1px solid var(--border);
+    font-family:inherit; font-size:.9rem; font-weight:500; color:var(--text);
+    cursor:pointer; text-decoration:none; text-align:left; transition:background .15s;
+}
+.pf-mob-item:last-child { border-bottom:none; }
+.pf-mob-item:hover, .pf-mob-item:active { background:var(--bg); }
+.pf-mob-ico {
+    width:34px; height:34px; border-radius:9px; flex-shrink:0;
+    display:flex; align-items:center; justify-content:center; font-size:1rem;
+}
+.pf-mob-badge {
+    min-width:20px; height:20px; padding:0 6px; border-radius:10px;
+    background:var(--accent); color:#fff; font-size:.68rem; font-weight:700;
+    display:inline-flex; align-items:center; justify-content:center; flex-shrink:0;
+}
+.pf-mob-arr { color:var(--muted); font-size:.8rem; flex-shrink:0; }
+
+/* ── MOBILE BACK BUTTON ───────────────────────── */
+.pf-mob-back {
+    display:none; background:none; border:none; cursor:pointer;
+    padding:5px 7px; font-size:1.05rem; color:var(--text);
+    border-radius:8px; transition:background .15s; line-height:1; flex-shrink:0;
+    margin-left:-4px;
+}
+.pf-mob-back:hover { background:var(--border); }
+@@media (max-width:767px) { .pf-mob-back { display:flex; align-items:center; } }
+
+/* ── MOBILE SECTION HEADER ───────────────────── */
+.pf-mob-sec-hdr {
+    display:none; padding:13px 16px; border-bottom:1px solid var(--border);
+    font-size:.88rem; font-weight:700; color:var(--text);
+    align-items:center; gap:8px;
+}
+.pf-mob-sec-hdr i { color:var(--accent); font-size:.95rem; }
+@@media (max-width:767px) { .pf-mob-sec-hdr { display:flex; } }
+
+/* ── SECTION HEADINGS ─────────────────────────── */
+.pf-sec-title { font-size:.75rem; font-weight:700; text-transform:uppercase; letter-spacing:.6px; color:var(--muted); margin-bottom:0; }
+.pf-sec-link  { font-size:.8rem; color:var(--accent); background:none; border:none; cursor:pointer; padding:0; font-family:inherit; font-weight:500; transition:opacity .15s; }
+.pf-sec-link:hover { opacity:.75; }
+
+/* ── ORDER ROW ────────────────────────────────── */
+.pf-order-row { display:flex; justify-content:space-between; align-items:center; padding:10px 0; border-bottom:1px solid var(--border); gap:10px; }
+.pf-order-row:last-child { border-bottom:none; }
+
+/* ── QUICK LINKS ──────────────────────────────── */
+.pf-quick-links { display:grid; grid-template-columns:repeat(4,1fr); gap:8px; margin-top:4px; }
+@@media (max-width:600px) { .pf-quick-links { grid-template-columns:repeat(2,1fr); } }
+.pf-quick-item { display:flex; flex-direction:column; align-items:center; gap:6px; padding:14px 8px; border-radius:10px; border:1.5px solid var(--border); background:var(--card); font-size:.72rem; font-weight:600; color:var(--sub); text-decoration:none; cursor:pointer; font-family:inherit; transition:all .15s; }
+.pf-quick-item i { font-size:1.2rem; color:var(--accent); }
+.pf-quick-item:hover { border-color:var(--accent); color:var(--accent); background:var(--accent-soft); }
+
+/* ── EMPTY STATES ─────────────────────────────── */
+.pf-empty { text-align:center; padding:32px 16px; color:var(--muted); }
+.pf-empty i { font-size:2.2rem; display:block; margin-bottom:10px; color:var(--border); }
+.pf-empty h5 { font-size:.9rem; color:var(--sub); margin-bottom:5px; }
+.pf-empty p  { font-size:.8rem; margin-bottom:0; }
+
+/* ── ORDER CARD ───────────────────────────────── */
+.pf-order-card { background:var(--card); border:1px solid var(--border); border-radius:12px; padding:14px 16px; }
+.pf-type-badge { display:inline-flex; align-items:center; padding:2px 8px; border-radius:20px; font-size:.68rem; font-weight:700; }
+.pf-type-vip      { background:#fef9c3; color:#854d0e; }
+.pf-type-delivery { background:#e0f2fe; color:#0369a1; }
+.pf-status-badge  { display:inline-block; padding:2px 8px; border-radius:20px; font-size:.68rem; font-weight:600; }
+.status-completed { background:#dcfce7; color:#166534; }
+.status-failed    { background:#fee2e2; color:#991b1b; }
+.status-pending   { background:#fef9c3; color:#854d0e; }
+
+/* ── SUBTABS ──────────────────────────────────── */
+.pf-subtabs { display:flex; gap:5px; list-style:none; padding:0; margin:0 0 14px; flex-wrap:wrap; }
+.pf-subtab { padding:6px 14px; border-radius:24px; font-size:.8rem; font-weight:600; border:1.5px solid var(--border); background:transparent; color:var(--muted); cursor:pointer; transition:all .15s; font-family:inherit; display:inline-flex; align-items:center; gap:4px; }
+.pf-subtab.active { background:var(--accent); border-color:var(--accent); color:#fff; }
+.pf-subtab:hover:not(.active) { border-color:var(--accent); color:var(--accent); }
+.pf-earnings-banner { display:flex; align-items:center; background:#f0fdf4; border:1px solid #bbf7d0; border-radius:10px; padding:10px 14px; font-size:.84rem; color:#166534; margin-bottom:12px; }
+
+/* ── REVIEWS ──────────────────────────────────── */
+.pf-rating-overview { display:flex; gap:20px; align-items:flex-start; flex-wrap:wrap; background:var(--bg); border-radius:12px; padding:16px; }
+.pf-rating-big { text-align:center; min-width:72px; }
+.pf-rating-big-num { font-size:2.8rem; font-weight:900; color:var(--text); line-height:1; }
+.pf-rating-bars { flex:1; min-width:140px; display:flex; flex-direction:column; gap:5px; }
+.pf-bar-lbl   { font-size:.72rem; color:var(--sub); min-width:28px; }
+.pf-bar-track { flex:1; height:7px; background:var(--border); border-radius:8px; overflow:hidden; }
+.pf-bar-fill  { height:100%; background:#f59e0b; border-radius:8px; transition:width .4s; }
+.pf-bar-cnt   { font-size:.72rem; color:var(--muted); min-width:18px; text-align:right; }
+.pf-review-card { background:var(--card); border:1px solid var(--border); border-radius:12px; padding:14px 16px; }
+.pf-reviewer-av { width:32px; height:32px; border-radius:50%; flex-shrink:0; background:var(--accent-soft); color:var(--accent); font-size:.8rem; font-weight:700; display:flex; align-items:center; justify-content:center; }
+
+/* ── SETTINGS FORM ────────────────────────────── */
+.form-grid  { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+.form-group { display:flex; flex-direction:column; gap:4px; }
+.form-label { font-size:.76rem; font-weight:600; color:var(--sub); }
+.form-input { border:1.5px solid var(--border); border-radius:9px; padding:9px 12px; font-size:.875rem; font-family:inherit; color:var(--text); outline:none; transition:border-color .15s; background:var(--bg); }
+.form-input:focus    { border-color:var(--accent); box-shadow:0 0 0 3px rgba(26,86,219,.08); }
+.form-input:disabled { background:var(--bg); color:var(--muted); cursor:not-allowed; }
+.form-hint { font-size:.7rem; color:var(--muted); }
+.pwd-grid { display:grid; grid-template-columns:1fr 1fr 1fr; gap:12px; }
+@@media (max-width:767px) { .form-grid { grid-template-columns:1fr; } .pwd-grid { grid-template-columns:1fr; } }
+.save-btn { display:inline-flex; align-items:center; gap:7px; padding:10px 22px; border-radius:10px; background:var(--accent); color:#fff; border:none; font-size:.875rem; font-weight:600; font-family:inherit; cursor:pointer; transition:background .15s; box-shadow:0 2px 8px rgba(26,86,219,.25); }
+.save-btn:hover { background:var(--accent-h); }
+.avatar-circle { width:64px; height:64px; border-radius:50%; flex-shrink:0; overflow:hidden; background:linear-gradient(135deg,var(--accent),#60a5fa); color:#fff; font-size:1.3rem; font-weight:700; display:flex; align-items:center; justify-content:center; border:2px solid var(--border); }
+.avatar-upload-btn { display:inline-flex; align-items:center; gap:5px; padding:7px 12px; border-radius:8px; border:1.5px solid var(--accent); background:var(--accent); color:#fff; font-size:.78rem; font-weight:600; cursor:pointer; }
+.avatar-upload-btn:hover { background:var(--accent-h); }
+.avatar-remove-btn { display:inline-flex; align-items:center; gap:5px; padding:6px 12px; border-radius:8px; border:1.5px solid var(--border); background:transparent; color:var(--sub); font-size:.78rem; font-weight:500; cursor:pointer; text-decoration:none; transition:all .15s; }
+.avatar-remove-btn:hover { border-color:#ef4444; color:#ef4444; }
+.avatar-hint { font-size:.7rem; color:var(--muted); }
+
+/* ── LOGOUT BTN ───────────────────────────────── */
+.pf-logout-btn { display:flex; align-items:center; gap:10px; width:100%; padding:12px 14px; border-radius:10px; border:1.5px solid var(--border); background:transparent; color:var(--sub); font-size:.875rem; font-weight:600; cursor:pointer; transition:all .15s; font-family:inherit; text-decoration:none; }
+.pf-logout-btn:hover { border-color:#ef4444; color:#ef4444; background:#fff5f5; }
+
+/* ── DANGER ZONE ──────────────────────────────── */
+.pf-danger-zone { background:#fff5f5; border:1.5px solid #fecaca; border-radius:12px; padding:16px; }
+[data-theme="dark"] .pf-danger-zone { background:#1a0a0a; border-color:#7f1d1d; }
+.btn-danger-outline { display:inline-flex; align-items:center; gap:6px; padding:9px 16px; border-radius:9px; border:1.5px solid #ef4444; background:transparent; color:#ef4444; font-size:.84rem; font-weight:600; cursor:pointer; transition:all .15s; font-family:inherit; }
+.btn-danger-outline:hover { background:#ef4444; color:#fff; }
+
+/* ── DELETE SCREEN ────────────────────────────── */
+#pf-delete-screen {
+    display:none; position:fixed; inset:0; z-index:1200;
+    background:var(--bg); overflow-y:auto;
+}
+.pf-del-header {
+    position:sticky; top:0; background:var(--bg); border-bottom:1px solid var(--border);
+    padding:12px 16px; display:flex; align-items:center; gap:12px; z-index:1;
+}
+.pf-del-back { background:none; border:none; cursor:pointer; padding:6px 8px; font-size:1.1rem; color:var(--text); border-radius:8px; transition:background .15s; line-height:1; }
+.pf-del-back:hover { background:var(--border); }
+
+/* ══════════════════════════════════════════════════════════
+   SELLER PANEL — professional redesign
+   ══════════════════════════════════════════════════════════ */
+
+/* ── Header ─── */
+.sl-header { margin-bottom:20px; }
+.sl-header-title { font-size:1.05rem; font-weight:800; color:var(--text); margin:0 0 3px; letter-spacing:-.3px; }
+.sl-header-sub   { font-size:.78rem; color:var(--muted); margin:0; }
+
+/* ── KPI row ─── */
+.sl-kpi { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin-bottom:20px; }
+@@media (max-width:480px) { .sl-kpi { grid-template-columns:1fr 1fr; } .sl-kpi > :last-child { grid-column:1/-1; } }
+.sl-kpi-card {
+    position:relative; overflow:hidden;
+    border-radius:14px; padding:14px 16px;
+    border:1px solid var(--border);
+    background:var(--card);
+    box-shadow:var(--shadow-sm);
+    display:flex; flex-direction:column; gap:4px;
+}
+.sl-kpi-top { display:flex; justify-content:space-between; align-items:flex-start; }
+.sl-kpi-num  { font-size:1.5rem; font-weight:900; line-height:1; color:var(--text); letter-spacing:-.5px; }
+.sl-kpi-lbl  { font-size:.68rem; font-weight:600; color:var(--muted); text-transform:uppercase; letter-spacing:.5px; margin-top:2px; }
+.sl-kpi-ico  { width:36px; height:36px; border-radius:10px; display:flex; align-items:center; justify-content:center; font-size:1rem; flex-shrink:0; }
+.sl-kpi-ico-blue  { background:#dbeafe; color:#1d4ed8; }
+.sl-kpi-ico-amber { background:#fef3c7; color:#b45309; }
+.sl-kpi-ico-green { background:#dcfce7; color:#16a34a; }
+.sl-kpi-glow { position:absolute; top:-20px; right:-20px; width:80px; height:80px; border-radius:50%; opacity:.07; }
+.sl-kpi-glow-blue  { background:#3b82f6; }
+.sl-kpi-glow-amber { background:#f59e0b; }
+.sl-kpi-glow-green { background:#22c55e; }
+
+/* ── Alert banner ─── */
+.sl-alert {
+    display:flex; align-items:center; gap:12px;
+    background:linear-gradient(135deg,#fff7ed,#fef3c7);
+    border:1.5px solid #fcd34d; border-radius:12px;
+    padding:12px 16px; margin-bottom:20px;
+}
+.sl-alert-ico { width:34px; height:34px; border-radius:9px; background:#f59e0b; color:#fff; display:flex; align-items:center; justify-content:center; font-size:.9rem; flex-shrink:0; }
+.sl-alert-text { flex:1; font-size:.83rem; font-weight:600; color:#92400e; }
+.sl-alert-text span { font-size:.72rem; font-weight:400; color:#b45309; display:block; margin-top:1px; }
+.sl-alert-btn { padding:7px 14px; border-radius:9px; background:#f59e0b; color:#fff; border:none; font-size:.78rem; font-weight:700; cursor:pointer; font-family:inherit; white-space:nowrap; transition:background .15s; }
+.sl-alert-btn:hover { background:#d97706; }
+[data-theme="dark"] .sl-alert { background:linear-gradient(135deg,#1a1000,#1a1500); border-color:#92400e; }
+[data-theme="dark"] .sl-alert-text { color:#fbbf24; }
+[data-theme="dark"] .sl-alert-text span { color:#d97706; }
+
+/* ── Filter pills ─── */
+.sl-filters { display:flex; gap:6px; flex-wrap:wrap; margin-bottom:20px; }
+.sl-filter-btn {
+    padding:6px 14px; border-radius:24px; border:1.5px solid var(--border);
+    background:transparent; color:var(--muted); font-size:.78rem; font-weight:600;
+    cursor:pointer; font-family:inherit; transition:all .15s;
+    display:inline-flex; align-items:center; gap:5px;
+}
+.sl-filter-btn.active { background:var(--accent); border-color:var(--accent); color:#fff; }
+.sl-filter-btn:hover:not(.active) { border-color:var(--accent); color:var(--accent); }
+.sl-filter-cnt { font-size:.65rem; font-weight:700; background:rgba(255,255,255,.3); border-radius:10px; padding:0 5px; min-width:16px; text-align:center; line-height:16px; }
+.sl-filter-btn:not(.active) .sl-filter-cnt { background:var(--bg); color:var(--muted); }
+
+/* ── Order cards ─── */
+.sl-order {
+    position:relative;
+    background:var(--card); border:1px solid var(--border);
+    border-radius:14px; overflow:hidden;
+    transition:box-shadow .15s, transform .15s;
+}
+.sl-order:hover { box-shadow:0 4px 20px rgba(0,0,0,.08); transform:translateY(-1px); }
+.sl-order-stripe {
+    position:absolute; left:0; top:0; bottom:0; width:4px; border-radius:0;
+}
+.sl-order--pending  .sl-order-stripe { background:linear-gradient(180deg,#f59e0b,#fbbf24); }
+.sl-order--approved .sl-order-stripe { background:linear-gradient(180deg,#16a34a,#4ade80); }
+.sl-order--rejected .sl-order-stripe { background:linear-gradient(180deg,#dc2626,#f87171); }
+.sl-order-inner { padding:16px 16px 16px 20px; }
+.sl-order-top { display:flex; justify-content:space-between; align-items:flex-start; gap:12px; flex-wrap:wrap; margin-bottom:10px; }
+.sl-order-left { min-width:0; flex:1; }
+.sl-order-head { display:flex; align-items:center; gap:8px; flex-wrap:wrap; margin-bottom:4px; }
+.sl-order-num  { font-size:.7rem; font-weight:600; color:var(--muted); font-family:monospace; letter-spacing:.3px; }
+.sl-order-time { font-size:.7rem; color:var(--muted); }
+.sl-order-title {
+    font-size:.925rem; font-weight:700; color:var(--text);
+    overflow:hidden; text-overflow:ellipsis; white-space:nowrap; max-width:100%;
+    margin-bottom:5px;
+}
+.sl-order-meta { display:flex; flex-wrap:wrap; gap:8px; }
+.sl-order-meta-item { display:inline-flex; align-items:center; gap:4px; font-size:.72rem; color:var(--sub); }
+.sl-order-meta-item i { color:var(--muted); font-size:.7rem; }
+
+.sl-order-right { text-align:right; flex-shrink:0; }
+.sl-order-total { font-size:1.15rem; font-weight:900; color:var(--text); letter-spacing:-.4px; }
+.sl-order-breakdown { font-size:.68rem; color:var(--muted); margin-top:2px; }
+
+.sl-order-footer {
+    display:flex; justify-content:space-between; align-items:center;
+    padding:10px 16px 12px 20px;
+    border-top:1px solid var(--border);
+    background:var(--bg); gap:10px; flex-wrap:wrap;
+}
+.sl-order-link { display:inline-flex; align-items:center; gap:5px; font-size:.75rem; font-weight:600; color:var(--sub); text-decoration:none; padding:6px 12px; border-radius:8px; border:1.5px solid var(--border); transition:all .15s; background:var(--card); }
+.sl-order-link:hover { border-color:var(--accent); color:var(--accent); }
+
+/* ── Action buttons ─── */
+.sl-actions { display:flex; gap:8px; flex-wrap:wrap; }
+.sl-btn {
+    display:inline-flex; align-items:center; gap:6px;
+    padding:7px 16px; border-radius:9px;
+    font-size:.8rem; font-weight:700; cursor:pointer;
+    border:none; font-family:inherit; transition:all .15s;
+    white-space:nowrap;
+}
+.sl-btn-approve {
+    background:linear-gradient(135deg,#16a34a,#15803d);
+    color:#fff; box-shadow:0 2px 8px rgba(22,163,74,.3);
+}
+.sl-btn-approve:hover { background:linear-gradient(135deg,#15803d,#166534); box-shadow:0 4px 14px rgba(22,163,74,.4); }
+.sl-btn-reject {
+    background:var(--card); color:#dc2626;
+    border:1.5px solid #fca5a5;
+}
+.sl-btn-reject:hover { background:#fee2e2; border-color:#ef4444; }
+.sl-btn:disabled { opacity:.55; cursor:not-allowed; transform:none !important; box-shadow:none !important; }
+
+/* ── Status badge (in head) ─── */
+.sl-sbadge { display:inline-flex; align-items:center; gap:4px; padding:3px 9px; border-radius:20px; font-size:.67rem; font-weight:700; flex-shrink:0; }
+.sl-sbadge-pending  { background:#fef3c7; color:#92400e; }
+.sl-sbadge-approved { background:#dcfce7; color:#166534; }
+.sl-sbadge-rejected { background:#fee2e2; color:#991b1b; }
+
+/* ── Empty state ─── */
+.sl-empty { text-align:center; padding:40px 20px; }
+.sl-empty-ico { width:72px; height:72px; border-radius:20px; background:var(--bg); border:2px solid var(--border); display:flex; align-items:center; justify-content:center; font-size:1.8rem; margin:0 auto 16px; color:var(--muted); }
+.sl-empty-title { font-size:.95rem; font-weight:700; color:var(--sub); margin-bottom:6px; }
+.sl-empty-desc  { font-size:.8rem; color:var(--muted); max-width:280px; margin:0 auto; }
+
+/* ── Section label ─── */
+.sl-section-label { display:flex; align-items:center; gap:8px; margin-bottom:12px; }
+.sl-section-label-text { font-size:.72rem; font-weight:700; text-transform:uppercase; letter-spacing:.6px; color:var(--muted); }
+.sl-section-label-line { flex:1; height:1px; background:var(--border); }
+
+/* ── Dark theme overrides ─── */
+[data-theme="dark"] .sl-kpi-ico-blue  { background:#0d1d35; color:#60a5fa; }
+[data-theme="dark"] .sl-kpi-ico-amber { background:#1a1000; color:#fbbf24; }
+[data-theme="dark"] .sl-kpi-ico-green { background:#0d2716; color:#4ade80; }
+[data-theme="dark"] .sl-order-footer  { background:#0d1117; }
+[data-theme="dark"] .sl-btn-reject    { background:var(--card); border-color:#7f1d1d; color:#f87171; }
+[data-theme="dark"] .sl-btn-reject:hover { background:#1a0a0a; }
+[data-theme="dark"] .sl-order-link    { background:var(--card); }
+[data-theme="dark"] .sl-sbadge-pending  { background:#1a1000; color:#fbbf24; }
+[data-theme="dark"] .sl-sbadge-approved { background:#0d2716; color:#4ade80; }
+[data-theme="dark"] .sl-sbadge-rejected { background:#1a0a0a; color:#f87171; }
+
+/* ── DARK THEME ───────────────────────────────── */
+[data-theme="dark"] .pf-stat-ico-green  { background:#0d2716; color:#4ade80; }
+[data-theme="dark"] .pf-stat-ico-blue   { background:#0d1d35; color:#60a5fa; }
+[data-theme="dark"] .pf-stat-ico-amber  { background:#1a1200; color:#fbbf24; }
+[data-theme="dark"] .pf-stat-ico-accent { background:var(--accent-soft); color:var(--accent); }
+[data-theme="dark"] .pf-quick-item      { background:var(--card); border-color:var(--border); }
+[data-theme="dark"] .pf-rating-overview { background:#0d1117; }
+[data-theme="dark"] .pf-earnings-banner { background:#0d2716; border-color:#166534; color:#4ade80; }
+[data-theme="dark"] .form-input         { background:var(--card); border-color:var(--border); }
+[data-theme="dark"] .form-input:disabled{ background:#0d1117; color:var(--muted); }
+[data-theme="dark"] .pf-order-card, [data-theme="dark"] .pf-review-card { background:var(--card); }
+[data-theme="dark"] .pf-logout-btn:hover { background:#1a0a0a; }
+[data-theme="dark"] .section-card { background:var(--card); }
 </style>
 }
 
-<div class="settings-wrap">
-    <div class="settings-layout">
+<div class="profile-wrap">
+  <div class="profile-layout">
+    @await Html.PartialAsync("_ProfileSidebar")
+    <div class="profile-main">
 
-        @await Html.PartialAsync("_ProfileSidebar")
+      @* Flash messages *@
+      @if (TempData["Success"]    != null) { <div class="pf-alert pf-alert-ok"><i class="bi bi-check-circle-fill"></i>@TempData["Success"]</div> }
+      @if (TempData["PwdSuccess"] != null) { <div class="pf-alert pf-alert-ok"><i class="bi bi-check-circle-fill"></i>@TempData["PwdSuccess"]</div> }
+      @if (TempData["PwdError"]   != null) { <div class="pf-alert pf-alert-err"><i class="bi bi-exclamation-circle-fill"></i>@TempData["PwdError"]</div> }
 
-        <main style="flex:1;min-width:0;">
+      @* ─── HERO ─── *@
+      <div class="section-card pf-hero mb-3">
+        <div class="pf-hero-inner">
+          <div class="pf-av-wrap">
+            <div class="pf-av">
+              @if (!string.IsNullOrEmpty(Model.User.PhotoUrl)) { <img src="@Model.User.PhotoUrl" alt="avatar" /> }
+              else { <span>@initials</span> }
+            </div>
+            <label class="pf-av-cam" title="@L["Profile_ChangePhoto"]">
+              <i class="bi bi-camera-fill"></i>
+              <input type="file" hidden id="heroPhotoInput" accept="image/*" onchange="heroQuickUpload(this)" />
+            </label>
+          </div>
+          <div class="pf-hero-info">
+            <h1 class="pf-hero-name">@fullName</h1>
+            <div class="pf-hero-rating">
+              @if (Model.AvgRating.HasValue)
+              {
+                var r = Model.AvgRating.Value;
+                for (int i=1;i<=5;i++) { if(i<=(int)r){<i class="bi bi-star-fill star-ico"></i>}else if(i-.5<=r){<i class="bi bi-star-half star-ico"></i>}else{<i class="bi bi-star star-ico-empty"></i>} }
+                <span class="pf-rat-num">@r.ToString("F1")</span>
+                <span class="pf-rat-cnt">(@Model.ReviewsReceived.Count)</span>
+              }
+              else
+              { <i class="bi bi-star star-ico-empty"></i><i class="bi bi-star star-ico-empty"></i><i class="bi bi-star star-ico-empty"></i><i class="bi bi-star star-ico-empty"></i><i class="bi bi-star star-ico-empty"></i><span class="pf-rat-cnt ms-1">@L["Profile_NoRating"]</span> }
+            </div>
+            <div class="pf-hero-meta">
+              <span><i class="bi bi-calendar3 me-1"></i>@L["Profile_MemberSince"] @memberSince</span>
+              @if (!string.IsNullOrEmpty(Model.User.PhoneNumber)) { <span><i class="bi bi-telephone me-1"></i>@Model.User.PhoneNumber</span> }
+            </div>
+          </div>
+          <button class="pf-edit-btn d-none d-md-inline-flex" onclick="switchTab('settings')" type="button">
+            <i class="bi bi-pencil-square"></i>@L["Profile_Edit"]
+          </button>
+        </div>
+      </div>
 
-            @if (TempData["Success"] != null)
+      @* ─── STATS ─── *@
+      <div class="pf-stats">
+        <div class="pf-stat-card">
+          <div class="pf-stat-ico pf-stat-ico-accent"><i class="bi bi-currency-dollar"></i></div>
+          <div><div class="pf-stat-num">@Model.TotalEarnings.ToString("N0")₼</div><div class="pf-stat-lbl">@L["Profile_TotalSales"]</div></div>
+        </div>
+        <div class="pf-stat-card">
+          <div class="pf-stat-ico pf-stat-ico-green"><i class="bi bi-card-list"></i></div>
+          <div><div class="pf-stat-num">@Model.ActiveListingsCount</div><div class="pf-stat-lbl">@L["Profile_ActiveCount"]</div></div>
+        </div>
+        <div class="pf-stat-card">
+          <div class="pf-stat-ico pf-stat-ico-blue"><i class="bi bi-bag-check"></i></div>
+          <div><div class="pf-stat-num">@Model.ClosedListingsCount</div><div class="pf-stat-lbl">@L["Profile_ClosedCount"]</div></div>
+        </div>
+        <div class="pf-stat-card">
+          <div class="pf-stat-ico pf-stat-ico-amber"><i class="bi bi-star-fill"></i></div>
+          <div><div class="pf-stat-num">@(Model.AvgRating.HasValue ? Model.AvgRating.Value.ToString("F1") : "—")</div><div class="pf-stat-lbl">@L["Profile_AvgRating"]</div></div>
+        </div>
+      </div>
+
+      @* ─── MOBILE MENU (only on phones) ─── *@
+      <div id="pf-mob-menu" class="d-md-none mb-2">
+        <div class="pf-mob-menu-wrap">
+          <button class="pf-mob-item" onclick="openMobSection('listings')">
+            <span class="pf-mob-ico" style="background:#eef2ff;color:#6366f1;"><i class="bi bi-card-list"></i></span>
+            <span style="flex:1;">@L["Profile_MyListings"]</span>
+            @if(Model.MyListings.Any()){<span class="pf-mob-badge">@Model.MyListings.Count</span>}
+            <i class="pf-mob-arr bi bi-chevron-right"></i>
+          </button>
+          <button class="pf-mob-item" onclick="openMobSection('orders')">
+            <span class="pf-mob-ico" style="background:#dcfce7;color:#16a34a;"><i class="bi bi-bag"></i></span>
+            <span style="flex:1;">@L["Profile_Purchases"]</span>
+            @if(Model.Purchases.Any()){<span class="pf-mob-badge">@Model.Purchases.Count</span>}
+            <i class="pf-mob-arr bi bi-chevron-right"></i>
+          </button>
+          <button class="pf-mob-item" onclick="openMobSection('reviews')">
+            <span class="pf-mob-ico" style="background:#fef9c3;color:#b45309;"><i class="bi bi-star"></i></span>
+            <span style="flex:1;">@L["Profile_ReviewsTab"]</span>
+            @if(Model.ReviewsReceived.Any()){<span class="pf-mob-badge" style="background:#f59e0b;">@Model.ReviewsReceived.Count</span>}
+            <i class="pf-mob-arr bi bi-chevron-right"></i>
+          </button>
+          <a href="/Messages" class="pf-mob-item">
+            <span class="pf-mob-ico" style="background:#e0f2fe;color:#0369a1;"><i class="bi bi-chat-dots"></i></span>
+            <span style="flex:1;">@L["Profile_Messages"]</span>
+            <i class="pf-mob-arr bi bi-chevron-right"></i>
+          </a>
+          <a href="/Favorites" class="pf-mob-item">
+            <span class="pf-mob-ico" style="background:#fee2e2;color:#ef4444;"><i class="bi bi-heart"></i></span>
+            <span style="flex:1;">@L["Profile_Favorites"]</span>
+            <i class="pf-mob-arr bi bi-chevron-right"></i>
+          </a>
+          <button class="pf-mob-item" onclick="openMobSection('seller')">
+            <span class="pf-mob-ico" style="background:#fef9c3;color:#b45309;"><i class="bi bi-shop"></i></span>
+            <span style="flex:1;">@L["Seller_Tab"]</span>
+            @if(Model.PendingOrdersCount > 0){<span class="pf-mob-badge" style="background:#ef4444;">@Model.PendingOrdersCount</span>}
+            else if(Model.IncomingOrders.Any()){<span class="pf-mob-badge" style="background:#6366f1;">@Model.IncomingOrders.Count</span>}
+            <i class="pf-mob-arr bi bi-chevron-right"></i>
+          </button>
+          <button class="pf-mob-item" onclick="openMobSection('settings')">
+            <span class="pf-mob-ico" style="background:var(--bg);color:var(--muted);border:1px solid var(--border);"><i class="bi bi-gear"></i></span>
+            <span style="flex:1;">@L["Profile_Settings"]</span>
+            <i class="pf-mob-arr bi bi-chevron-right"></i>
+          </button>
+        </div>
+      </div>
+
+      @* ─── TABS WRAP ─── *@
+      <div class="pf-tabs-wrap">
+
+        @* Desktop tab nav *@
+        <div class="pf-tabs" role="tablist">
+          <button class="pf-tab-btn @(activeTab=="overview"?"active":"")"  onclick="switchTab('overview')"  data-tab="overview"><i class="bi bi-grid-1x2"></i>@L["Profile_Overview"]</button>
+          <button class="pf-tab-btn @(activeTab=="listings"?"active":"")"  onclick="switchTab('listings')"  data-tab="listings">
+            <i class="bi bi-card-list"></i>@L["Profile_MyListings"]
+            @if(Model.MyListings.Any()){<span class="pf-tab-badge">@Model.MyListings.Count</span>}
+          </button>
+          <button class="pf-tab-btn @(activeTab=="orders"?"active":"")"   onclick="switchTab('orders')"   data-tab="orders">
+            <i class="bi bi-bag"></i>@L["Profile_Purchases"]
+            @if(Model.Purchases.Any()){<span class="pf-tab-badge">@Model.Purchases.Count</span>}
+          </button>
+          <button class="pf-tab-btn @(activeTab=="reviews"?"active":"")"  onclick="switchTab('reviews')"  data-tab="reviews">
+            <i class="bi bi-star"></i>@L["Profile_ReviewsTab"]
+            @if(Model.ReviewsReceived.Any()){<span class="pf-tab-badge warn">@Model.ReviewsReceived.Count</span>}
+          </button>
+          <button class="pf-tab-btn @(activeTab=="seller"?"active":"")" onclick="switchTab('seller')" data-tab="seller">
+            <i class="bi bi-shop"></i>@L["Seller_Tab"]
+            @if(Model.PendingOrdersCount > 0){<span class="pf-tab-badge" style="background:#ef4444;">@Model.PendingOrdersCount</span>}
+            else if(Model.IncomingOrders.Any()){<span class="pf-tab-badge">@Model.IncomingOrders.Count</span>}
+          </button>
+          <button class="pf-tab-btn @(activeTab=="settings"?"active":"")" onclick="switchTab('settings')" data-tab="settings"><i class="bi bi-gear"></i>@L["Profile_Settings"]</button>
+        </div>
+
+        @* ══ OVERVIEW TAB ══ *@
+        <div class="pf-tab-pane @(activeTab=="overview"?"active":"")" id="tab-overview">
+          <div class="p-3 p-md-4">
+            @* Recent listings *@
+            <div class="mb-4">
+              <div class="d-flex justify-content-between align-items-center mb-3">
+                <span class="pf-sec-title">@L["Profile_MyListings"]</span>
+                <button class="pf-sec-link" onclick="switchTab('listings')">@L["Profile_SeeAll"] →</button>
+              </div>
+              @if (!activeListings.Any())
+              { <div class="pf-empty" style="padding:16px;"><i class="bi bi-card-list" style="font-size:1.6rem;"></i><p class="mt-1 mb-0"><a href="/Listing/Create" style="color:var(--accent);font-weight:600;">@L["Profile_AddListing"]</a></p></div> }
+              else
+              { <div class="d-flex flex-column gap-2">@foreach(var l in activeListings.Take(3)){@await Html.PartialAsync("_MyListingRow",l)}</div> }
+            </div>
+            @* Recent orders *@
+            <div class="mb-4">
+              <div class="d-flex justify-content-between align-items-center mb-2">
+                <span class="pf-sec-title">@L["Profile_RecentOrders"]</span>
+                <button class="pf-sec-link" onclick="switchTab('orders')">@L["Profile_SeeAll"] →</button>
+              </div>
+              @if (!Model.Purchases.Any())
+              { <p class="text-muted small mb-0">@L["Profile_NoPurchasesYet"]</p> }
+              else
+              {
+                @foreach(var p in Model.Purchases.Take(3))
+                {
+                  <div class="pf-order-row">
+                    <div style="min-width:0;"><div class="fw-semibold" style="font-size:.84rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:180px;">@p.ListingTitle</div><div class="text-muted" style="font-size:.7rem;">@p.CreatedDate.ToString("dd.MM.yyyy")</div></div>
+                    <div class="text-end flex-shrink-0"><div class="fw-bold" style="font-size:.84rem;">@p.TotalAmount.ToString("N0")₼</div><span class="pf-status-badge status-@p.Status.ToLower()">@(p.Status=="Completed"?L["Checkout_History_StatusPaid"].Value:p.Status=="Failed"?L["Checkout_History_StatusDeclined"].Value:L["Checkout_History_StatusPending"].Value)</span></div>
+                  </div>
+                }
+              }
+            </div>
+            @* Quick links *@
+            <div class="pf-quick-links">
+              <a href="/Listing/Create" class="pf-quick-item"><i class="bi bi-plus-square-fill"></i><span>@L["Profile_AddListing"]</span></a>
+              <a href="/Messages" class="pf-quick-item"><i class="bi bi-chat-dots-fill"></i><span>@L["Profile_Messages"]</span></a>
+              <a href="/Favorites" class="pf-quick-item"><i class="bi bi-heart-fill"></i><span>@L["Profile_Favorites"]</span></a>
+              <button class="pf-quick-item" onclick="switchTab('settings')"><i class="bi bi-gear-fill"></i><span>@L["Profile_Settings"]</span></button>
+            </div>
+          </div>
+        </div>
+
+        @* ══ LISTINGS TAB ══ *@
+        <div class="pf-tab-pane @(activeTab=="listings"?"active":"")" id="tab-listings">
+          <div class="pf-mob-sec-hdr"><button class="pf-mob-back" onclick="closeMobSection()"><i class="bi bi-arrow-left"></i></button><i class="bi bi-card-list"></i>@L["Profile_MyListings"]</div>
+          <div class="p-3 p-md-4">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+              <span class="pf-sec-title">@L["Profile_MyListings"]</span>
+              <a href="/Listing/Create" class="btn-dark-custom py-2 px-3" style="font-size:.78rem;"><i class="bi bi-plus-lg me-1"></i>@L["MyListings_New"]</a>
+            </div>
+            @if (!Model.MyListings.Any())
+            { <div class="pf-empty"><i class="bi bi-card-list"></i><h5>@L["MyListings_Empty"]</h5><p>@L["MyListings_EmptyDesc"]</p><a href="/Listing/Create" class="btn-dark-custom mt-2 d-inline-block">@L["MyListings_Post"]</a></div> }
+            else
             {
-                <div class="settings-alert settings-alert-success">
-                    <i class="bi bi-check-circle-fill"></i>@TempData["Success"]
-                </div>
+              <ul class="pf-subtabs">
+                <li><button class="pf-subtab active" id="sbtn-active" onclick="switchSubtab('list-active')">@L["MyListings_Active"] <span class="pf-tab-badge">@activeListings.Count</span></button></li>
+                @if(pendingListings.Any()){<li><button class="pf-subtab" id="sbtn-pending" onclick="switchSubtab('list-pending')">@L["MyListings_Pending"] <span class="pf-tab-badge warn">@pendingListings.Count</span></button></li>}
+                <li><button class="pf-subtab" id="sbtn-closed" onclick="switchSubtab('list-closed')">@L["MyListings_Closed"] <span class="pf-tab-badge" style="background:var(--muted);">@closedListings.Count</span></button></li>
+              </ul>
+              <div id="list-active">
+                @if(!activeListings.Any()){<div class="text-muted text-center py-3 small">@L["MyListings_NoActive"]</div>}
+                else{<div class="d-flex flex-column gap-2">@foreach(var l in activeListings){@await Html.PartialAsync("_MyListingRow",l)}</div>}
+              </div>
+              <div id="list-pending" style="display:none;">
+                @if(!pendingListings.Any()){<div class="text-muted text-center py-3 small">@L["MyListings_NoPending"]</div>}
+                else{<div class="alert alert-warning small mb-2">@L["MyListings_PendingHint"]</div><div class="d-flex flex-column gap-2">@foreach(var l in pendingListings){@await Html.PartialAsync("_MyListingRow",l)}</div>}
+              </div>
+              <div id="list-closed" style="display:none;">
+                @if(!closedListings.Any()){<div class="text-muted text-center py-3 small">@L["MyListings_NoClosed"]</div>}
+                else{<div class="pf-earnings-banner mb-2"><i class="bi bi-cash-stack me-2"></i>@L["MyListings_TotalEarned"]: <strong class="ms-1">@closedTotal.ToString("N0")₼</strong></div><div class="d-flex flex-column gap-2">@foreach(var l in closedListings){@await Html.PartialAsync("_MyListingRow",l)}</div>}
+              </div>
             }
-            @if (TempData["PwdSuccess"] != null)
+          </div>
+        </div>
+
+        @* ══ ORDERS TAB ══ *@
+        <div class="pf-tab-pane @(activeTab=="orders"?"active":"")" id="tab-orders">
+          <div class="pf-mob-sec-hdr"><button class="pf-mob-back" onclick="closeMobSection()"><i class="bi bi-arrow-left"></i></button><i class="bi bi-bag"></i>@L["Profile_Purchases"]</div>
+          <div class="p-3 p-md-4">
+            <span class="pf-sec-title d-block mb-3">@L["Profile_Purchases"]</span>
+            @if (!Model.Purchases.Any())
+            { <div class="pf-empty"><i class="bi bi-bag-x"></i><h5>@L["Checkout_History_Empty"]</h5><a href="/Listing" class="btn-dark-custom mt-2 d-inline-block">@L["Checkout_History_Browse"]</a></div> }
+            else
             {
-                <div class="settings-alert settings-alert-success">
-                    <i class="bi bi-check-circle-fill"></i>@TempData["PwdSuccess"]
-                </div>
+              <div class="d-flex flex-column gap-3">
+                @foreach (var p in Model.Purchases)
+                {
+                  bool ok=p.Status=="Completed"; bool isVip=p.Type=="Vip";
+                  <div class="pf-order-card">
+                    <div class="d-flex justify-content-between align-items-start flex-wrap gap-2 mb-2">
+                      <div>
+                        <div class="d-flex align-items-center gap-2 mb-1">
+                          <span class="pf-type-badge @(isVip?"pf-type-vip":"pf-type-delivery")"><i class="bi @(isVip?"bi-star-fill":"bi-truck") me-1"></i>@(isVip?L["Checkout_History_Vip"].Value:L["Checkout_History_Delivery"].Value)</span>
+                          <span class="text-muted" style="font-size:.68rem;">#@p.OrderNumber</span>
+                        </div>
+                        <div class="fw-semibold" style="font-size:.875rem;">@p.ListingTitle</div>
+                        <div class="text-muted" style="font-size:.68rem;">@p.CreatedDate.ToString("dd MMM yyyy, HH:mm")</div>
+                      </div>
+                      <div class="text-end flex-shrink-0">
+                        <span class="pf-status-badge status-@p.Status.ToLower() d-block mb-1">@(p.Status=="Completed"?L["Checkout_History_StatusPaid"].Value:p.Status=="Failed"?L["Checkout_History_StatusDeclined"].Value:L["Checkout_History_StatusPending"].Value)</span>
+                        <div class="fw-bold">@p.TotalAmount.ToString("N2")₼</div>
+                      </div>
+                    </div>
+                    <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 pt-2" style="border-top:1px solid var(--border);">
+                      <div class="text-muted d-flex flex-wrap gap-2" style="font-size:.7rem;">
+                        @if(isVip&&p.VipDays.HasValue){<span><i class="bi bi-calendar3 me-1"></i>@p.VipDays дн.</span>}
+                        else if(!isVip&&p.DeliveryCity!=null){<span><i class="bi bi-geo-alt me-1"></i>@p.DeliveryCity</span>}
+                        @if(ok&&p.CardLast4!=null){<span><i class="bi bi-credit-card me-1"></i>••••@p.CardLast4</span>}
+                        @if(!isVip&&ok&&!string.IsNullOrEmpty(p.SellerApprovalStatus)){
+                          var sc=p.SellerApprovalStatus=="Approved"?"text-success":p.SellerApprovalStatus=="Rejected"?"text-danger":"text-warning";
+                          <span class="@sc fw-semibold"><i class="bi @(p.SellerApprovalStatus=="Approved"?"bi-check-circle-fill":p.SellerApprovalStatus=="Rejected"?"bi-x-circle-fill":"bi-hourglass-split") me-1"></i>@(p.SellerApprovalStatus=="Pending"?L["Checkout_History_SellerPending"].Value:p.SellerApprovalStatus=="Approved"?L["Checkout_History_SellerApproved"].Value:L["Checkout_History_SellerRejected"].Value)</span>
+                        }
+                      </div>
+                      <a href="/Listing/Detail/@p.ListingId" class="btn-outline-dark-custom py-1 px-2" style="font-size:.72rem;"><i class="bi bi-box-arrow-up-right me-1"></i>@L["Checkout_History_GoListing"]</a>
+                    </div>
+                  </div>
+                }
+              </div>
             }
-            @if (TempData["PwdError"] != null)
+          </div>
+        </div>
+
+        @* ══ REVIEWS TAB ══ *@
+        <div class="pf-tab-pane @(activeTab=="reviews"?"active":"")" id="tab-reviews">
+          <div class="pf-mob-sec-hdr"><button class="pf-mob-back" onclick="closeMobSection()"><i class="bi bi-arrow-left"></i></button><i class="bi bi-star"></i>@L["Profile_ReviewsTab"]</div>
+          <div class="p-3 p-md-4">
+            <span class="pf-sec-title d-block mb-3">@L["Profile_ReviewsTab"]</span>
+            @if (!Model.ReviewsReceived.Any())
+            { <div class="pf-empty"><i class="bi bi-star"></i><h5>@L["Profile_NoReviewsYet"]</h5><p>@L["Profile_NoReviewsDesc"]</p></div> }
+            else
             {
-                <div class="settings-alert settings-alert-error">
-                    <i class="bi bi-exclamation-circle-fill"></i>@TempData["PwdError"]
+              <div class="pf-rating-overview mb-3">
+                <div class="pf-rating-big">
+                  <div class="pf-rating-big-num">@(Model.AvgRating?.ToString("F1")??"—")</div>
+                  <div class="d-flex justify-content-center gap-1 my-1">
+                    @if(Model.AvgRating.HasValue){var r2=Model.AvgRating.Value;for(int i=1;i<=5;i++){if(i<=(int)r2){<i class="bi bi-star-fill star-ico" style="font-size:.75rem;"></i>}else if(i-.5<=r2){<i class="bi bi-star-half star-ico" style="font-size:.75rem;"></i>}else{<i class="bi bi-star star-ico-empty" style="font-size:.75rem;"></i>}}}
+                  </div>
+                  <div class="text-muted" style="font-size:.7rem;">@Model.ReviewsReceived.Count @L["Profile_ReviewCount"]</div>
                 </div>
+                <div class="pf-rating-bars">
+                  @for(int s=5;s>=1;s--){var cnt=Model.ReviewsReceived.Count(rv=>rv.Rating==s);var pct=Model.ReviewsReceived.Any()?(int)(cnt*100.0/Model.ReviewsReceived.Count):0;
+                  <div class="d-flex align-items-center gap-2"><span class="pf-bar-lbl">@s<i class="bi bi-star-fill star-ico" style="font-size:.6rem;"></i></span><div class="pf-bar-track flex-1"><div class="pf-bar-fill" style="width:@pct%"></div></div><span class="pf-bar-cnt">@cnt</span></div>}
+                </div>
+              </div>
+              <div class="d-flex flex-column gap-2">
+                @foreach(var rev in Model.ReviewsReceived.OrderByDescending(rv=>rv.CreatedDate))
+                {
+                  var ri=rev.ReviewerName.Length>0?rev.ReviewerName[0].ToString().ToUpper():"?";
+                  <div class="pf-review-card">
+                    <div class="d-flex justify-content-between align-items-start mb-2">
+                      <div class="d-flex align-items-center gap-2">
+                        <div class="pf-reviewer-av">@ri</div>
+                        <div><div class="fw-semibold" style="font-size:.84rem;">@rev.ReviewerName</div><div class="text-muted" style="font-size:.68rem;">@rev.CreatedDate.ToString("dd.MM.yyyy")</div></div>
+                      </div>
+                      <div class="d-flex gap-1">@for(int i=1;i<=5;i++){if(i<=rev.Rating){<i class="bi bi-star-fill star-ico" style="font-size:.75rem;"></i>}else{<i class="bi bi-star star-ico-empty" style="font-size:.75rem;"></i>}}</div>
+                    </div>
+                    @if(!string.IsNullOrWhiteSpace(rev.Comment)){<p class="mb-0" style="font-size:.84rem;color:var(--sub);">@rev.Comment</p>}
+                  </div>
+                }
+              </div>
+            }
+          </div>
+        </div>
+
+        @* ══ SELLER TAB ══ *@
+        @{
+          var pendingOrds  = Model.IncomingOrders.Where(o => o.SellerApprovalStatus == "Pending").ToList();
+          var approvedOrds = Model.IncomingOrders.Where(o => o.SellerApprovalStatus == "Approved").ToList();
+          var rejectedOrds = Model.IncomingOrders.Where(o => o.SellerApprovalStatus == "Rejected").ToList();
+        }
+        <div class="pf-tab-pane @(activeTab=="seller"?"active":"")" id="tab-seller">
+          <div class="pf-mob-sec-hdr">
+            <button class="pf-mob-back" onclick="closeMobSection()"><i class="bi bi-arrow-left"></i></button>
+            <i class="bi bi-shop"></i>@L["Seller_Tab"]
+          </div>
+          <div class="p-3 p-md-4">
+
+            @* ── Header ── *@
+            <div class="sl-header">
+              <p class="sl-header-title"><i class="bi bi-shop me-2" style="color:var(--accent);"></i>@L["Seller_Tab"]</p>
+              <p class="sl-header-sub">@L["Seller_NoOrdersDesc"]</p>
+            </div>
+
+            @* ── KPI cards ── *@
+            <div class="sl-kpi">
+              <div class="sl-kpi-card">
+                <div class="sl-kpi-top">
+                  <div>
+                    <div class="sl-kpi-num">@Model.IncomingOrders.Count</div>
+                    <div class="sl-kpi-lbl">@L["Seller_TotalOrders"]</div>
+                  </div>
+                  <div class="sl-kpi-ico sl-kpi-ico-blue"><i class="bi bi-inbox-fill"></i></div>
+                </div>
+                <div class="sl-kpi-glow sl-kpi-glow-blue"></div>
+              </div>
+              <div class="sl-kpi-card">
+                <div class="sl-kpi-top">
+                  <div>
+                    <div class="sl-kpi-num" style="color:@(Model.PendingOrdersCount>0?"#f59e0b":"var(--text)");">@Model.PendingOrdersCount</div>
+                    <div class="sl-kpi-lbl">@L["Seller_PendingOrders"]</div>
+                  </div>
+                  <div class="sl-kpi-ico sl-kpi-ico-amber"><i class="bi bi-hourglass-split"></i></div>
+                </div>
+                <div class="sl-kpi-glow sl-kpi-glow-amber"></div>
+              </div>
+              <div class="sl-kpi-card">
+                <div class="sl-kpi-top">
+                  <div>
+                    <div class="sl-kpi-num" style="color:#16a34a;">@Model.DeliveryRevenue.ToString("N2")₼</div>
+                    <div class="sl-kpi-lbl">@L["Seller_Revenue"]</div>
+                  </div>
+                  <div class="sl-kpi-ico sl-kpi-ico-green"><i class="bi bi-cash-stack"></i></div>
+                </div>
+                <div class="sl-kpi-glow sl-kpi-glow-green"></div>
+              </div>
+            </div>
+
+            @* ── Pending alert ── *@
+            @if (pendingOrds.Any())
+            {
+              <div class="sl-alert">
+                <div class="sl-alert-ico"><i class="bi bi-bell-fill"></i></div>
+                <div class="sl-alert-text">
+                  @pendingOrds.Count @(pendingOrds.Count == 1 ? "заказ требует" : "заказа требуют") вашего ответа
+                  <span>Одобрите или отклоните — покупатель ждёт</span>
+                </div>
+                <button class="sl-alert-btn" onclick="slSetFilter('pending')">Ответить</button>
+              </div>
             }
 
-            <!-- ── Avatar + personal info ── -->
-            <form asp-controller="Account" asp-action="Profile" method="post"
-                  enctype="multipart/form-data">
-                @Html.AntiForgeryToken()
-                <input type="hidden" asp-for="PhotoUrl" />
+            @* ── Filter pills ── *@
+            @if (Model.IncomingOrders.Any())
+            {
+              <div class="sl-filters">
+                <button class="sl-filter-btn active" data-filter="all" onclick="slSetFilter('all')">
+                  Все <span class="sl-filter-cnt">@Model.IncomingOrders.Count</span>
+                </button>
+                @if (pendingOrds.Any())
+                {
+                  <button class="sl-filter-btn" data-filter="pending" onclick="slSetFilter('pending')">
+                    @L["Seller_Pending"] <span class="sl-filter-cnt">@pendingOrds.Count</span>
+                  </button>
+                }
+                @if (approvedOrds.Any())
+                {
+                  <button class="sl-filter-btn" data-filter="approved" onclick="slSetFilter('approved')">
+                    @L["Seller_Approved"] <span class="sl-filter-cnt">@approvedOrds.Count</span>
+                  </button>
+                }
+                @if (rejectedOrds.Any())
+                {
+                  <button class="sl-filter-btn" data-filter="rejected" onclick="slSetFilter('rejected')">
+                    @L["Seller_Rejected"] <span class="sl-filter-cnt">@rejectedOrds.Count</span>
+                  </button>
+                }
+              </div>
+            }
 
-                <div class="settings-card">
-                    <div class="settings-card-title">
-                        <i class="bi bi-person-circle"></i>@L["Profile_Avatar"]
-                    </div>
+            @* ── Orders list ── *@
+            @if (!Model.IncomingOrders.Any())
+            {
+              <div class="sl-empty">
+                <div class="sl-empty-ico"><i class="bi bi-shop"></i></div>
+                <div class="sl-empty-title">@L["Seller_NoOrders"]</div>
+                <p class="sl-empty-desc">Когда покупатели оформят доставку ваших товаров, заказы появятся здесь</p>
+                <a href="/Listing/Create" class="btn-dark-custom mt-3 d-inline-flex align-items-center gap-2" style="font-size:.8rem;">
+                  <i class="bi bi-plus-lg"></i>@L["Profile_AddListing"]
+                </a>
+              </div>
+            }
+            else
+            {
+              <div class="d-flex flex-column gap-3" id="sl-orders-wrap">
+                @foreach (var o in Model.IncomingOrders)
+                {
+                  var st        = o.SellerApprovalStatus ?? "Pending";
+                  var isPend    = st == "Pending";
+                  var isAppr    = st == "Approved";
+                  var modClass  = isPend ? "sl-order--pending" : (isAppr ? "sl-order--approved" : "sl-order--rejected");
+                  var badgeCls  = isPend ? "sl-sbadge-pending" : (isAppr ? "sl-sbadge-approved" : "sl-sbadge-rejected");
+                  var badgeIco  = isPend ? "bi-hourglass-split" : (isAppr ? "bi-check-circle-fill" : "bi-x-circle-fill");
+                  var badgeTxt  = isPend ? L["Seller_Pending"].Value : (isAppr ? L["Seller_Approved"].Value : L["Seller_Rejected"].Value);
 
-                    <div class="avatar-block">
-                        <div class="avatar-circle" id="avatarPreview">
-                            @if (!string.IsNullOrEmpty(Model.PhotoUrl))
+                  <div class="sl-order @modClass" id="sorder-@o.Id" data-status="@st.ToLower()">
+                    <div class="sl-order-stripe"></div>
+                    <div class="sl-order-inner">
+                      <div class="sl-order-top">
+                        <div class="sl-order-left">
+                          <div class="sl-order-head">
+                            <span class="sl-sbadge @badgeCls"><i class="bi @badgeIco"></i>@badgeTxt</span>
+                            <span class="sl-order-num">#@o.OrderNumber</span>
+                            <span class="sl-order-time"><i class="bi bi-clock me-1"></i>@o.CreatedDate.ToString("dd MMM yyyy · HH:mm")</span>
+                          </div>
+                          <div class="sl-order-title" title="@o.ListingTitle">@o.ListingTitle</div>
+                          <div class="sl-order-meta">
+                            @if (!string.IsNullOrEmpty(o.DeliveryCity))
                             {
-                                <img src="@Model.PhotoUrl" alt="avatar" id="avatarImg" />
+                              <span class="sl-order-meta-item"><i class="bi bi-geo-alt"></i>@o.DeliveryCity@(string.IsNullOrEmpty(o.DeliveryAddress) ? "" : ", " + o.DeliveryAddress)</span>
                             }
-                            else
+                            @if (o.DeliveryFee > 0)
                             {
-                                <span id="avatarInitials">@(Model.FirstName.FirstOrDefault().ToString().ToUpper())@(Model.LastName.FirstOrDefault().ToString().ToUpper())</span>
+                              <span class="sl-order-meta-item"><i class="bi bi-truck"></i>@L["Seller_DeliveryTo"]: +@o.DeliveryFee.ToString("N2")₼</span>
                             }
+                          </div>
                         </div>
-                        <div class="avatar-actions">
-                            <label class="avatar-upload-btn">
-                                <i class="bi bi-camera"></i>@L["Profile_ChangePhoto"]
-                                <input type="file" asp-for="Photo" accept="image/*"
-                                       style="display:none;" id="photoInput"
-                                       onchange="previewAvatar(this)" />
-                            </label>
-                            @if (!string.IsNullOrEmpty(Model.PhotoUrl))
-                            {
-                                <a href="/Account/RemovePhoto" class="avatar-remove-btn">
-                                    <i class="bi bi-trash"></i>@L["Profile_RemovePhoto"]
-                                </a>
-                            }
-                            <span class="avatar-hint">JPG, PNG, WebP · до 5 МБ</span>
+                        <div class="sl-order-right">
+                          <div class="sl-order-total">@o.TotalAmount.ToString("N2")₼</div>
+                          @if (o.DeliveryFee > 0)
+                          {
+                            <div class="sl-order-breakdown">@o.ListingPrice.ToString("N2") + @o.DeliveryFee.ToString("N2")₼</div>
+                          }
                         </div>
+                      </div>
                     </div>
+                    <div class="sl-order-footer">
+                      <a href="/Listing/Detail/@o.ListingId" class="sl-order-link" target="_blank">
+                        <i class="bi bi-box-arrow-up-right"></i>@L["Checkout_History_GoListing"]
+                      </a>
+                      @if (isPend)
+                      {
+                        <div class="sl-actions" id="sl-actions-@o.Id">
+                          <button class="sl-btn sl-btn-reject" onclick="sellerReject('@o.Id', this)">
+                            <i class="bi bi-x-lg"></i>@L["Seller_Reject"]
+                          </button>
+                          <button class="sl-btn sl-btn-approve" onclick="sellerApprove('@o.Id', this)">
+                            <i class="bi bi-check-lg"></i>@L["Seller_Approve"]
+                          </button>
+                        </div>
+                      }
+                    </div>
+                  </div>
+                }
+              </div>
+            }
+
+          </div>
+        </div>
+
+        @* ══ SETTINGS TAB ══ *@
+        <div class="pf-tab-pane @(activeTab=="settings"?"active":"")" id="tab-settings">
+          <div class="pf-mob-sec-hdr"><button class="pf-mob-back" onclick="closeMobSection()"><i class="bi bi-arrow-left"></i></button><i class="bi bi-gear"></i>@L["Profile_Settings"]</div>
+          <div class="p-3 p-md-4">
+
+            @* Personal info *@
+            <h6 class="pf-sec-title mb-3">@L["Profile_PersonalInfo"]</h6>
+            <form asp-controller="Account" asp-action="Profile" method="post" enctype="multipart/form-data" class="mb-4">
+              @Html.AntiForgeryToken()
+              <input type="hidden" name="PhotoUrl" value="@Model.EditForm.PhotoUrl" />
+              @* Avatar *@
+              <div class="d-flex align-items-center gap-3 mb-3">
+                <div class="avatar-circle" id="settingsAvPreview">
+                  @if(!string.IsNullOrEmpty(Model.EditForm.PhotoUrl)){<img src="@Model.EditForm.PhotoUrl" style="width:100%;height:100%;object-fit:cover;border-radius:50%;" />}
+                  else{<span>@initials</span>}
                 </div>
-
-                <div class="settings-card">
-                    <div class="settings-card-title">
-                        <i class="bi bi-person"></i>@L["Profile_PersonalInfo"]
-                    </div>
-
-                    <div class="form-grid">
-                        <div class="form-group">
-                            <label class="form-label">@L["Profile_FirstName"]</label>
-                            <input asp-for="FirstName" class="form-input" />
-                            <span asp-validation-for="FirstName" class="validation-msg"></span>
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label">@L["Profile_LastName"]</label>
-                            <input asp-for="LastName" class="form-input" />
-                            <span asp-validation-for="LastName" class="validation-msg"></span>
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label">@L["Profile_Phone"]</label>
-                            <input asp-for="PhoneNumber" class="form-input" placeholder="+994 XX XXX XX XX" />
-                            <span asp-validation-for="PhoneNumber" class="validation-msg"></span>
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label">@L["Profile_Email"]</label>
-                            <input type="email" value="@email" class="form-input" disabled />
-                            <span class="form-hint">@L["Profile_EmailHint"]</span>
-                        </div>
-                    </div>
-
-                    <button type="submit" class="save-btn">
-                        <i class="bi bi-check-lg"></i>@L["Profile_SaveChanges"]
-                    </button>
+                <div>
+                  <div class="d-flex flex-wrap gap-2 mb-1">
+                    <label class="avatar-upload-btn"><i class="bi bi-camera"></i>@L["Profile_ChangePhoto"]<input type="file" name="Photo" accept="image/*" style="display:none;" id="settingsPhotoInput" onchange="previewSettingsAvatar(this)" /></label>
+                    @if(!string.IsNullOrEmpty(Model.EditForm.PhotoUrl)){<a href="/Account/RemovePhoto" class="avatar-remove-btn"><i class="bi bi-trash"></i>@L["Profile_RemovePhoto"]</a>}
+                  </div>
+                  <div class="avatar-hint">JPG, PNG, WebP · до 5 МБ</div>
                 </div>
+              </div>
+              @* Fields *@
+              <div class="form-grid mb-3">
+                <div class="form-group"><label class="form-label">@L["Profile_FirstName"]</label><input type="text" name="FirstName" value="@Model.EditForm.FirstName" class="form-input" required minlength="2" /></div>
+                <div class="form-group"><label class="form-label">@L["Profile_LastName"]</label><input type="text" name="LastName" value="@Model.EditForm.LastName" class="form-input" required minlength="2" /></div>
+                <div class="form-group"><label class="form-label">@L["Profile_Phone"]</label><input type="tel" name="PhoneNumber" value="@Model.EditForm.PhoneNumber" class="form-input" placeholder="+994 XX XXX XX XX" /></div>
+                <div class="form-group"><label class="form-label">@L["Profile_Email"]</label><input type="email" value="@email" class="form-input" disabled /><span class="form-hint">@L["Profile_EmailHint"]</span></div>
+              </div>
+              <button type="submit" class="save-btn"><i class="bi bi-check-lg"></i>@L["Profile_SaveChanges"]</button>
             </form>
 
-            <!-- ── Change password ── -->
-            <form asp-controller="Account" asp-action="ChangePassword" method="post">
-                @Html.AntiForgeryToken()
-                <div class="settings-card">
-                    <div class="settings-card-title">
-                        <i class="bi bi-lock"></i>@L["Profile_ChangePassword"]
-                    </div>
+            <hr style="border-color:var(--border); margin:24px 0;" />
 
-                    <div class="pwd-grid">
-                        <div class="form-group">
-                            <label class="form-label">@L["Profile_CurrentPassword"]</label>
-                            <input asp-for="@(new ChangePasswordViewModel().CurrentPassword)"
-                                   name="CurrentPassword" type="password" class="form-input"
-                                   autocomplete="current-password" />
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label">@L["Profile_NewPassword"]</label>
-                            <input asp-for="@(new ChangePasswordViewModel().NewPassword)"
-                                   name="NewPassword" type="password" class="form-input"
-                                   autocomplete="new-password" />
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label">@L["Profile_ConfirmPassword"]</label>
-                            <input asp-for="@(new ChangePasswordViewModel().ConfirmPassword)"
-                                   name="ConfirmPassword" type="password" class="form-input"
-                                   autocomplete="new-password" />
-                        </div>
-                    </div>
-
-                    <button type="submit" class="save-btn" style="margin-top:16px;">
-                        <i class="bi bi-shield-lock"></i>@L["Profile_UpdatePassword"]
-                    </button>
-                </div>
+            @* Change password *@
+            <h6 class="pf-sec-title mb-3">@L["Profile_ChangePassword"]</h6>
+            <form asp-controller="Account" asp-action="ChangePassword" method="post" class="mb-4">
+              @Html.AntiForgeryToken()
+              <div class="pwd-grid mb-3">
+                <div class="form-group"><label class="form-label">@L["Profile_CurrentPassword"]</label><input name="CurrentPassword" type="password" class="form-input" autocomplete="current-password" placeholder="••••••••" /></div>
+                <div class="form-group"><label class="form-label">@L["Profile_NewPassword"]</label><input name="NewPassword" type="password" class="form-input" autocomplete="new-password" placeholder="••••••••" /></div>
+                <div class="form-group"><label class="form-label">@L["Profile_ConfirmPassword"]</label><input name="ConfirmPassword" type="password" class="form-input" autocomplete="new-password" placeholder="••••••••" /></div>
+              </div>
+              <button type="submit" class="save-btn"><i class="bi bi-shield-lock"></i>@L["Profile_UpdatePassword"]</button>
             </form>
 
-        </main>
+            <hr style="border-color:var(--border); margin:24px 0;" />
+
+            @* Logout *@
+            <h6 class="pf-sec-title mb-3">@L["Nav_Logout"]</h6>
+            <form method="post" asp-controller="Account" asp-action="Logout" class="mb-4">
+              @Html.AntiForgeryToken()
+              <button type="submit" class="pf-logout-btn">
+                <i class="bi bi-box-arrow-right"></i>@L["Nav_Logout"]
+              </button>
+            </form>
+
+            <hr style="border-color:var(--border); margin:24px 0;" />
+
+            @* Danger zone *@
+            <div class="pf-danger-zone">
+              <div class="d-flex align-items-center gap-2 mb-2">
+                <i class="bi bi-exclamation-triangle-fill text-danger"></i>
+                <h6 class="mb-0 fw-bold" style="color:#dc2626; font-size:.88rem;">@L["Profile_DangerZone"]</h6>
+              </div>
+              <p class="mb-3" style="font-size:.82rem; color:#991b1b;">@L["Profile_DeleteAccountWarn"]</p>
+              <button type="button" class="btn-danger-outline" onclick="openDeleteScreen()">
+                <i class="bi bi-trash"></i>@L["Profile_DeleteAccount"]
+              </button>
+            </div>
+
+          </div>
+        </div>
+
+      </div>@* /pf-tabs-wrap *@
+    </div>@* /profile-main *@
+  </div>
+</div>
+
+@* ── FULL-SCREEN DELETE OVERLAY ── *@
+<div id="pf-delete-screen">
+  <div class="pf-del-header">
+    <button type="button" class="pf-del-back" onclick="closeDeleteScreen()">
+      <i class="bi bi-arrow-left"></i>
+    </button>
+    <span style="font-size:1rem; font-weight:700; color:var(--text);">@L["Profile_DeleteAccount"]</span>
+  </div>
+  <div style="max-width:500px; margin:0 auto; padding:28px 20px;">
+    <div style="background:#fff5f5; border:1.5px solid #fecaca; border-radius:14px; padding:18px; margin-bottom:24px;">
+      <div class="d-flex align-items-start gap-3">
+        <i class="bi bi-exclamation-triangle-fill" style="color:#dc2626; font-size:1.4rem; flex-shrink:0; margin-top:2px;"></i>
+        <div>
+          <div style="font-weight:700; color:#991b1b; font-size:.95rem; margin-bottom:6px;">@L["Profile_DangerZone"]</div>
+          <p style="font-size:.875rem; color:#991b1b; margin:0;">@L["Profile_DeleteAccountWarn"]</p>
+        </div>
+      </div>
     </div>
+    <div class="form-group mb-4">
+      <label class="form-label">@L["Profile_DeleteConfirmHint"]</label>
+      <input type="text" id="deleteConfirmInput" class="form-input w-100" placeholder="УДАЛИТЬ / SİL / DELETE" oninput="checkDeleteConfirm(this.value)" />
+    </div>
+    <form method="post" asp-controller="Account" asp-action="DeleteAccount">
+      @Html.AntiForgeryToken()
+      <button type="submit" id="deleteConfirmBtn" class="btn btn-danger w-100 py-3" disabled style="font-size:.95rem; font-weight:700; border-radius:12px;">
+        <i class="bi bi-trash me-2"></i>@L["Profile_DeleteAccount"]
+      </button>
+    </form>
+  </div>
 </div>
 
 @section Scripts {
 <script>
-    function previewAvatar(input) {
-        if (!input.files?.length) return;
-        const file = input.files[0];
-        const reader = new FileReader();
-        reader.onload = e => {
-            const preview = document.getElementById('avatarPreview');
-            preview.innerHTML = `<img src="${e.target.result}" style="width:100%;height:100%;object-fit:cover;" />`;
-        };
-        reader.readAsDataURL(file);
+// ── Tab switching (desktop) ──────────────────────
+function switchTab(tabName) {
+    document.querySelectorAll('.pf-tab-pane').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.pf-tab-btn').forEach(b => b.classList.remove('active'));
+    var pane = document.getElementById('tab-' + tabName);
+    var btn  = document.querySelector('[data-tab="' + tabName + '"]');
+    if (pane) pane.classList.add('active');
+    if (btn)  { btn.classList.add('active'); btn.scrollIntoView({behavior:'smooth',block:'nearest',inline:'center'}); }
+    history.replaceState(null, '', '?tab=' + tabName);
+}
+
+// ── Sub-tab switching ────────────────────────────
+function switchSubtab(subId) {
+    ['list-active','list-pending','list-closed'].forEach(id => {
+        var el = document.getElementById(id);
+        if (el) el.style.display = (id === subId) ? '' : 'none';
+    });
+    document.querySelectorAll('.pf-subtab').forEach(b => {
+        var m = b.getAttribute('onclick')?.match(/'([^']+)'/);
+        b.classList.toggle('active', m && m[1] === subId);
+    });
+}
+
+// ── Delete screen ────────────────────────────────
+function openDeleteScreen() {
+    var screen = document.getElementById('pf-delete-screen');
+    // Move to body to escape <main> animation containing block (breaks position:fixed)
+    if (screen.parentElement !== document.body) document.body.appendChild(screen);
+    screen.style.display = 'block';
+    document.body.style.overflow = 'hidden';
+    var inp = document.getElementById('deleteConfirmInput');
+    var btn = document.getElementById('deleteConfirmBtn');
+    if (inp) inp.value = '';
+    if (btn) btn.disabled = true;
+}
+function closeDeleteScreen() {
+    document.getElementById('pf-delete-screen').style.display = 'none';
+    document.body.style.overflow = '';
+}
+
+// ── Mobile section navigation ─────────────────────
+function openMobSection(name) {
+    document.getElementById('pf-mob-menu').style.display = 'none';
+    document.querySelectorAll('.pf-tab-pane').forEach(function(p){ p.classList.remove('mob-open'); });
+    var pane = document.getElementById('tab-' + name);
+    if (pane) pane.classList.add('mob-open');
+    window.scrollTo({top:0, behavior:'smooth'});
+}
+function closeMobSection() {
+    document.querySelectorAll('.pf-tab-pane').forEach(function(p){ p.classList.remove('mob-open'); });
+    document.getElementById('pf-mob-menu').style.display = '';
+    window.scrollTo({top:0, behavior:'smooth'});
+}
+var _deleteWords = ['УДАЛИТЬ','SİL','DELETE'];
+function checkDeleteConfirm(val) {
+    var btn = document.getElementById('deleteConfirmBtn');
+    if (btn) btn.disabled = !_deleteWords.includes(val.trim().toUpperCase());
+}
+
+// ── Hero avatar quick upload ─────────────────────
+function heroQuickUpload(input) {
+    if (!input.files?.length) return;
+    switchTab('settings');
+    setTimeout(() => {
+        var si = document.getElementById('settingsPhotoInput');
+        if (si) { var dt=new DataTransfer(); dt.items.add(input.files[0]); si.files=dt.files; previewSettingsAvatar(si); si.closest('form').submit(); }
+    }, 120);
+}
+
+// ── Settings avatar preview ──────────────────────
+function previewSettingsAvatar(input) {
+    if (!input.files?.length) return;
+    var reader = new FileReader();
+    reader.onload = e => {
+        var el = document.getElementById('settingsAvPreview');
+        if (el) el.innerHTML = '<img src="' + e.target.result + '" style="width:100%;height:100%;object-fit:cover;border-radius:50%;" />';
+    };
+    reader.readAsDataURL(input.files[0]);
+}
+
+// ── Seller panel: filter ─────────────────────────
+function slSetFilter(f) {
+    document.querySelectorAll('.sl-filter-btn').forEach(b => b.classList.toggle('active', b.dataset.filter === f));
+    document.querySelectorAll('#sl-orders-wrap .sl-order').forEach(function(card) {
+        var st = card.dataset.status;
+        card.style.display = (f === 'all' || st === f) ? '' : 'none';
+    });
+}
+
+// ── Seller: approve / reject orders ──────────────
+async function sellerApprove(orderId, btn) {
+    await _sellerAction('/Checkout/ApproveOrder?id=' + orderId, orderId, btn, 'approved');
+}
+async function sellerReject(orderId, btn) {
+    await _sellerAction('/Checkout/RejectOrder?id=' + orderId, orderId, btn, 'rejected');
+}
+async function _sellerAction(url, orderId, btn, newStatus) {
+    var card  = document.getElementById('sorder-' + orderId);
+    var wrap  = document.getElementById('sl-actions-' + orderId);
+    var origHtml = btn.innerHTML;
+    if (wrap) wrap.querySelectorAll('.sl-btn').forEach(b => b.disabled = true);
+    btn.innerHTML = '<span class="spinner-border spinner-border-sm" style="width:13px;height:13px;border-width:2px;"></span>';
+    try {
+        var resp = await fetch(url, { method: 'POST', credentials: 'same-origin' });
+        if (!resp.ok) throw new Error(resp.status);
+        if (card) {
+            // swap class + stripe
+            card.classList.remove('sl-order--pending','sl-order--approved','sl-order--rejected');
+            card.classList.add('sl-order--' + newStatus);
+            card.dataset.status = newStatus;
+            // update badge in card head
+            var badge = card.querySelector('.sl-sbadge');
+            if (badge) {
+                if (newStatus === 'approved') {
+                    badge.className = 'sl-sbadge sl-sbadge-approved';
+                    badge.innerHTML = '<i class="bi bi-check-circle-fill"></i>@L["Seller_Approved"]';
+                } else {
+                    badge.className = 'sl-sbadge sl-sbadge-rejected';
+                    badge.innerHTML = '<i class="bi bi-x-circle-fill"></i>@L["Seller_Rejected"]';
+                }
+            }
+            // remove action buttons, add done checkmark
+            if (wrap) {
+                wrap.innerHTML = newStatus === 'approved'
+                    ? '<span style="font-size:.78rem;font-weight:600;color:#16a34a;"><i class="bi bi-check-circle-fill me-1"></i>@L["Seller_Approved"]</span>'
+                    : '<span style="font-size:.78rem;font-weight:600;color:#dc2626;"><i class="bi bi-x-circle-fill me-1"></i>@L["Seller_Rejected"]</span>';
+            }
+            // update tab badge count
+            _slUpdatePendingBadge(-1);
+            // update kpi: pending down, (approved up or revenue up handled on reload)
+            var kpiPend = document.querySelector('#tab-seller .sl-kpi .sl-kpi-num[style*="f59e0b"]') ||
+                          document.querySelectorAll('#tab-seller .sl-kpi .sl-kpi-num')[1];
+            if (kpiPend) {
+                var n = (parseInt(kpiPend.textContent) || 1) - 1;
+                kpiPend.textContent = n;
+                if (n === 0) kpiPend.style.color = 'var(--text)';
+            }
+            // hide alert banner if no more pending
+            var remaining = document.querySelectorAll('#sl-orders-wrap .sl-order[data-status="pending"]').length;
+            if (remaining === 0) {
+                var alertEl = document.querySelector('#tab-seller .sl-alert');
+                if (alertEl) { alertEl.style.transition='opacity .3s'; alertEl.style.opacity='0'; setTimeout(()=>alertEl.remove(),300); }
+                // also hide pending filter pill
+                document.querySelectorAll('.sl-filter-btn').forEach(b => {
+                    if (b.dataset.filter === 'pending') b.style.display = 'none';
+                });
+            }
+        }
+    } catch {
+        if (wrap) wrap.querySelectorAll('.sl-btn').forEach(b => b.disabled = false);
+        btn.innerHTML = origHtml;
     }
+}
+function _slUpdatePendingBadge(delta) {
+    document.querySelectorAll('[data-tab="seller"] .pf-tab-badge').forEach(function(el) {
+        var n = (parseInt(el.textContent) || 0) + delta;
+        if (n <= 0) el.remove(); else el.textContent = n;
+    });
+}
+
+// ── Init from URL ────────────────────────────────
+(function(){
+    var t = new URLSearchParams(window.location.search).get('tab');
+    if (t && document.getElementById('tab-' + t)) switchTab(t);
+})();
 </script>
 }

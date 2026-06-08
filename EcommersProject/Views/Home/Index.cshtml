@@ -11,12 +11,10 @@
         <form action="/Listing" method="get" class="hero-form">
             <div class="hero-input-wrap">
                 <i class="bi bi-search hero-ico"></i>
-                <input type="text" name="q" placeholder="@L["Home_WhatLooking"]" class="hero-input" />
-                <div class="hero-sep"></div>
-                <select name="city" class="hero-city">
-                    <option value="">@L["Home_AllCities"]</option>
-                    @await Html.PartialAsync("_CityOptions")
-                </select>
+                <input type="text" name="q" placeholder="@L["Home_WhatLooking"]" class="hero-input" id="heroSearchInput" />
+                <button type="button" class="hero-filter-btn" data-bs-toggle="modal" data-bs-target="#filterModal" title="@L["Browse_Filters"]">
+                    <i class="bi bi-sliders2"></i>
+                </button>
                 <button type="submit" class="hero-btn">@L["Home_Find"]</button>
             </div>
         </form>
@@ -139,12 +137,6 @@
         flex: 1; border: none; outline: none; background: transparent;
         padding: 15px 8px; font-size: .95rem; font-family: inherit; color: var(--text); min-width: 0;
     }
-    .hero-sep { width: 1px; height: 24px; background: var(--border); flex-shrink: 0; margin: 0 4px; }
-    .hero-city {
-        border: none; outline: none; background: transparent;
-        padding: 15px 10px; font-size: .875rem; font-family: inherit;
-        color: var(--sub); cursor: pointer; flex-shrink: 0; max-width: 148px;
-    }
     .hero-btn {
         background: var(--accent);
         color: #fff;
@@ -165,6 +157,17 @@
     .hero-stat-sep { width: 1px; height: 34px; background: rgba(255,255,255,.14); flex-shrink: 0; }
     @@media (max-width: 480px) { .hero-stats { gap: 16px; } .hero-stat-num { font-size: 1.1rem; } .hero-stat-sep { display: none; } }
     @@media (max-width: 600px) { .hero-input-wrap { border-radius: 16px; } .hero-btn { border-radius: 12px; } }
+    /* Filter icon button */
+    .hero-filter-btn {
+        display: flex;
+        align-items: center; justify-content: center;
+        width: 42px; height: 42px; flex-shrink: 0;
+        color: var(--sub); font-size: 1.15rem;
+        border-radius: 10px; border: none; background: transparent; cursor: pointer;
+        transition: background .15s, color .15s;
+        margin-right: 2px;
+    }
+    .hero-filter-btn:hover { color: var(--accent); background: rgba(26,86,219,.07); }
 
     /* ──── Category section ──────────────────── */
     .cat-section { padding: 18px 22px; }

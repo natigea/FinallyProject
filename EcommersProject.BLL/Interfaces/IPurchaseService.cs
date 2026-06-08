@@ -9,6 +9,7 @@ public interface IPurchaseService
     Task<PurchaseGetDto?> GetByIdAsync(Guid id);
     Task<IReadOnlyList<PurchaseGetDto>> GetByUserAsync(Guid userId);
     Task<IReadOnlyList<PurchaseGetDto>> GetPendingApprovalBySellerAsync(Guid sellerId);
+    Task<IReadOnlyList<PurchaseGetDto>> GetBySellerAsync(Guid sellerId);
     Task ApproveAsync(Guid purchaseId);
     Task RejectAsync(Guid purchaseId);
 }
