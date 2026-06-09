@@ -17,10 +17,10 @@ public class AppDbContextFactory : IDesignTimeDbContextFactory<AppDbContext>
             .Build();
 
         var connectionString = configuration.GetConnectionString("DefaultConnection")
-            ?? "Server=(localdb)\\MSSQLLocalDB;Database=EcommersProject;Trusted_Connection=True;MultipleActiveResultSets=true;TrustServerCertificate=True";
+            ?? "Host=localhost;Database=ecommers;Username=postgres;Password=postgres";
 
         var optionsBuilder = new DbContextOptionsBuilder<AppDbContext>();
-        optionsBuilder.UseSqlServer(connectionString, options =>
+        optionsBuilder.UseNpgsql(connectionString, options =>
             options.MigrationsAssembly("EcommersProject.DAL"));
 
         return new AppDbContext(optionsBuilder.Options);

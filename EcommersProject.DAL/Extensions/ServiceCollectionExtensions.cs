@@ -13,10 +13,10 @@ public static class ServiceCollectionExtensions
     public static IServiceCollection AddDALServices(this IServiceCollection services, IConfiguration configuration)
     {
         var connectionString = configuration.GetConnectionString("DefaultConnection")
-            ?? "Server=(localdb)\\MSSQLLocalDB;Database=EcommersProject;Trusted_Connection=True;MultipleActiveResultSets=true;TrustServerCertificate=True";
+            ?? "Host=localhost;Database=ecommers;Username=postgres;Password=postgres";
 
         services.AddDbContext<AppDbContext>(options =>
-            options.UseSqlServer(connectionString, sql => sql.MigrationsAssembly("EcommersProject.DAL")));
+            options.UseNpgsql(connectionString, npg => npg.MigrationsAssembly("EcommersProject.DAL")));
 
         services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
         services.AddScoped<IUnitOfWork, UnitOfWork.UnitOfWork>();

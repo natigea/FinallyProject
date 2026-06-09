@@ -13,6 +13,17 @@ using Stripe;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// Render provides DATABASE_URL as postgres://user:pass@host/db
+var databaseUrl = Environment.GetEnvironmentVariable("DATABASE_URL");
+if (!string.IsNullOrEmpty(databaseUrl))
+{
+    var uri = new Uri(databaseUrl);
+    var userInfo = uri.UserInfo.Split(':');
+    var port = uri.Port > 0 ? uri.Port : 5432;
+    var connStr = $"Host={uri.Host};Port={port};Database={uri.AbsolutePath.TrimStart('/')};Username={userInfo[0]};Password={userInfo[1]};SSL Mode=Require;Trust Server Certificate=true";
+    builder.Configuration["ConnectionStrings:DefaultConnection"] = connStr;
+}
+
 StripeConfiguration.ApiKey = builder.Configuration["Stripe:SecretKey"];
 
 builder.Services.AddHttpClient();
@@ -98,111 +109,77 @@ using (var scope = app.Services.CreateScope())
         await db.Database.EnsureCreatedAsync();
     }
 
-    // Idempotent schema migrations (safe to run on existing DB)
+    // Idempotent schema migrations (PostgreSQL — safe to run on existing DB)
     try
     {
         await db.Database.ExecuteSqlRawAsync(@"
-            -- Reviews table
-            IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='Reviews' AND xtype='U')
-            CREATE TABLE [Reviews] (
-                [Id]          UNIQUEIDENTIFIER NOT NULL PRIMARY KEY DEFAULT NEWID(),
-                [ListingId]   UNIQUEIDENTIFIER NOT NULL,
-                [ReviewerId]  UNIQUEIDENTIFIER NOT NULL,
-                [SellerId]    UNIQUEIDENTIFIER NOT NULL,
-                [Rating]      INT NOT NULL DEFAULT 5,
-                [Comment]     NVARCHAR(MAX) NOT NULL DEFAULT '',
-                [CreatedDate] DATETIMEOFFSET NOT NULL DEFAULT GETUTCDATE(),
-                [UpdatedDate] DATETIMEOFFSET NOT NULL DEFAULT GETUTCDATE(),
-                [IsDeleted]   BIT NOT NULL DEFAULT 0,
-                CONSTRAINT [FK_Reviews_Listings] FOREIGN KEY ([ListingId]) REFERENCES [Listings]([Id]),
-                CONSTRAINT [FK_Reviews_Reviewer] FOREIGN KEY ([ReviewerId]) REFERENCES [Users]([Id]),
-                CONSTRAINT [FK_Reviews_Seller]   FOREIGN KEY ([SellerId])   REFERENCES [Users]([Id])
+            CREATE TABLE IF NOT EXISTS ""Reviews"" (
+                ""Id""          UUID NOT NULL PRIMARY KEY DEFAULT gen_random_uuid(),
+                ""ListingId""   UUID NOT NULL,
+                ""ReviewerId""  UUID NOT NULL,
+                ""SellerId""    UUID NOT NULL,
+                ""Rating""      INT NOT NULL DEFAULT 5,
+                ""Comment""     TEXT NOT NULL DEFAULT '',
+                ""CreatedDate"" TIMESTAMPTZ NOT NULL DEFAULT now(),
+                ""UpdatedDate"" TIMESTAMPTZ NOT NULL DEFAULT now(),
+                ""IsDeleted""   BOOLEAN NOT NULL DEFAULT FALSE,
+                CONSTRAINT ""FK_Reviews_Listings"" FOREIGN KEY (""ListingId"") REFERENCES ""Listings""(""Id""),
+                CONSTRAINT ""FK_Reviews_Reviewer"" FOREIGN KEY (""ReviewerId"") REFERENCES ""Users""(""Id""),
+                CONSTRAINT ""FK_Reviews_Seller""   FOREIGN KEY (""SellerId"")   REFERENCES ""Users""(""Id"")
             );
 
-            -- VIP columns on Listings
-            IF NOT EXISTS (SELECT * FROM sys.columns WHERE Name = N'IsVip' AND Object_ID = OBJECT_ID(N'Listings'))
-                ALTER TABLE [Listings] ADD [IsVip] BIT NOT NULL DEFAULT 0;
-            IF NOT EXISTS (SELECT * FROM sys.columns WHERE Name = N'VipExpiresAt' AND Object_ID = OBJECT_ID(N'Listings'))
-                ALTER TABLE [Listings] ADD [VipExpiresAt] DATETIMEOFFSET NULL;
-
-            -- Purchases table
-            IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='Purchases' AND xtype='U')
-            CREATE TABLE [Purchases] (
-                [Id]             UNIQUEIDENTIFIER NOT NULL PRIMARY KEY DEFAULT NEWID(),
-                [OrderNumber]    NVARCHAR(50)     NOT NULL DEFAULT '',
-                [Type]           NVARCHAR(20)     NOT NULL DEFAULT 'Delivery',
-                [UserId]         UNIQUEIDENTIFIER NOT NULL,
-                [ListingId]      UNIQUEIDENTIFIER NOT NULL,
-                [ListingTitle]   NVARCHAR(500)    NOT NULL DEFAULT '',
-                [ListingPrice]   DECIMAL(18,2)    NOT NULL DEFAULT 0,
-                [DeliveryFee]    DECIMAL(18,2)    NOT NULL DEFAULT 0,
-                [TotalAmount]    DECIMAL(18,2)    NOT NULL DEFAULT 0,
-                [VipDays]        INT              NULL,
-                [DeliveryAddress] NVARCHAR(500)   NULL,
-                [DeliveryCity]   NVARCHAR(200)    NULL,
-                [DeliveryPhone]  NVARCHAR(50)     NULL,
-                [Status]         NVARCHAR(20)     NOT NULL DEFAULT 'Pending',
-                [CardLast4]      NVARCHAR(4)      NULL,
-                [CardHolder]     NVARCHAR(200)    NULL,
-                [PaidAt]         DATETIMEOFFSET   NULL,
-                [CreatedDate]    DATETIMEOFFSET   NOT NULL DEFAULT GETUTCDATE(),
-                [UpdatedDate]    DATETIMEOFFSET   NOT NULL DEFAULT GETUTCDATE(),
-                [IsDeleted]      BIT              NOT NULL DEFAULT 0,
-                CONSTRAINT [FK_Purchases_Users]    FOREIGN KEY ([UserId])    REFERENCES [Users]([Id]),
-                CONSTRAINT [FK_Purchases_Listings] FOREIGN KEY ([ListingId]) REFERENCES [Listings]([Id])
+            CREATE TABLE IF NOT EXISTS ""Purchases"" (
+                ""Id""              UUID NOT NULL PRIMARY KEY DEFAULT gen_random_uuid(),
+                ""OrderNumber""     VARCHAR(50)    NOT NULL DEFAULT '',
+                ""Type""            VARCHAR(20)    NOT NULL DEFAULT 'Delivery',
+                ""UserId""          UUID NOT NULL,
+                ""ListingId""       UUID NOT NULL,
+                ""ListingTitle""    VARCHAR(500)   NOT NULL DEFAULT '',
+                ""ListingPrice""    NUMERIC(18,2)  NOT NULL DEFAULT 0,
+                ""DeliveryFee""     NUMERIC(18,2)  NOT NULL DEFAULT 0,
+                ""TotalAmount""     NUMERIC(18,2)  NOT NULL DEFAULT 0,
+                ""VipDays""         INT            NULL,
+                ""DeliveryAddress"" VARCHAR(500)   NULL,
+                ""DeliveryCity""    VARCHAR(200)   NULL,
+                ""DeliveryPhone""   VARCHAR(50)    NULL,
+                ""Status""          VARCHAR(20)    NOT NULL DEFAULT 'Pending',
+                ""CardLast4""       VARCHAR(4)     NULL,
+                ""CardHolder""      VARCHAR(200)   NULL,
+                ""PaidAt""          TIMESTAMPTZ    NULL,
+                ""CreatedDate""     TIMESTAMPTZ    NOT NULL DEFAULT now(),
+                ""UpdatedDate""     TIMESTAMPTZ    NOT NULL DEFAULT now(),
+                ""IsDeleted""       BOOLEAN        NOT NULL DEFAULT FALSE,
+                CONSTRAINT ""FK_Purchases_Users""    FOREIGN KEY (""UserId"")    REFERENCES ""Users""(""Id""),
+                CONSTRAINT ""FK_Purchases_Listings"" FOREIGN KEY (""ListingId"") REFERENCES ""Listings""(""Id"")
             );
 
-            -- Seller approval columns on Purchases
-            IF NOT EXISTS (SELECT * FROM sys.columns WHERE Name = N'SellerId' AND Object_ID = OBJECT_ID(N'Purchases'))
-                ALTER TABLE [Purchases] ADD [SellerId] UNIQUEIDENTIFIER NULL;
-            IF NOT EXISTS (SELECT * FROM sys.columns WHERE Name = N'SellerApprovalStatus' AND Object_ID = OBJECT_ID(N'Purchases'))
-                ALTER TABLE [Purchases] ADD [SellerApprovalStatus] NVARCHAR(20) NULL;
-
-            -- Password reset columns on Users
-            IF NOT EXISTS (SELECT * FROM sys.columns WHERE Name = N'ResetToken' AND Object_ID = OBJECT_ID(N'Users'))
-                ALTER TABLE [Users] ADD [ResetToken] NVARCHAR(20) NULL;
-            IF NOT EXISTS (SELECT * FROM sys.columns WHERE Name = N'ResetTokenExpiry' AND Object_ID = OBJECT_ID(N'Users'))
-                ALTER TABLE [Users] ADD [ResetTokenExpiry] DATETIMEOFFSET NULL;
-
-            -- Photo column on Users
-            IF NOT EXISTS (SELECT * FROM sys.columns WHERE Name = N'PhotoUrl' AND Object_ID = OBJECT_ID(N'Users'))
-                ALTER TABLE [Users] ADD [PhotoUrl] NVARCHAR(500) NULL;
-
-            -- TitleKey column on Notifications (for i18n template keys)
-            IF NOT EXISTS (SELECT * FROM sys.columns WHERE Name = N'TitleKey' AND Object_ID = OBJECT_ID(N'Notifications'))
-                ALTER TABLE [Notifications] ADD [TitleKey] NVARCHAR(100) NULL;
-
-            -- FCM token for push notifications
-            IF NOT EXISTS (SELECT * FROM sys.columns WHERE Name = N'FcmToken' AND Object_ID = OBJECT_ID(N'Users'))
-                ALTER TABLE [Users] ADD [FcmToken] NVARCHAR(500) NULL;
-
-            -- Condition column on Listings (New / Used)
-            IF NOT EXISTS (SELECT * FROM sys.columns WHERE Name = N'Condition' AND Object_ID = OBJECT_ID(N'Listings'))
-                ALTER TABLE [Listings] ADD [Condition] NVARCHAR(20) NULL;
-
-            -- Email verification columns on Users
-            IF NOT EXISTS (SELECT * FROM sys.columns WHERE Name = N'IsEmailVerified' AND Object_ID = OBJECT_ID(N'Users'))
-                ALTER TABLE [Users] ADD [IsEmailVerified] BIT NOT NULL DEFAULT 0;
-            IF NOT EXISTS (SELECT * FROM sys.columns WHERE Name = N'EmailVerificationCode' AND Object_ID = OBJECT_ID(N'Users'))
-                ALTER TABLE [Users] ADD [EmailVerificationCode] NVARCHAR(10) NULL;
-            IF NOT EXISTS (SELECT * FROM sys.columns WHERE Name = N'EmailCodeExpiry' AND Object_ID = OBJECT_ID(N'Users'))
-                ALTER TABLE [Users] ADD [EmailCodeExpiry] DATETIMEOFFSET NULL;
-
-            -- Notifications table
-            IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='Notifications' AND xtype='U')
-            CREATE TABLE [Notifications] (
-                [Id]          UNIQUEIDENTIFIER NOT NULL PRIMARY KEY DEFAULT NEWID(),
-                [UserId]      UNIQUEIDENTIFIER NOT NULL,
-                [Title]       NVARCHAR(500)    NOT NULL DEFAULT '',
-                [Body]        NVARCHAR(MAX)    NOT NULL DEFAULT '',
-                [Link]        NVARCHAR(500)    NULL,
-                [IsRead]      BIT              NOT NULL DEFAULT 0,
-                [PurchaseId]  UNIQUEIDENTIFIER NULL,
-                [CreatedDate] DATETIMEOFFSET   NOT NULL DEFAULT GETUTCDATE(),
-                [UpdatedDate] DATETIMEOFFSET   NOT NULL DEFAULT GETUTCDATE(),
-                [IsDeleted]   BIT              NOT NULL DEFAULT 0,
-                CONSTRAINT [FK_Notifications_Users] FOREIGN KEY ([UserId]) REFERENCES [Users]([Id])
+            CREATE TABLE IF NOT EXISTS ""Notifications"" (
+                ""Id""          UUID NOT NULL PRIMARY KEY DEFAULT gen_random_uuid(),
+                ""UserId""      UUID NOT NULL,
+                ""Title""       VARCHAR(500) NOT NULL DEFAULT '',
+                ""Body""        TEXT         NOT NULL DEFAULT '',
+                ""Link""        VARCHAR(500) NULL,
+                ""IsRead""      BOOLEAN      NOT NULL DEFAULT FALSE,
+                ""PurchaseId""  UUID         NULL,
+                ""CreatedDate"" TIMESTAMPTZ  NOT NULL DEFAULT now(),
+                ""UpdatedDate"" TIMESTAMPTZ  NOT NULL DEFAULT now(),
+                ""IsDeleted""   BOOLEAN      NOT NULL DEFAULT FALSE,
+                CONSTRAINT ""FK_Notifications_Users"" FOREIGN KEY (""UserId"") REFERENCES ""Users""(""Id"")
             );
+
+            ALTER TABLE ""Listings""      ADD COLUMN IF NOT EXISTS ""IsVip""        BOOLEAN NOT NULL DEFAULT FALSE;
+            ALTER TABLE ""Listings""      ADD COLUMN IF NOT EXISTS ""VipExpiresAt"" TIMESTAMPTZ NULL;
+            ALTER TABLE ""Listings""      ADD COLUMN IF NOT EXISTS ""Condition""    VARCHAR(20) NULL;
+            ALTER TABLE ""Purchases""     ADD COLUMN IF NOT EXISTS ""SellerId""             UUID NULL;
+            ALTER TABLE ""Purchases""     ADD COLUMN IF NOT EXISTS ""SellerApprovalStatus"" VARCHAR(20) NULL;
+            ALTER TABLE ""Users""         ADD COLUMN IF NOT EXISTS ""ResetToken""              VARCHAR(20) NULL;
+            ALTER TABLE ""Users""         ADD COLUMN IF NOT EXISTS ""ResetTokenExpiry""        TIMESTAMPTZ NULL;
+            ALTER TABLE ""Users""         ADD COLUMN IF NOT EXISTS ""PhotoUrl""                VARCHAR(500) NULL;
+            ALTER TABLE ""Users""         ADD COLUMN IF NOT EXISTS ""FcmToken""                VARCHAR(500) NULL;
+            ALTER TABLE ""Users""         ADD COLUMN IF NOT EXISTS ""IsEmailVerified""         BOOLEAN NOT NULL DEFAULT FALSE;
+            ALTER TABLE ""Users""         ADD COLUMN IF NOT EXISTS ""EmailVerificationCode""   VARCHAR(10) NULL;
+            ALTER TABLE ""Users""         ADD COLUMN IF NOT EXISTS ""EmailCodeExpiry""         TIMESTAMPTZ NULL;
+            ALTER TABLE ""Notifications"" ADD COLUMN IF NOT EXISTS ""TitleKey""                VARCHAR(100) NULL;
         ");
     }
     catch { /* already applied or schema issue — ignore */ }
@@ -219,14 +196,14 @@ using (var scope = app.Services.CreateScope())
     try
     {
         await db.Database.ExecuteSqlRawAsync(@"
-            IF NOT EXISTS (SELECT 1 FROM [Listings] WHERE [Title] = N'__SUPPORT__')
-            BEGIN
-                DECLARE @adminId UNIQUEIDENTIFIER = (SELECT TOP 1 [Id] FROM [Users] WHERE [Role] = 2);
-                DECLARE @catId   UNIQUEIDENTIFIER = (SELECT TOP 1 [Id] FROM [Categories]);
-                IF @adminId IS NOT NULL AND @catId IS NOT NULL
-                    INSERT INTO [Listings] ([Id],[Title],[Description],[Price],[City],[ContactPhone],[Status],[CategoryId],[UserId],[IsVip],[DeliveryAvailable],[CreatedDate],[UpdatedDate],[IsDeleted])
-                    VALUES (NEWID(), N'__SUPPORT__', N'Support', 0, N'', N'', 0, @catId, @adminId, 0, 0, GETUTCDATE(), GETUTCDATE(), 0);
-            END
+            INSERT INTO ""Listings"" (""Id"",""Title"",""Description"",""Price"",""City"",""ContactPhone"",""Status"",""CategoryId"",""UserId"",""IsVip"",""DeliveryAvailable"",""CreatedDate"",""UpdatedDate"",""IsDeleted"")
+            SELECT gen_random_uuid(), '__SUPPORT__', 'Support', 0, '', '', 0,
+                   (SELECT ""Id"" FROM ""Categories"" LIMIT 1),
+                   (SELECT ""Id"" FROM ""Users"" WHERE ""Role"" = 2 LIMIT 1),
+                   FALSE, FALSE, now(), now(), FALSE
+            WHERE NOT EXISTS (SELECT 1 FROM ""Listings"" WHERE ""Title"" = '__SUPPORT__')
+              AND EXISTS (SELECT 1 FROM ""Users"" WHERE ""Role"" = 2)
+              AND EXISTS (SELECT 1 FROM ""Categories"");
         ");
     }
     catch { }

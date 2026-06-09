@@ -8,7 +8,7 @@ public static class DbContextOptionsExtensions
     public static IServiceCollection AddAppDbContext(this IServiceCollection services, string connectionString)
     {
         services.AddDbContext<AppDbContext>(options =>
-            options.UseSqlServer(connectionString, sql => sql.MigrationsAssembly("EcommersProject.DAL")));
+            options.UseNpgsql(connectionString, npg => npg.MigrationsAssembly("EcommersProject.DAL")));
 
         return services;
     }
