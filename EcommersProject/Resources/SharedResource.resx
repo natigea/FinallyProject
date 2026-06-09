@@ -16,6 +16,9 @@
   <data name="Nav_Login"              xml:space="preserve"><value>Войти</value></data>
   <data name="Nav_Register"           xml:space="preserve"><value>Регистрация</value></data>
   <data name="Nav_Logout"             xml:space="preserve"><value>Выйти</value></data>
+  <data name="Nav_Theme"              xml:space="preserve"><value>Тема</value></data>
+  <data name="Nav_Search"             xml:space="preserve"><value>Поиск</value></data>
+  <data name="Card_Vip"               xml:space="preserve"><value>ВИП</value></data>
 
   <!-- ── FOOTER ────────────────────────────────────────── -->
   <data name="Footer_Description"  xml:space="preserve"><value>Доска бесплатных объявлений. Продавайте и покупайте легко и быстро.</value></data>
@@ -99,7 +102,6 @@
   <data name="Browse_Sort"           xml:space="preserve"><value>Сортировка</value></data>
   <data name="Browse_Apply"          xml:space="preserve"><value>Применить</value></data>
   <data name="Browse_From"           xml:space="preserve"><value>от</value></data>
-  <data name="Browse_City"           xml:space="preserve"><value>Город</value></data>
   <data name="Browse_Extra"          xml:space="preserve"><value>Дополнительно</value></data>
   <data name="Browse_WithPhoto"      xml:space="preserve"><value>Только с фото</value></data>
   <data name="Browse_VipOnly"        xml:space="preserve"><value>Только VIP</value></data>
@@ -484,12 +486,8 @@
   <data name="Checkout_DemoNotice"         xml:space="preserve"><value>Демонстрационная система — реальное списание не происходит</value></data>
   <data name="Checkout_OrderSummary"       xml:space="preserve"><value>Состав заказа</value></data>
   <data name="Checkout_ItemPrice"          xml:space="preserve"><value>Цена товара</value></data>
-  <data name="Checkout_DeliveryFeeLabel"   xml:space="preserve"><value>Доставка (5%)</value></data>
+  <data name="Checkout_DeliveryFeeLabel"   xml:space="preserve"><value>Доставка (3%)</value></data>
   <data name="Checkout_TotalLabel"         xml:space="preserve"><value>Итого</value></data>
-  <data name="Checkout_TestCards"          xml:space="preserve"><value>Тестовые карты</value></data>
-  <data name="Checkout_TestSuccess"        xml:space="preserve"><value>Успешно</value></data>
-  <data name="Checkout_TestFail"           xml:space="preserve"><value>Отказ</value></data>
-  <data name="Checkout_TestHint"           xml:space="preserve"><value>CVV и срок — любые корректные значения</value></data>
 
   <!-- ── CHECKOUT – VIP ──────────────────────────────────── -->
   <data name="Checkout_VipTitle"           xml:space="preserve"><value>ВИП-продвижение</value></data>

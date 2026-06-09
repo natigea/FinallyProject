@@ -16,6 +16,9 @@
   <data name="Nav_Login"              xml:space="preserve"><value>Daxil ol</value></data>
   <data name="Nav_Register"           xml:space="preserve"><value>Qeydiyyat</value></data>
   <data name="Nav_Logout"             xml:space="preserve"><value>Çıxış</value></data>
+  <data name="Nav_Theme"              xml:space="preserve"><value>Mövzu</value></data>
+  <data name="Nav_Search"             xml:space="preserve"><value>Axtar</value></data>
+  <data name="Card_Vip"               xml:space="preserve"><value>VIP</value></data>
 
   <!-- ── FOOTER ────────────────────────────────────────── -->
   <data name="Footer_Description"  xml:space="preserve"><value>Pulsuz elanlar lövhəsi. Asanlıqla alın və satın.</value></data>
@@ -99,7 +102,6 @@
   <data name="Browse_Sort"           xml:space="preserve"><value>Sıralama</value></data>
   <data name="Browse_Apply"          xml:space="preserve"><value>Tətbiq et</value></data>
   <data name="Browse_From"           xml:space="preserve"><value>dan</value></data>
-  <data name="Browse_City"           xml:space="preserve"><value>Şəhər</value></data>
   <data name="Browse_Extra"          xml:space="preserve"><value>Əlavə</value></data>
   <data name="Browse_WithPhoto"      xml:space="preserve"><value>Yalnız şəkilli</value></data>
   <data name="Browse_VipOnly"        xml:space="preserve"><value>Yalnız VIP</value></data>
@@ -486,12 +488,8 @@
   <data name="Checkout_DemoNotice"         xml:space="preserve"><value>Demo sistem — real ödəniş baş vermir</value></data>
   <data name="Checkout_OrderSummary"       xml:space="preserve"><value>Sifarişin tərkibi</value></data>
   <data name="Checkout_ItemPrice"          xml:space="preserve"><value>Malın qiyməti</value></data>
-  <data name="Checkout_DeliveryFeeLabel"   xml:space="preserve"><value>Çatdırılma (5%)</value></data>
+  <data name="Checkout_DeliveryFeeLabel"   xml:space="preserve"><value>Çatdırılma (3%)</value></data>
   <data name="Checkout_TotalLabel"         xml:space="preserve"><value>Cəmi</value></data>
-  <data name="Checkout_TestCards"          xml:space="preserve"><value>Test kartlar</value></data>
-  <data name="Checkout_TestSuccess"        xml:space="preserve"><value>Uğurlu</value></data>
-  <data name="Checkout_TestFail"           xml:space="preserve"><value>Rədd</value></data>
-  <data name="Checkout_TestHint"           xml:space="preserve"><value>CVV və tarix — hər hansı düzgün dəyərlər</value></data>
 
   <!-- ── CHECKOUT – VIP ──────────────────────────────────── -->
   <data name="Checkout_VipTitle"           xml:space="preserve"><value>VIP irəliləmə</value></data>

@@ -36,7 +36,7 @@ public class CheckoutController(
         {
             listing = await GetActiveListing(req.ListingId);
             if (listing is null) return NotFound();
-            var deliveryFee = Math.Max(Math.Round(listing.Price * 0.05m, 2), 1m);
+            var deliveryFee = Math.Max(Math.Round(listing.Price * 0.03m, 2), 1m);
             amountInCents = (long)((listing.Price + deliveryFee) * 100);
         }
 

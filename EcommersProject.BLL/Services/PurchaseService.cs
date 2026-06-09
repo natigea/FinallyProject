@@ -17,7 +17,7 @@ public class PurchaseService(IUnitOfWork uow) : IPurchaseService
 
     public async Task<PurchaseGetDto> CreateDeliveryAsync(DeliveryCreateDto dto)
     {
-        var deliveryFee = Math.Max(Math.Round(dto.ListingPrice * 0.05m, 2), 1m);
+        var deliveryFee = Math.Max(Math.Round(dto.ListingPrice * 0.03m, 2), 1m);
         var total = dto.ListingPrice + deliveryFee;
         var orderNumber = GenerateOrderNumber();
 

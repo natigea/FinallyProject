@@ -2,7 +2,7 @@
 @{
     ViewData["Title"] = L["Checkout_DeliveryTitle"];
     var l = Model.Listing;
-    var deliveryFee = Math.Max(Math.Round(l.Price * 0.05m, 2), 1m);
+    var deliveryFee = Math.Max(Math.Round(l.Price * 0.03m, 2), 1m);
     var total = l.Price + deliveryFee;
     var stripeKey = ViewBag.StripePublishableKey as string ?? "";
 }

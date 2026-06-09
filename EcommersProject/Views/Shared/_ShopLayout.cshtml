@@ -23,6 +23,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet" />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <script>(function(){var t=localStorage.getItem('theme');if(t==='dark')document.documentElement.setAttribute('data-theme','dark');})();</script>
     <style>
         :root {
             --accent:      #1a56db;
@@ -38,6 +39,7 @@
             --shadow-sm:   0 1px 4px rgba(12,26,58,.07);
             --shadow-md:   0 4px 18px rgba(12,26,58,.10);
             --shadow-lg:   0 10px 40px rgba(12,26,58,.14);
+            --logo-bg:     #111111;
         }
 
         *, *::before, *::after { box-sizing: border-box; }
@@ -414,6 +416,124 @@
         }
         .btn-outline-dark-custom:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-soft); }
         .surface { background: var(--card); border: none; border-radius: var(--radius); box-shadow: var(--shadow-sm); }
+
+        /* ─── Dark theme ──────────────────────────────────────── */
+        [data-theme="dark"] {
+            --accent:      #4080ff;
+            --accent-h:    #3068e8;
+            --accent-soft: #162040;
+            --bg:          #0d1117;
+            --card:        #161b26;
+            --logo-bg:     #1e2536;
+            --border:      #252d3d;
+            --text:        #e4e8f0;
+            --sub:         #8b96b0;
+            --muted:       #4e5a72;
+            --shadow-sm:   0 1px 4px rgba(0,0,0,.35);
+            --shadow-md:   0 4px 18px rgba(0,0,0,.45);
+            --shadow-lg:   0 10px 40px rgba(0,0,0,.55);
+        }
+        [data-theme="dark"] .main-nav {
+            background: rgba(13,17,23,.97);
+            border-bottom-color: rgba(37,45,61,.7);
+            box-shadow: 0 1px 16px rgba(0,0,0,.4);
+        }
+        [data-theme="dark"] body { background: var(--bg); color: var(--text); }
+        [data-theme="dark"] .search-wrap { background: #1e2536; border-color: var(--border); }
+        [data-theme="dark"] .search-wrap input { color: var(--text); }
+        [data-theme="dark"] .search-wrap input::placeholder { color: var(--muted); }
+        [data-theme="dark"] .browse-bar { background: rgba(13,17,23,.97); border-bottom-color: var(--border); }
+        [data-theme="dark"] .browse-form { background: #1e2536; border-color: var(--border); }
+        [data-theme="dark"] .browse-input,
+        [data-theme="dark"] .browse-city-sel { color: var(--text); background: transparent; }
+        [data-theme="dark"] .cat-chip { background: #161b26; border-color: #252d3d; color: var(--sub); }
+        [data-theme="dark"] .dropdown-menu { background: #1e2536; border-color: #252d3d; }
+        [data-theme="dark"] .dropdown-item { color: var(--text); }
+        [data-theme="dark"] .dropdown-item:hover { background: var(--accent-soft); color: var(--accent); }
+        [data-theme="dark"] .dropdown-item.text-danger:hover { background: #2a0f0f; color: #f87171; }
+        [data-theme="dark"] .dropdown-divider { border-color: #252d3d; }
+        [data-theme="dark"] footer { background: #090c14; }
+        [data-theme="dark"] footer .foot-brand-word { color: #e4e8f0; }
+        [data-theme="dark"] footer h6 { color: #6b7280; }
+        [data-theme="dark"] footer .soc-btn { background: #1e2536; }
+        [data-theme="dark"] footer .foot-sep { border-top-color: #1a1f2e; }
+        [data-theme="dark"] .form-control,
+        [data-theme="dark"] .form-select { background: #1e2536; border-color: #252d3d; color: var(--text); }
+        [data-theme="dark"] .form-control::placeholder { color: var(--muted); }
+        [data-theme="dark"] .form-control:focus,
+        [data-theme="dark"] .form-select:focus { background: #1e2536; color: var(--text); border-color: var(--accent); box-shadow: 0 0 0 3px rgba(64,128,255,.15); }
+        [data-theme="dark"] .alert-success { background: #0d2216; color: #4ade80; border-color: #166534 !important; }
+        [data-theme="dark"] .alert-danger  { background: #230d0d; color: #f87171; border-color: #991b1b !important; }
+        [data-theme="dark"] .alert-info    { background: #0d1d35; color: #60a5fa; border-color: #1d4ed8 !important; }
+        [data-theme="dark"] .page-link { background: #161b26; border-color: #252d3d; color: var(--text); }
+        [data-theme="dark"] .page-item.active .page-link { background: var(--accent); border-color: var(--accent); }
+        [data-theme="dark"] .det-msg-input { background: #1e2536; border-color: #252d3d; color: var(--text); }
+        [data-theme="dark"] .det-btn-edit { background: #1e2536; border-color: #252d3d; color: var(--text); }
+        [data-theme="dark"] .det-btn-secondary { border-color: #252d3d; color: var(--sub); }
+        [data-theme="dark"] .det-safety { background: #0f1e3a; border-color: #1a2f5a; color: #7ba5f0; }
+        [data-theme="dark"] .review-form-wrap { background: #0d1117; }
+        [data-theme="dark"] .review-textarea { background: #1e2536; border-color: #252d3d; color: var(--text); }
+        [data-theme="dark"] .btn-outline-dark-custom { border-color: #252d3d; color: var(--text); }
+        [data-theme="dark"] .btn-outline-dark-custom:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-soft); }
+        [data-theme="dark"] .hero-input-wrap { background: #1e2536; box-shadow: 0 20px 60px rgba(0,0,0,.5), 0 4px 24px rgba(0,0,0,.3); }
+        [data-theme="dark"] .hero-input { color: var(--text); }
+        [data-theme="dark"] .hero-city { color: var(--sub); }
+        [data-theme="dark"] .hero-sep { background: #252d3d; }
+        [data-theme="dark"] .lang-btn { border-color: #252d3d; color: var(--muted); }
+        [data-theme="dark"] .lang-btn:hover { border-color: var(--accent); color: var(--accent); }
+        [data-theme="dark"] .lang-btn.active { border-color: var(--accent); color: var(--accent); background: var(--accent-soft); }
+
+        /* ─── Mobile util bar ─────────────────────────────────── */
+        .mobile-util-bar {
+            display: flex; align-items: center; justify-content: space-between;
+            margin-top: 8px; padding-top: 8px;
+            border-top: 1px solid var(--border);
+        }
+        .mobile-theme-btn {
+            display: flex; align-items: center; gap: 5px;
+            background: transparent; border: 1.5px solid var(--border);
+            border-radius: 8px; padding: 4px 11px;
+            font-size: .78rem; color: var(--sub); cursor: pointer;
+            transition: all .15s; font-family: inherit; font-weight: 500;
+        }
+        .mobile-theme-btn:hover { border-color: var(--accent); color: var(--accent); }
+        .mobile-theme-btn i { font-size: .88rem; }
+
+        /* ─── Mobile Bottom Nav ──────────────────────────── */
+        .mobile-bottom-nav {
+            position: fixed;
+            bottom: 0; left: 0; right: 0;
+            height: 60px;
+            background: var(--card);
+            border-top: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-around;
+            z-index: 1000;
+            box-shadow: 0 -2px 12px rgba(0,0,0,.08);
+        }
+        .mob-nav-item {
+            display: flex; flex-direction: column; align-items: center;
+            gap: 2px; font-size: .58rem; font-weight: 600;
+            color: var(--muted); text-decoration: none;
+            padding: 6px 8px; border-radius: 8px;
+            transition: color .15s; flex: 1;
+        }
+        .mob-nav-item i { font-size: 1.25rem; }
+        .mob-nav-item:hover, .mob-nav-item.active { color: var(--accent); }
+        .mob-nav-post {
+            background: var(--accent); color: #fff !important;
+            border-radius: 50%; width: 48px; height: 48px;
+            flex: none; margin: 0 4px; padding: 0;
+            justify-content: center;
+            box-shadow: 0 4px 14px rgba(26,86,219,.4);
+        }
+        .mob-nav-post i { font-size: 1.4rem; }
+        .mob-nav-post span { display: none; }
+        @@media (max-width: 767px) {
+            main { padding-bottom: 68px; }
+        }
+        [data-theme="dark"] .mobile-bottom-nav { box-shadow: 0 -2px 12px rgba(0,0,0,.4); }
     </style>
     @RenderSection("Styles", required: false)
 </head>
@@ -425,11 +545,11 @@
 
         <a class="navbar-brand" href="/">
             <svg class="logo-mark" width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <rect width="32" height="32" rx="8" fill="#111111"/>
+                <rect width="32" height="32" rx="8" style="fill:var(--logo-bg)"/>
                 <line x1="6" y1="12" x2="22" y2="12" stroke="white" stroke-width="2.2" stroke-linecap="round"/>
                 <polyline points="18,8 22,12 18,16" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
-                <line x1="26" y1="21" x2="10" y2="21" stroke="#1a56db" stroke-width="2.2" stroke-linecap="round"/>
-                <polyline points="14,17 10,21 14,25" stroke="#1a56db" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+                <line x1="26" y1="21" x2="10" y2="21" stroke="#4080ff" stroke-width="2.2" stroke-linecap="round"/>
+                <polyline points="14,17 10,21 14,25" stroke="#4080ff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
             </svg>
             <span class="logo-word">Alıs<span>Veris</span></span>
         </a>
@@ -443,6 +563,11 @@
         </form>
 
         <div class="nav-actions">
+            <!-- Theme toggle -->
+            <button class="nav-icon" onclick="toggleTheme()" title="@L["Nav_Theme"]">
+                <i class="bi bi-moon-stars theme-icon"></i><span>@L["Nav_Theme"]</span>
+            </button>
+            <div class="nav-sep"></div>
             <!-- Lang -->
             <div class="lang-wrap d-none d-lg-flex">
                 <a href="/Language/Set?culture=ru&returnUrl=@returnUrl" class="lang-btn @(currentCulture == "ru" ? "active" : "")">RU</a>
@@ -467,7 +592,7 @@
                     }
                     <span>@L["Nav_Notifications"]</span>
                 </a>
-                <div class="dropdown">
+                <div class="dropdown d-none d-md-flex">
                     <button class="nav-icon dropdown-toggle" data-bs-toggle="dropdown">
                         <i class="bi bi-person"></i><span>@L["Nav_Profile"]</span>
                     </button>
@@ -496,7 +621,7 @@
                         </li>
                     </ul>
                 </div>
-                <a href="/Listing/Create" class="btn-post ms-1">
+                <a href="/Listing/Create" class="btn-post ms-1 d-none d-md-flex">
                     <i class="bi bi-plus-lg"></i><span class="d-none d-sm-inline">@L["Nav_PostListing"]</span>
                 </a>
             }
@@ -505,14 +630,14 @@
                 <a href="/Account/Login" class="nav-icon d-none d-sm-flex">
                     <i class="bi bi-person"></i><span>@L["Nav_Login"]</span>
                 </a>
-                <a href="/Listing/Create" class="btn-post ms-1">
+                <a href="/Listing/Create" class="btn-post ms-1 d-none d-md-flex">
                     <i class="bi bi-plus-lg"></i><span class="d-none d-sm-inline">@L["Nav_PostListing"]</span>
                 </a>
             }
         </div>
     </div>
 
-    <!-- Mobile search -->
+    <!-- Mobile search + lang + theme -->
     <div class="d-md-none px-3 pb-2">
         <form action="/Listing" method="get">
             <div class="search-wrap">
@@ -520,6 +645,16 @@
                 <button class="search-btn" type="submit"><i class="bi bi-search"></i></button>
             </div>
         </form>
+        <div class="mobile-util-bar">
+            <div class="lang-wrap">
+                <a href="/Language/Set?culture=ru&returnUrl=@returnUrl" class="lang-btn @(currentCulture == "ru" ? "active" : "")">RU</a>
+                <a href="/Language/Set?culture=az&returnUrl=@returnUrl" class="lang-btn @(currentCulture == "az" ? "active" : "")">AZ</a>
+                <a href="/Language/Set?culture=en&returnUrl=@returnUrl" class="lang-btn @(currentCulture == "en" ? "active" : "")">EN</a>
+            </div>
+            <button class="mobile-theme-btn" onclick="toggleTheme()">
+                <i class="bi bi-moon-stars theme-icon"></i> @L["Nav_Theme"]
+            </button>
+        </div>
     </div>
 </nav>
 
@@ -557,11 +692,11 @@
             <div class="col-lg-4 col-md-6">
                 <div class="foot-brand mb-2">
                     <svg width="28" height="28" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <rect width="32" height="32" rx="8" fill="#111111"/>
+                        <rect width="32" height="32" rx="8" style="fill:var(--logo-bg)"/>
                         <line x1="6" y1="12" x2="22" y2="12" stroke="white" stroke-width="2.2" stroke-linecap="round"/>
                         <polyline points="18,8 22,12 18,16" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
-                        <line x1="26" y1="21" x2="10" y2="21" stroke="#1a56db" stroke-width="2.2" stroke-linecap="round"/>
-                        <polyline points="14,17 10,21 14,25" stroke="#1a56db" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+                        <line x1="26" y1="21" x2="10" y2="21" stroke="#4080ff" stroke-width="2.2" stroke-linecap="round"/>
+                        <polyline points="14,17 10,21 14,25" stroke="#4080ff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
                     </svg>
                     <span class="foot-brand-word">Alıs<span>Veris</span></span>
                 </div>
@@ -607,7 +742,56 @@
     </div>
 </footer>
 
+<!-- Mobile Bottom Nav -->
+<nav class="d-md-none mobile-bottom-nav">
+    <a href="/Listing" class="mob-nav-item">
+        <i class="bi bi-search"></i>
+        <span>@L["Nav_Search"]</span>
+    </a>
+    <a href="/Favorites" class="mob-nav-item">
+        <i class="bi bi-heart"></i>
+        <span>@L["Nav_Favorites"]</span>
+    </a>
+    <a href="/Listing/Create" class="mob-nav-item mob-nav-post">
+        <i class="bi bi-plus-lg"></i>
+        <span>@L["Nav_PostListing"]</span>
+    </a>
+    <a href="/Messages" class="mob-nav-item">
+        <i class="bi bi-chat-dots"></i>
+        <span>@L["Nav_Messages"]</span>
+    </a>
+    @if (User.Identity?.IsAuthenticated == true)
+    {
+        <a href="/Account/Profile" class="mob-nav-item">
+            <i class="bi bi-person"></i>
+            <span>@L["Nav_Profile"]</span>
+        </a>
+    }
+    else
+    {
+        <a href="/Account/Login" class="mob-nav-item">
+            <i class="bi bi-person"></i>
+            <span>@L["Nav_Login"]</span>
+        </a>
+    }
+</nav>
+
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    function applyTheme(t) {
+        document.documentElement.setAttribute('data-theme', t);
+        var dark = t === 'dark';
+        document.querySelectorAll('.theme-icon').forEach(function(el) {
+            el.className = 'bi theme-icon ' + (dark ? 'bi-sun' : 'bi-moon-stars');
+        });
+        localStorage.setItem('theme', t);
+    }
+    function toggleTheme() {
+        var c = document.documentElement.getAttribute('data-theme') || 'light';
+        applyTheme(c === 'dark' ? 'light' : 'dark');
+    }
+    applyTheme(localStorage.getItem('theme') || 'light');
+</script>
 @RenderSection("Scripts", required: false)
 </body>
 </html>
