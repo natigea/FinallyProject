@@ -20,6 +20,7 @@ public class MessagesController(
     IUnitOfWork uow,
     IHubContext<ChatHub> hub,
     FcmService fcm,
+    CloudinaryService cloudinary,
     IStringLocalizer<SharedResource> localizer) : Controller
 {
     public async Task<IActionResult> Index()
@@ -122,19 +123,17 @@ public class MessagesController(
         if (file == null || file.Length == 0) return BadRequest("No file");
         if (type is not ("voice" or "photo")) return BadRequest("Invalid type");
 
-        var uploadsDir = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads", "chat");
-        Directory.CreateDirectory(uploadsDir);
-
-        var ext = type == "voice" ? ".webm" : Path.GetExtension(file.FileName).ToLowerInvariant();
-        if (type == "photo" && ext is not (".jpg" or ".jpeg" or ".png" or ".gif" or ".webp"))
-            ext = ".jpg";
-        var fileName = $"{Guid.NewGuid():N}{ext}";
-        var filePath = Path.Combine(uploadsDir, fileName);
-
-        await using (var stream = new FileStream(filePath, FileMode.Create))
-            await file.CopyToAsync(stream);
-
-        var mediaUrl = $"/uploads/chat/{fileName}";
+        string? mediaUrl;
+        if (type == "voice")
+        {
+            await using var stream = file.OpenReadStream();
+            mediaUrl = await cloudinary.UploadRawAsync(stream, $"{Guid.NewGuid():N}.webm", "chat/voice");
+        }
+        else
+        {
+            mediaUrl = await cloudinary.UploadAsync(file, "chat/photo");
+        }
+        if (mediaUrl == null) return BadRequest("Upload failed");
         var text = $"[{type}]{mediaUrl}";
 
         var msg = await messages.SendMessageAsync(new MessageCreateDto(conversationId, userId, text));

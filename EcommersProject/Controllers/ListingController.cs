@@ -2,6 +2,7 @@ using EcommersProject.BLL.DTOs;
 using EcommersProject.BLL.Interfaces;
 using EcommersProject.Models;
 using EcommersProject.Resources;
+using EcommersProject.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Localization;
@@ -16,6 +17,7 @@ public class ListingController(
     IFavoriteService favorites,
     IReviewService reviewSvc,
     IWebHostEnvironment env,
+    CloudinaryService cloudinary,
     IStringLocalizer<SharedResource> localizer) : Controller
 {
     private IStringLocalizer<SharedResource> L => localizer;
@@ -259,18 +261,15 @@ public class ListingController(
     private async Task SaveImages(Guid listingId, List<IFormFile> files)
     {
         if (files == null || !files.Any()) return;
-        var uploadDir = Path.Combine(env.WebRootPath, "uploads", "listings");
-        Directory.CreateDirectory(uploadDir);
         foreach (var file in files.Take(10))
         {
             if (file.Length == 0) continue;
             var ext = Path.GetExtension(file.FileName).ToLowerInvariant();
             if (ext is not (".jpg" or ".jpeg" or ".png" or ".webp")) continue;
-            var fileName = $"{Guid.NewGuid()}{ext}";
-            var path = Path.Combine(uploadDir, fileName);
-            await using var stream = System.IO.File.Create(path);
-            await file.CopyToAsync(stream);
-            await listings.AddImageAsync(listingId, $"/uploads/listings/{fileName}");
+
+            var url = await cloudinary.UploadAsync(file, "listings");
+            if (url != null)
+                await listings.AddImageAsync(listingId, url);
         }
     }
 }

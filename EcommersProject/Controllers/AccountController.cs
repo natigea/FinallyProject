@@ -19,6 +19,7 @@ public class AccountController(
     IPurchaseService purchases,
     IReviewService reviews,
     EmailService emailService,
+    CloudinaryService cloudinary,
     IStringLocalizer<SharedResource> localizer,
     ILogger<AccountController> logger) : Controller
 {
@@ -297,14 +298,8 @@ public class AccountController(
                 return View(vm);
             }
 
-            var uploadsDir = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads", "avatars");
-            Directory.CreateDirectory(uploadsDir);
-
-            var fileName = $"{userId}{ext}";
-            var filePath = Path.Combine(uploadsDir, fileName);
-            await using var stream = System.IO.File.Create(filePath);
-            await vm.Photo.CopyToAsync(stream);
-            photoUrl = $"/uploads/avatars/{fileName}";
+            var url = await cloudinary.UploadAsync(vm.Photo, "avatars");
+            if (url != null) photoUrl = url;
         }
 
         await users.UpdateAsync(userId, new UserUpdateDto(vm.FirstName, vm.LastName, vm.PhoneNumber, photoUrl));

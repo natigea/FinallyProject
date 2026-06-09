@@ -24,12 +24,22 @@ if (!string.IsNullOrEmpty(databaseUrl))
     builder.Configuration["ConnectionStrings:DefaultConnection"] = connStr;
 }
 
+// Cloudinary env vars override (for Render)
+var cloudName = Environment.GetEnvironmentVariable("CLOUDINARY_CLOUD_NAME");
+if (!string.IsNullOrEmpty(cloudName))
+{
+    builder.Configuration["Cloudinary:CloudName"] = cloudName;
+    builder.Configuration["Cloudinary:ApiKey"] = Environment.GetEnvironmentVariable("CLOUDINARY_API_KEY");
+    builder.Configuration["Cloudinary:ApiSecret"] = Environment.GetEnvironmentVariable("CLOUDINARY_API_SECRET");
+}
+
 StripeConfiguration.ApiKey = builder.Configuration["Stripe:SecretKey"];
 
 builder.Services.AddHttpClient();
 builder.Services.AddSignalR();
 builder.Services.AddScoped<FcmService>();
 builder.Services.AddScoped<EmailService>();
+builder.Services.AddSingleton<CloudinaryService>();
 
 builder.Services.AddSession(options =>
 {
